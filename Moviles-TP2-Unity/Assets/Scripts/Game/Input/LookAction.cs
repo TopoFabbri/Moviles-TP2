@@ -5,16 +5,16 @@ namespace Game.Input
 {
     public class LookAction : IEvent
     {
-        public Vector2 input;
+        public Vector3 input;
         
         public void Reset()
         {
-            input = Vector2.zero;
+            input = Vector3.zero;
         }
         
         public void Assign(params object[] parameters)
         {
-            input = (Vector2)parameters[0];
+            input = (Vector3)parameters[0];
         }
     }
 }

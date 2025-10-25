@@ -4,13 +4,27 @@ using UnityEngine;
 
 namespace Game.World.Character
 {
-    internal sealed class MoveState : State
+    internal class MoveState : State
     {
-        private Vector3 rotation = Vector3.zero;
-        private Vector3 velocity = Vector3.zero;
+        protected Vector3 rotation = Vector3.zero;
+        protected Vector3 velocity = Vector3.zero;
+
+        public override Type[] OnEnterParamTypes => new[] { typeof(Transform) };
 
         public override Type[] OnTickParamTypes =>
             new[] { typeof(Vector2), typeof(Vector2), typeof(Transform), typeof(Transform), typeof(float), typeof(float), typeof(VelocityModule) };
+
+
+        public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
+        {
+            Transform dronePivot = (Transform)parameters[0];
+
+            BehaviourActions actions = Pool.Get<BehaviourActions>();
+
+            actions.AddMainThreadBehaviour(0, () => { rotation = dronePivot.rotation.eulerAngles; });
+
+            return actions;
+        }
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
@@ -34,26 +48,30 @@ namespace Game.World.Character
 
             actions.AddMainThreadBehaviour(1, () => { Rotate(dronePivot, camPivot, droneCatchupSpeed); });
             actions.AddMainThreadBehaviour(1, () => { Move(dronePivot, camPivot); });
-            
+
             return actions;
         }
 
-        private void Move(Transform dronePivot, Transform camPivot)
+        protected void Move(Transform dronePivot, Transform camPivot)
         {
             dronePivot.position += velocity;
             camPivot.position = dronePivot.position;
         }
 
-        private void CalculateVelocity(VelocityModule velocityModule, Vector2 moveInput, Vector3 droneForward, Vector3 droneRight, float dt)
+        protected virtual void CalculateVelocity(VelocityModule velocityModule, Vector2 moveInput, Vector3 droneForward, Vector3 droneRight, float dt)
         {
-            velocityModule.Accelerate(new Vector3(moveInput.x, 0f, moveInput.y), dt);
+            if (moveInput.magnitude < float.Epsilon)
+                velocityModule.Decelerate(dt);
+            else
+                velocityModule.Accelerate(new Vector3(moveInput.x, 0f, moveInput.y), dt);
+
             velocity = droneForward * velocityModule.GetVelocity().z + droneRight * velocityModule.GetVelocity().x;
         }
 
-        private void CheckInput(Vector2 moveInput, Vector2 lookInput)
+        protected virtual void CheckInput(Vector2 moveInput, Vector2 lookInput)
         {
             if (moveInput.magnitude < float.Epsilon && lookInput.magnitude < float.Epsilon)
-                flag.Invoke(DroneController.Flags.Break);
+                flag.Invoke(DroneController.Flags.Brake);
         }
 
         private void Rotate(Transform dronePivot, Transform camPivot, float droneCatchupSpeed)
@@ -62,13 +80,38 @@ namespace Game.World.Character
             dronePivot.rotation = Quaternion.Slerp(dronePivot.rotation, camPivot.rotation, droneCatchupSpeed * Time.deltaTime);
         }
 
-        private void CalculateRotation(Vector2 lookInput, float rotSpeed, float dt)
+        protected virtual void CalculateRotation(Vector2 lookInput, float rotSpeed, float dt)
         {
             lookInput = lookInput.normalized * rotSpeed * dt;
 
             rotation.x += lookInput.y;
             rotation.y += lookInput.x;
             rotation.z = 0;
+        }
+    }
+
+    internal class BrakeState : MoveState
+    {
+        protected override void CalculateRotation(Vector2 lookInput, float rotSpeed, float dt)
+        {
+            rotation.x = Mathf.DeltaAngle(rotation.x, 0f) * rotSpeed * dt;
+            rotation.z = 0;
+        }
+
+        protected override void CalculateVelocity(VelocityModule velocityModule, Vector2 moveInput, Vector3 droneForward, Vector3 droneRight, float dt)
+        {
+            velocityModule.Decelerate(dt);
+
+            velocity = droneForward * velocityModule.GetVelocity().z + droneRight * velocityModule.GetVelocity().x;
+
+            if (velocity.magnitude < float.Epsilon)
+                flag.Invoke(DroneController.Flags.Stopped);
+        }
+
+        protected override void CheckInput(Vector2 moveInput, Vector2 lookInput)
+        {
+            if (moveInput.magnitude > float.Epsilon || lookInput.magnitude > float.Epsilon)
+                flag.Invoke(DroneController.Flags.Move);
         }
     }
 }

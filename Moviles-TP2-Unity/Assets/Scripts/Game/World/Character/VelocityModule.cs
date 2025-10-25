@@ -41,5 +41,10 @@ namespace Game.World.Character
         {
             return velocity;
         }
+
+        public float GetMaxSpeed()
+        {
+            return maxSpeed;
+        }
     }
 }

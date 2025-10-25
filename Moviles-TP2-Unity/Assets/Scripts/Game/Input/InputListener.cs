@@ -8,14 +8,14 @@ namespace Game.Input
     {
         public void OnMove(InputValue input)
         {
-            Vector2 inputVector = input.Get<Vector2>();
+            Vector3 inputVector = input.Get<Vector3>();
             
             EventSystem.Raise<MoveAction>(inputVector);
         }
         
         public void OnLook(InputValue input)
         {
-            Vector2 inputVector = input.Get<Vector2>();
+            Vector3 inputVector = input.Get<Vector3>();
             
             EventSystem.Raise<LookAction>(inputVector);
         }

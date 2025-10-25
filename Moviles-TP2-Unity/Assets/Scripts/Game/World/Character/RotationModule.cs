@@ -7,19 +7,20 @@ namespace Game.World.Character
         private readonly Transform dronePivot;
         private readonly Transform camPivot;
         private readonly float rotSpeed;
-        private readonly float calibrateSpeed;
         private readonly float camCatchupSpeed;
         private Vector3 rotation = Vector3.zero;
 
+        private float targetPitch;
+        private float targetYaw;
+            
         private const float MinAngle = -80f;
         private const float MaxAngle = 80f;
 
-        public RotationModule(Transform dronePivot, Transform camPivot, float rotSpeed, float calibrateSpeed, float camCatchupSpeed)
+        public RotationModule(Transform dronePivot, Transform camPivot, float rotSpeed, float camCatchupSpeed)
         {
             this.dronePivot = dronePivot;
             this.camPivot = camPivot;
             this.rotSpeed = rotSpeed;
-            this.calibrateSpeed = calibrateSpeed;
             this.camCatchupSpeed = camCatchupSpeed;
         }
 
@@ -33,39 +34,20 @@ namespace Game.World.Character
 
         private void CalculateRotation(Vector3 lookInput)
         {
-            lookInput = lookInput.normalized * (rotSpeed * Time.deltaTime);
+            targetPitch = Mathf.LerpAngle(MinAngle, MaxAngle, lookInput.y + 1f / 2f);
+            targetYaw = Mathf.LerpAngle(MinAngle, MaxAngle, lookInput.z + 1f / 2f);
 
-            if (Mathf.Abs(lookInput.y) > float.Epsilon)
-            {
-                rotation.x += lookInput.y;
-                rotation.x = Mathf.Clamp(rotation.x, MinAngle, MaxAngle);
-            }
-            else
-            {
-                float angle = Mathf.DeltaAngle(rotation.x, 0f);
-
-                if (Mathf.Abs(angle) > Mathf.Abs(calibrateSpeed * Time.deltaTime))
-                    angle = Mathf.Sign(angle) * calibrateSpeed * Time.deltaTime;
-
-                rotation.x += angle;
-            }
-
-            if (Mathf.Abs(lookInput.z) > float.Epsilon)
-            {
-                rotation.z += lookInput.z;
-                rotation.z = Mathf.Clamp(rotation.z, MinAngle, MaxAngle);
-            }
-            else
-            {
-                float angle = Mathf.DeltaAngle(rotation.z, 0f);
-
-                if (Mathf.Abs(angle) > Mathf.Abs(calibrateSpeed * Time.deltaTime))
-                    angle = Mathf.Sign(angle) * calibrateSpeed * Time.deltaTime;
-
-                rotation.z += angle;
-            }
-
-            rotation.y += lookInput.x;
+            if (Mathf.Abs(Mathf.DeltaAngle(rotation.x, targetPitch)) > rotSpeed * Time.deltaTime)
+                rotation.x += Mathf.Sign(Mathf.DeltaAngle(rotation.x, targetPitch)) * rotSpeed * Time.deltaTime;
+            else 
+                rotation.x = targetPitch;
+            
+            if (Mathf.Abs(Mathf.DeltaAngle(rotation.z, targetYaw)) > rotSpeed * Time.deltaTime)
+                rotation.z += Mathf.Sign(Mathf.DeltaAngle(rotation.z, targetYaw)) * rotSpeed * Time.deltaTime;
+            else 
+                rotation.z = targetYaw;
+            
+            rotation.y += lookInput.x * rotSpeed * Time.deltaTime;
         }
     }
 }

@@ -7,8 +7,7 @@ namespace Game.World.Character
 {
     internal sealed class DroneController : MonoBehaviour
     {
-        [SerializeField] private float rotationSpeed = 10f;
-        [SerializeField] private float calibrationSpeed = 1f;
+        [SerializeField] private float rotationSpeed = 100f;
         [SerializeField] private float camRotationCatchupSpeed = 10f;
         [SerializeField] private float camPositionCatchupSpeed = 10f;
         [SerializeField] private float maxSpeed = 10f;
@@ -34,7 +33,7 @@ namespace Game.World.Character
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
 
-            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, calibrationSpeed, camRotationCatchupSpeed);
+            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
         }
 

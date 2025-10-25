@@ -1,7 +1,6 @@
 using System;
 using Game.Input;
 using Model.Tools.EventSystem;
-using Model.Tools.FSM;
 using UnityEngine;
 
 namespace Game.World.Character
@@ -21,22 +20,6 @@ namespace Game.World.Character
         private RotationModule rotationModule;
         private MoveModule moveModule;
 
-        private enum States
-        {
-            Idle,
-            Move,
-            Brake
-        }
-
-        internal enum Flags
-        {
-            Move,
-            Brake,
-            Stopped
-        }
-
-        private FSM<States, Flags> fsm;
-
         private Vector3 moveInput = Vector3.zero;
         private Vector3 lookInput = Vector3.zero;
 
@@ -51,10 +34,8 @@ namespace Game.World.Character
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
 
-            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, calibrationSpeed, camPositionCatchupSpeed);
+            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, calibrationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
-
-            InitFsm();
         }
 
         private void OnDestroy()
@@ -67,11 +48,6 @@ namespace Game.World.Character
         {
             rotationModule.Rotate(lookInput);
             moveModule.Move(moveInput);;
-        }
-
-        private void InitFsm()
-        {
-            fsm = new FSM<States, Flags>(States.Idle);
         }
     }
 }

@@ -6,6 +6,15 @@ namespace Game.World.Character
 {
     internal sealed class VelocityModule
     {
+        [Flags]
+        internal enum Axis
+        {
+            None = 0,
+            X = 1,
+            Y = 2,
+            Z = 4,
+        }
+        
         private Vector3 velocity;
         private readonly float acceleration;
         private readonly float deceleration;
@@ -26,15 +35,18 @@ namespace Game.World.Character
 
         internal void Accelerate(Vector3 throttle, float dt)
         {
-            velocity += acceleration * throttle * dt;
+            velocity += throttle * (acceleration * dt);
             velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
         }
 
-        internal void Decelerate(float dt)
+        internal void DecelerateAxes(float dt, Axis axis)
         {
-            float newSpeed = MathF.Max(velocity.magnitude - deceleration * dt, 0f);
-            
-            velocity = velocity.normalized * newSpeed;
+            if (axis.HasFlag(Axis.X))
+                velocity.x = MathF.Max(velocity.x - deceleration * Mathf.Sign(velocity.x) * dt, 0f);
+            if (axis.HasFlag(Axis.Y))
+                velocity.y = MathF.Max(velocity.y - deceleration * Mathf.Sign(velocity.y) * dt, 0f);
+            if (axis.HasFlag(Axis.Z))
+                velocity.z = MathF.Max(velocity.z - deceleration * Mathf.Sign(velocity.z) * dt, 0f);
         }
 
         internal Vector3 GetVelocity()

@@ -27,10 +27,17 @@ namespace Game.World.Character
 
         private Vector3 CalculateVelocity(Vector3 moveInput)
         {
-            if (moveInput.magnitude > float.Epsilon)
-                velocityModule.Accelerate(moveInput, Time.deltaTime);
-            else
-                velocityModule.Decelerate(Time.deltaTime);
+            VelocityModule.Axis deccelerateAxes = VelocityModule.Axis.None;
+            
+            if (Mathf.Abs(moveInput.x) <= float.Epsilon)
+                deccelerateAxes |= VelocityModule.Axis.X;
+            if (Mathf.Abs(moveInput.y) <= float.Epsilon)
+                deccelerateAxes |= VelocityModule.Axis.Y;
+            if (Mathf.Abs(moveInput.z) <= float.Epsilon)
+                deccelerateAxes |= VelocityModule.Axis.Z;
+            
+            velocityModule.Accelerate(moveInput, Time.deltaTime);
+            velocityModule.DecelerateAxes(Time.deltaTime, deccelerateAxes);
 
             Vector3 velocity = dronePivot.forward * velocityModule.GetVelocity().z + dronePivot.right * velocityModule.GetVelocity().x +
                                dronePivot.up * velocityModule.GetVelocity().y;

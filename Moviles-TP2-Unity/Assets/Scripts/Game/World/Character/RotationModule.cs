@@ -11,8 +11,8 @@ namespace Game.World.Character
         private readonly float camCatchupSpeed;
         private Vector3 rotation = Vector3.zero;
 
-        private const float MinRoll = -80f;
-        private const float MaxRoll = 80f;
+        private const float MinAngle = -80f;
+        private const float MaxAngle = 80f;
 
         public RotationModule(Transform dronePivot, Transform camPivot, float rotSpeed, float calibrateSpeed, float camCatchupSpeed)
         {
@@ -38,6 +38,7 @@ namespace Game.World.Character
             if (Mathf.Abs(lookInput.y) > float.Epsilon)
             {
                 rotation.x += lookInput.y;
+                rotation.x = Mathf.Clamp(rotation.x, MinAngle, MaxAngle);
             }
             else
             {
@@ -52,7 +53,7 @@ namespace Game.World.Character
             if (Mathf.Abs(lookInput.z) > float.Epsilon)
             {
                 rotation.z += lookInput.z;
-                rotation.z = Mathf.Clamp(rotation.z, MinRoll, MaxRoll);
+                rotation.z = Mathf.Clamp(rotation.z, MinAngle, MaxAngle);
             }
             else
             {

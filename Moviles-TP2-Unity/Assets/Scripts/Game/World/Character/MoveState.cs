@@ -6,6 +6,8 @@ namespace Game.World.Character
 {
     public class MoveState : State
     {
+        private Vector3 rotation = Vector3.zero;
+        
         public override Type[] OnTickParamTypes => new[] { typeof(Vector2), typeof(Vector2), typeof(Transform), typeof(Transform), typeof(float), typeof(float), typeof(float) };
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
@@ -20,15 +22,14 @@ namespace Game.World.Character
 
             BehaviourActions actions = Pool.Get<BehaviourActions>();
 
-            Quaternion targetRotation = Quaternion.identity;
             Vector3 moveVector = new();
 
             actions.AddMultiThreadableBehaviour(0, () => { CheckInput(moveInput, lookInput); });
-            actions.AddMainThreadBehaviour(0, () => { targetRotation = CalculateTargetRotation(camPivot, lookInput); });
+            actions.AddMainThreadBehaviour(0, () => { CalculateRotation(lookInput, rotSpeed); });
             actions.AddMainThreadBehaviour(0, () => { moveVector = CalculateMoveVector(dronePivot, moveInput); });
 
             actions.AddMainThreadBehaviour(1, () => { Move(dronePivot, camPivot, moveVector, moveSpeed); });
-            actions.AddMainThreadBehaviour(1, () => { Rotate(dronePivot, camPivot, targetRotation, rotSpeed, droneCatchupSpeed); });
+            actions.AddMainThreadBehaviour(1, () => { Rotate(dronePivot, camPivot, droneCatchupSpeed); });
 
             return actions;
         }
@@ -39,18 +40,19 @@ namespace Game.World.Character
                 flag.Invoke(DroneController.Flags.Break);
         }
 
-        private static void Rotate(Transform dronePivot, Transform camPivot, Quaternion targetRotation, float rotSpeed, float droneCatchupSpeed)
+        private void Rotate(Transform dronePivot, Transform camPivot, float droneCatchupSpeed)
         {
-            camPivot.rotation = Quaternion.RotateTowards(camPivot.rotation, targetRotation, rotSpeed * Time.deltaTime);
+            camPivot.rotation = Quaternion.Euler(rotation);
             dronePivot.rotation = Quaternion.Slerp(dronePivot.rotation, camPivot.rotation, droneCatchupSpeed * Time.deltaTime);
         }
 
-        private static Quaternion CalculateTargetRotation(Transform camPivot, Vector2 lookInput)
+        private void CalculateRotation(Vector2 lookInput, float rotSpeed)
         {
-            Vector3 targetEuler = camPivot.rotation.eulerAngles + new Vector3(lookInput.y, lookInput.x, 0f);
-            targetEuler.z = 0f;
-
-            return Quaternion.Euler(targetEuler);
+            lookInput = lookInput.normalized * rotSpeed * Time.deltaTime;
+            
+            rotation.x += lookInput.y;
+            rotation.y += lookInput.x;
+            rotation.z = 0;
         }
 
         private static void Move(Transform dronePivot, Transform camPivot, Vector3 moveVector, float moveSpeed)

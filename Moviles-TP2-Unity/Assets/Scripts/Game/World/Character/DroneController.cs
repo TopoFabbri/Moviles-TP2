@@ -8,12 +8,16 @@ namespace Game.World.Character
 {
     internal sealed class DroneController : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed = 10f;
         [SerializeField] private float rotationSpeed = 10f;
+        [SerializeField] private float droneCatchupSpeed = .5f;
+        [SerializeField] private float maxSpeed = 10f;
+        [SerializeField] private float acceleration = 10f;
+        [SerializeField] private float deceleration = 10f;
         [SerializeField] private Transform camPivot;
         [SerializeField] private Transform dronePivot;
-        [SerializeField] private float droneCatchupSpeed = .5f;
-        
+
+        private VelocityModule velocityModule;
+
         private enum States
         {
             Idle,
@@ -44,6 +48,8 @@ namespace Game.World.Character
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
 
+            velocityModule = new VelocityModule(acceleration, deceleration, maxSpeed);
+
             InitFsm();
         }
 
@@ -56,6 +62,7 @@ namespace Game.World.Character
         private void Update()
         {
             fsm.Tick();
+            velocityModule.RaiseDebugVelocity();
         }
 
         private void InitFsm()
@@ -63,7 +70,8 @@ namespace Game.World.Character
             fsm = new FSM<States, Flags>(States.Idle);
 
             fsm.AddState<IdleState>(States.Idle, onTickParameters: () => new object[] { moveInput, lookInput });
-            fsm.AddState<MoveState>(States.Move, onTickParameters: () => new object[] { moveInput, lookInput, dronePivot, camPivot, moveSpeed, rotationSpeed, droneCatchupSpeed });
+            fsm.AddState<MoveState>(States.Move,
+                onTickParameters: () => new object[] { moveInput, lookInput, dronePivot, camPivot, rotationSpeed, droneCatchupSpeed, velocityModule });
 
             fsm.SetTransition(States.Idle, Flags.Move, States.Move);
         }

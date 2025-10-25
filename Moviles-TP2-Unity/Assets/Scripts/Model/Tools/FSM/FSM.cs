@@ -5,7 +5,12 @@ using System.Threading.Tasks;
 
 namespace Model.Tools.FSM
 {
-    public class FSM<TStateType, TFlagType> where TStateType : Enum where TFlagType : Enum
+    /// <summary>
+    /// A generic Finite State Machine that allows for creating and managing states and transitions.
+    /// </summary>
+    /// <typeparam name="TStateType">An enum representing the different states of the FSM.</typeparam>
+    /// <typeparam name="TFlagType">An enum representing the flags that can trigger transitions.</typeparam>
+    internal class FSM<TStateType, TFlagType> where TStateType : Enum where TFlagType : Enum
     {
         private const int UnassignedTransition = -1;
         private readonly Dictionary<int, Func<object[]>> behaviourOnEnterParameters;
@@ -16,8 +21,12 @@ namespace Model.Tools.FSM
         private readonly Dictionary<int, State> states;
 
         private readonly (int destinationState, Action onTrnasition)[,] transitions;
-        private int currentState;
+        public int CurrentState { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the FSM class with a default state.
+        /// </summary>
+        /// <param name="defaultState">The initial state of the FSM.</param>
         public FSM(TStateType defaultState)
         {
             states = new Dictionary<int, State>();
@@ -32,12 +41,29 @@ namespace Model.Tools.FSM
             ForceState(defaultState);
         }
 
-        private BehaviourActions GetCurrentTickBehaviour => states[currentState].GetOnTickBehaviours(behaviourOnTickParameters[currentState]?.Invoke());
+        /// <summary>
+        /// Gets the behaviour actions to be executed on each tick for the current state.
+        /// </summary>
+        private BehaviourActions GetCurrentTickBehaviour => states[CurrentState].GetOnTickBehaviours(behaviourOnTickParameters[CurrentState]?.Invoke());
 
-        private BehaviourActions GetCurrentOnEnterBehaviour => states[currentState].GetOnEnterBehaviours(behaviourOnEnterParameters[currentState]?.Invoke());
+        /// <summary>
+        /// Gets the behaviour actions to be executed upon entering the current state.
+        /// </summary>
+        private BehaviourActions GetCurrentOnEnterBehaviour => states[CurrentState].GetOnEnterBehaviours(behaviourOnEnterParameters[CurrentState]?.Invoke());
 
-        private BehaviourActions GetCurrentOnExitBehaviour => states[currentState].GetOnExitBehaviour(behaviourOnExitParameters[currentState]?.Invoke());
+        /// <summary>
+        /// Gets the behaviour actions to be executed upon exiting the current state.
+        /// </summary>
+        private BehaviourActions GetCurrentOnExitBehaviour => states[CurrentState].GetOnExitBehaviour(behaviourOnExitParameters[CurrentState]?.Invoke());
 
+        /// <summary>
+        /// Adds a new state to the FSM.
+        /// </summary>
+        /// <typeparam name="TState">The type of the state to add, must inherit from State.</typeparam>
+        /// <param name="stateIndex">The enum value representing this state.</param>
+        /// <param name="onTickParameters">onTickParameters: () => new object[] { }</param>
+        /// <param name="onEnterParameters">onEnterParameters: () => new object[] { }.</param>
+        /// <param name="onExitParameters">onExitParameters: () => new object[] { }</param>
         public void AddState<TState>(TStateType stateIndex, Func<object[]> onTickParameters = null, Func<object[]> onEnterParameters = null, Func<object[]> onExitParameters = null)
             where TState : State, new()
         {
@@ -55,32 +81,54 @@ namespace Model.Tools.FSM
             behaviourOnExitParameters.Add(Convert.ToInt32(stateIndex), onExitParameters);
         }
 
+        /// <summary>
+        /// Forces the FSM to a specific state without executing exit or enter behaviours.
+        /// </summary>
+        /// <param name="state">The state to force the FSM into.</param>
         private void ForceState(TStateType state)
         {
-            currentState = Convert.ToInt32(state);
+            CurrentState = Convert.ToInt32(state);
         }
 
+        /// <summary>
+        /// Defines a transition between two states.
+        /// </summary>
+        /// <param name="originalState">The state from which the transition originates.</param>
+        /// <param name="flag">The flag that triggers the transition.</param>
+        /// <param name="destinationState">The state to which the FSM will transition.</param>
+        /// <param name="onTransition">An optional action to execute when the transition occurs.</param>
         public void SetTransition(TStateType originalState, TFlagType flag, TStateType destinationState, Action onTransition = null)
         {
             transitions[Convert.ToInt32(originalState), Convert.ToInt32(flag)] = (Convert.ToInt32(destinationState), onTransition);
         }
 
+        /// <summary>
+        /// Triggers a transition based on a given flag.
+        /// </summary>
+        /// <param name="flag">The flag to trigger a transition.</param>
         public void Transition(Enum flag)
         {
-            if (states.ContainsKey(currentState)) ExecuteBehaviour(GetCurrentOnExitBehaviour);
+            if (states.ContainsKey(CurrentState)) ExecuteBehaviour(GetCurrentOnExitBehaviour);
 
-            if (transitions[Convert.ToInt32(currentState), Convert.ToInt32(flag)].destinationState == UnassignedTransition) return;
+            if (transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState == UnassignedTransition) return;
 
-            transitions[currentState, Convert.ToInt32(flag)].onTrnasition?.Invoke();
-            currentState = transitions[Convert.ToInt32(currentState), Convert.ToInt32(flag)].destinationState;
+            transitions[CurrentState, Convert.ToInt32(flag)].onTrnasition?.Invoke();
+            CurrentState = transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState;
             ExecuteBehaviour(GetCurrentOnEnterBehaviour);
         }
 
+        /// <summary>
+        /// Executes the OnTick behaviours for the current state.
+        /// </summary>
         public void Tick()
         {
-            if (states.ContainsKey(currentState)) ExecuteBehaviour(GetCurrentTickBehaviour);
+            if (states.ContainsKey(CurrentState)) ExecuteBehaviour(GetCurrentTickBehaviour);
         }
 
+        /// <summary>
+        /// Executes a set of behaviour actions, handling both main-thread and multi-threaded actions.
+        /// </summary>
+        /// <param name="behaviourActions">The behaviour actions to execute.</param>
         private void ExecuteBehaviour(BehaviourActions behaviourActions)
         {
             if (behaviourActions == null)
@@ -117,7 +165,14 @@ namespace Model.Tools.FSM
             State.Pool.Release(behaviourActions);
         }
 
-        public void ValidateParams(Type[] expectedParams, Func<object[]> receivedParams)
+        /// <summary>
+        /// Validates that the types of the provided parameters match the expected types.
+        /// </summary>
+        /// <param name="expectedParams">An array of expected parameter types.</param>
+        /// <param name="receivedParams">A function that returns an array of the received parameters.</param>
+        /// <exception cref="ArgumentException">Thrown when the number of parameters is incorrect.</exception>
+        /// <exception cref="InvalidCastException">Thrown when a parameter has an incorrect type.</exception>
+        private void ValidateParams(Type[] expectedParams, Func<object[]> receivedParams)
         {
             if (expectedParams.Length == 0 && receivedParams == null) return;
 

@@ -1,4 +1,4 @@
-﻿namespace Model.Game.World.Resource
+﻿namespace Game.World.Resource
 {
     public interface IResourceContainer<TValue> where TValue : struct
     {

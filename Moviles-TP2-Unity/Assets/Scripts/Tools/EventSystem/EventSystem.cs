@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Model.Tools.Pool;
+using Tools.Pool;
 
-namespace Model.Tools.EventSystem
+namespace Tools.EventSystem
 {
     public static class EventSystem
     {

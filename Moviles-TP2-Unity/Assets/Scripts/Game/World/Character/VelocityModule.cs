@@ -1,5 +1,5 @@
 ﻿using System;
-using Model.Tools.EventSystem;
+using Tools.EventSystem;
 using UnityEngine;
 
 namespace Game.World.Character
@@ -42,11 +42,11 @@ namespace Game.World.Character
         internal void DecelerateAxes(float dt, Axis axis)
         {
             if (axis.HasFlag(Axis.X))
-                velocity.x = MathF.Max(velocity.x - deceleration * Mathf.Sign(velocity.x) * dt, 0f);
+                velocity.x = Mathf.MoveTowards(velocity.x, 0f, deceleration * dt);
             if (axis.HasFlag(Axis.Y))
-                velocity.y = MathF.Max(velocity.y - deceleration * Mathf.Sign(velocity.y) * dt, 0f);
+                velocity.y = Mathf.MoveTowards(velocity.y, 0f, deceleration * dt);
             if (axis.HasFlag(Axis.Z))
-                velocity.z = MathF.Max(velocity.z - deceleration * Mathf.Sign(velocity.z) * dt, 0f);
+                velocity.z = Mathf.MoveTowards(velocity.z, 0f, deceleration * dt);
         }
 
         internal Vector3 GetVelocity()

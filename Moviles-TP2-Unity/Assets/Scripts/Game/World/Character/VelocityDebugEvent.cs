@@ -1,4 +1,4 @@
-﻿using Model.Tools.EventSystem;
+﻿using Tools.EventSystem;
 
 namespace Game.World.Character
 {

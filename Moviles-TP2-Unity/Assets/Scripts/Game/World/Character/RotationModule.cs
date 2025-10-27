@@ -29,13 +29,14 @@ namespace Game.World.Character
             CalculateRotation(lookInput);
 
             dronePivot.rotation = Quaternion.Euler(rotation);
-            camPivot.rotation = Quaternion.Slerp(camPivot.rotation, dronePivot.rotation, camCatchupSpeed * Time.deltaTime);
+            float t = 1f - Mathf.Exp(-camCatchupSpeed * Time.deltaTime);
+            camPivot.rotation = Quaternion.Slerp(camPivot.rotation, dronePivot.rotation, t);
         }
 
         private void CalculateRotation(Vector3 lookInput)
         {
-            targetPitch = Mathf.LerpAngle(MinAngle, MaxAngle, lookInput.y + 1f / 2f);
-            targetYaw = Mathf.LerpAngle(MinAngle, MaxAngle, lookInput.z + 1f / 2f);
+            targetPitch = Mathf.LerpAngle(MinAngle, MaxAngle, (lookInput.y + 1f) / 2f);
+            targetYaw = Mathf.LerpAngle(MinAngle, MaxAngle, (lookInput.z + 1f) / 2f);
 
             if (Mathf.Abs(Mathf.DeltaAngle(rotation.x, targetPitch)) > rotSpeed * Time.deltaTime)
                 rotation.x += Mathf.Sign(Mathf.DeltaAngle(rotation.x, targetPitch)) * rotSpeed * Time.deltaTime;

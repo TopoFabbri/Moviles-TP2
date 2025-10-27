@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Model.Tools.Pool;
+using Tools.Pool;
 
-namespace Model.Tools.FSM
+namespace Tools.FSM
 {
     public class BehaviourActions : IResetable, IEquatable<BehaviourActions>
     {

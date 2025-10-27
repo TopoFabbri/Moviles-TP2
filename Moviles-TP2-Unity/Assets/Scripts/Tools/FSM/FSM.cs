@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Model.Tools.FSM
+namespace Tools.FSM
 {
     /// <summary>
     /// A generic Finite State Machine that allows for creating and managing states and transitions.

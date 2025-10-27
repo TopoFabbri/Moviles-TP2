@@ -1,6 +1,6 @@
 using System;
 using Game.Input;
-using Model.Tools.EventSystem;
+using Tools.EventSystem;
 using UnityEngine;
 
 namespace Game.World.Character
@@ -46,7 +46,9 @@ namespace Game.World.Character
         private void Update()
         {
             rotationModule.Rotate(lookInput);
-            moveModule.Move(moveInput);;
+            moveModule.Move(moveInput);
+            
+            moveModule.VelocityModule.RaiseDebugVelocity();
         }
     }
 }

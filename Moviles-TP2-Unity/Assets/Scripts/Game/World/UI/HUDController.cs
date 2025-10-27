@@ -1,6 +1,6 @@
 using Game.World.Character;
-using Model.Tools.EventSystem;
 using TMPro;
+using Tools.EventSystem;
 using UnityEngine;
 
 namespace Game.World.UI

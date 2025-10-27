@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Model.Tools.Time
+namespace Tools.Time
 {
     public static class Time
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using Model.Tools.Pool;
+using Tools.Pool;
 
-namespace Model.Tools.FSM
+namespace Tools.FSM
 {
     public abstract class State
     {

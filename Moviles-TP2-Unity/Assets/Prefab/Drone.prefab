@@ -600,12 +600,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 100
-  calibrationSpeed: 100
   camRotationCatchupSpeed: 10
   camPositionCatchupSpeed: 30
-  maxSpeed: 0.3
-  acceleration: 1
-  deceleration: 1
+  maxSpeed: 30
+  acceleration: 100
+  deceleration: 100
   camPivot: {fileID: 2309679320692283007}
   dronePivot: {fileID: 1023466861478574569}
 --- !u!1001 &4577299300375137470

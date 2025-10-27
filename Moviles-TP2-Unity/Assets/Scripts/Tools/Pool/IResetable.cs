@@ -1,4 +1,4 @@
-﻿namespace Model.Tools.Pool
+﻿namespace Tools.Pool
 {
     public interface IResetable
     {

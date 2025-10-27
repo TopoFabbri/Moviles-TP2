@@ -6,14 +6,14 @@ namespace Game.World.Character
     {
         private readonly Transform dronePivot;
         private readonly Transform camPivot;
-        private readonly VelocityModule velocityModule;
         private readonly float camCatchupSpeed;
+        internal VelocityModule VelocityModule { get; }
 
         internal MoveModule(Transform dronePivot, Transform camPivot, float acceleration, float deceleration, float maxSpeed, float camCatchupSpeed)
         {
             this.dronePivot = dronePivot;
             this.camPivot = camPivot;
-            velocityModule = new VelocityModule(acceleration, deceleration, maxSpeed);
+            VelocityModule = new VelocityModule(acceleration, deceleration, maxSpeed);
             this.camCatchupSpeed = camCatchupSpeed;
         }
 
@@ -21,8 +21,10 @@ namespace Game.World.Character
         {
             Vector3 velocity = CalculateVelocity(moveInput);
 
-            dronePivot.position += velocity;
-            camPivot.position = Vector3.Lerp(camPivot.position, dronePivot.position, camCatchupSpeed * Time.deltaTime);
+            dronePivot.position += velocity * Time.deltaTime;
+            
+            float t = 1f - Mathf.Exp(-camCatchupSpeed * Time.deltaTime);
+            camPivot.position = Vector3.Lerp(camPivot.position, dronePivot.position, t);
         }
 
         private Vector3 CalculateVelocity(Vector3 moveInput)
@@ -36,11 +38,11 @@ namespace Game.World.Character
             if (Mathf.Abs(moveInput.z) <= float.Epsilon)
                 decelerateAxes |= VelocityModule.Axis.Z;
             
-            velocityModule.Accelerate(moveInput, Time.deltaTime);
-            velocityModule.DecelerateAxes(Time.deltaTime, decelerateAxes);
+            VelocityModule.Accelerate(moveInput, Time.deltaTime);
+            VelocityModule.DecelerateAxes(Time.deltaTime, decelerateAxes);
 
-            Vector3 velocity = dronePivot.forward * velocityModule.GetVelocity().z + dronePivot.right * velocityModule.GetVelocity().x +
-                               dronePivot.up * velocityModule.GetVelocity().y;
+            Vector3 velocity = dronePivot.forward * VelocityModule.GetVelocity().z + dronePivot.right * VelocityModule.GetVelocity().x +
+                               dronePivot.up * VelocityModule.GetVelocity().y;
             return velocity;
         }
     }

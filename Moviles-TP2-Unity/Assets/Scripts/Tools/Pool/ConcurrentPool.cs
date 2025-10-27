@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Model.Tools.Pool
+namespace Tools.Pool
 {
     public class ConcurrentPool
     {

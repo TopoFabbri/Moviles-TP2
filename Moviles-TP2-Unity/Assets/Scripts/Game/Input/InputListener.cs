@@ -1,4 +1,4 @@
-using Model.Tools.EventSystem;
+using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

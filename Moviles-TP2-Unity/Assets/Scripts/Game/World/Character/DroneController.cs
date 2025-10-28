@@ -2,6 +2,7 @@ using System;
 using Game.Input;
 using Tools.EventSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Game.World.Character
 {
@@ -18,7 +19,8 @@ namespace Game.World.Character
 
         private RotationModule rotationModule;
         private MoveModule moveModule;
-
+        private GyroscopeHandler gyroscopeHandler;
+        
         private Vector3 moveInput = Vector3.zero;
         private Vector3 lookInput = Vector3.zero;
 
@@ -28,13 +30,15 @@ namespace Game.World.Character
         private void Awake()
         {
             moveAction = action => moveInput = action.input;
-            lookAction = action => lookInput = action.input;
+            lookAction = action => lookInput.x = action.input.x;
 
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
+            gyroscopeHandler = new GyroscopeHandler();
+            gyroscopeHandler.Calibrate();
         }
 
         private void OnDestroy()
@@ -45,10 +49,31 @@ namespace Game.World.Character
 
         private void Update()
         {
+            if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
+                Calibrate();
+            
+            ReadAccelerometer();
+            
             rotationModule.Rotate(lookInput);
             moveModule.Move(moveInput);
             
             moveModule.VelocityModule.RaiseDebugVelocity();
+        }
+
+        private void ReadAccelerometer()
+        {
+            if (gyroscopeHandler == null)
+                return;
+            
+            Vector3 rot = gyroscopeHandler.GetRotation();
+            
+            lookInput.y = rot.y;
+            lookInput.z = rot.z;
+        }
+        
+        public void Calibrate()
+        {
+            gyroscopeHandler?.Calibrate();
         }
     }
 }

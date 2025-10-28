@@ -19,7 +19,6 @@ namespace Game.World.Character
 
         private RotationModule rotationModule;
         private MoveModule moveModule;
-        private GyroscopeHandler gyroscopeHandler;
         
         private Vector3 moveInput = Vector3.zero;
         private Vector3 lookInput = Vector3.zero;
@@ -30,15 +29,13 @@ namespace Game.World.Character
         private void Awake()
         {
             moveAction = action => moveInput = action.input;
-            lookAction = action => lookInput.x = action.input.x;
+            lookAction = action => lookInput = action.input;
 
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
-            gyroscopeHandler = new GyroscopeHandler();
-            gyroscopeHandler.Calibrate();
         }
 
         private void OnDestroy()
@@ -62,10 +59,9 @@ namespace Game.World.Character
 
         private void ReadAccelerometer()
         {
-            if (gyroscopeHandler == null)
-                return;
+            if (!GyroscopeHandler.Active) return;
             
-            Vector3 rot = gyroscopeHandler.GetRotation();
+            Vector3 rot = GyroscopeHandler.GetRotation();
             
             lookInput.y = rot.y;
             lookInput.z = rot.z;
@@ -73,7 +69,7 @@ namespace Game.World.Character
         
         public void Calibrate()
         {
-            gyroscopeHandler?.Calibrate();
+            GyroscopeHandler.Calibrate();
         }
     }
 }

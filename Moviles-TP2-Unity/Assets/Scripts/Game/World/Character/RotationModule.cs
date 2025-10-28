@@ -13,8 +13,8 @@ namespace Game.World.Character
         private float targetPitch;
         private float targetYaw;
             
-        private const float MinAngle = -80f;
-        private const float MaxAngle = 80f;
+        private const float MinAngle = -89f;
+        private const float MaxAngle = 89f;
 
         public RotationModule(Transform dronePivot, Transform camPivot, float rotSpeed, float camCatchupSpeed)
         {

@@ -16,7 +16,6 @@ namespace Game.Input
         public void OnLook(InputValue input)
         {
             Vector3 inputVector = input.Get<Vector3>();
-            print(inputVector);
             
             EventSystem.Raise<LookAction>(inputVector);
         }

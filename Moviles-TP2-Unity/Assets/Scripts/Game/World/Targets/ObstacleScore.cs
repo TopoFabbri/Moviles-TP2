@@ -21,13 +21,22 @@ namespace Game.World.Targets
             if (Scores.Count <= 0)
                 EventSystem.Raise<GameOverEvent>();
         }
+
+        internal static void SortScores()
+        {
+            Scores.Sort((a, b) => a.order.CompareTo(b.order));
+        }
+        
+        internal void SetOrder(int order)
+        {
+            this.order = order;
+        }
         
         private void Start()
         {
             Scores.Add(this);
-            Scores.Sort((a, b) => a.order.CompareTo(b.order));
         }
-        
+
         private void OnDestroy()
         {
             Scores.Remove(this);

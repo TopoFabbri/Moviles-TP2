@@ -1,5 +1,6 @@
 using Game.Events;
 using Game.World.Character;
+using Game.World.Targets;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ namespace Game.World.GameManager
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private string pcDefaultMap;
         [SerializeField] private string androidDefaultMap;
+        [SerializeField] private TargetSpawner targetSpawner;
         
         private void Awake()
         {
@@ -30,6 +32,11 @@ namespace Game.World.GameManager
                 playerInput.SwitchCurrentActionMap(androidDefaultMap);
                 playerInput.actions.FindActionMap(pcDefaultMap).Disable();
             }
+        }
+
+        private void Start()
+        {
+            targetSpawner.Spawn();
         }
 
         private void OnDestroy()

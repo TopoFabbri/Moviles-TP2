@@ -13,7 +13,8 @@ namespace Game.World.Character
         {
             gyro.rotation = Quaternion.identity;
             
-            pointer.rotation = Quaternion.LookRotation(ObstacleScore.Current.transform.position - droneTransform.position, droneTransform.up);
+            if (ObstacleScore.Current)
+                pointer.rotation = Quaternion.LookRotation(ObstacleScore.Current.transform.position - droneTransform.position, droneTransform.up);
         }
     }
 }

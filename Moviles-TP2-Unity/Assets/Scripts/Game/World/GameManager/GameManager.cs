@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace Game.World
+namespace Game.World.GameManager
 {
     public class GameManager : MonoBehaviour
     {

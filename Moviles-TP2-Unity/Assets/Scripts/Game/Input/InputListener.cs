@@ -1,3 +1,4 @@
+using Game.Events;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;

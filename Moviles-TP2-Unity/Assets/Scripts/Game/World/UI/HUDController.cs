@@ -15,7 +15,7 @@ namespace Game.World.UI
         private void Awake()
         {
             EventSystem.Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
-            androidControls.SetActive(Application.platform == RuntimePlatform.Android);
+            androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
         }
 
         private void OnDestroy()

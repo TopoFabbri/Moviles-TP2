@@ -1,9 +1,9 @@
 ﻿using Tools.EventSystem;
 using UnityEngine;
 
-namespace Game.Input
+namespace Game.Events
 {
-    public class MoveAction : IEvent
+    public class LookAction : IEvent
     {
         public Vector3 input;
         
@@ -11,7 +11,7 @@ namespace Game.Input
         {
             input = Vector3.zero;
         }
-
+        
         public void Assign(params object[] parameters)
         {
             input = (Vector3)parameters[0];

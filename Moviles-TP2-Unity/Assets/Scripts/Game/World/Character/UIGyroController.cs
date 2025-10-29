@@ -1,3 +1,4 @@
+using Game.World.Targets;
 using UnityEngine;
 
 namespace Game.World.Character

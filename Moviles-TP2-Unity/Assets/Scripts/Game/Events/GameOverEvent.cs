@@ -1,6 +1,6 @@
 ﻿using Tools.EventSystem;
 
-namespace Game.World
+namespace Game.Events
 {
     internal class GameOverEvent : IEvent
     {

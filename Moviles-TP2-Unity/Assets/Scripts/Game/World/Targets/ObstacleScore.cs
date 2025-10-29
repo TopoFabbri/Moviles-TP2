@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Game.Events;
 using Tools.EventSystem;
 using UnityEngine;
 
-namespace Game.World
+namespace Game.World.Targets
 {
     internal class ObstacleScore : MonoBehaviour
     {

@@ -1,5 +1,6 @@
 using System;
 using Game.Input;
+using Game.World.Character.DroneModules;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -53,26 +54,26 @@ namespace Game.World.Character
         {
             if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
                 Calibrate();
-            
+
             ReadAccelerometer();
-            
+
             rotationModule.Rotate(lookInput);
             moveModule.Move(moveInput);
             gravityModule.Update();
-            
+
             moveModule.VelocityModule.RaiseDebugVelocity();
         }
 
         private void ReadAccelerometer()
         {
             if (!GyroscopeHandler.Active) return;
-            
+
             Vector3 rot = GyroscopeHandler.GetRotation();
-            
+
             lookInput.y = rot.y;
             lookInput.z = rot.z;
         }
-        
+
         public void Calibrate()
         {
             GyroscopeHandler.Calibrate();

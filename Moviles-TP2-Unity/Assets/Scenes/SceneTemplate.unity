@@ -148,9 +148,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 1762176769}
   - {fileID: 1337739905}
   - {fileID: 1023382488}
-  - {fileID: 1762176769}
   - {fileID: 1407197662}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -563,7 +563,7 @@ GameObject:
   - component: {fileID: 1407197664}
   - component: {fileID: 1407197663}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -686,7 +686,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7661220009173269887, guid: 08ca6b5f25647de4f8868205c7080617, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7661220009173269887, guid: 08ca6b5f25647de4f8868205c7080617, type: 3}
       propertyPath: m_LocalRotation.w
@@ -743,7 +743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7959209693998836820, guid: 74b861c96df083e409066cb04de9be9c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 7959209693998836820, guid: 74b861c96df083e409066cb04de9be9c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -800,7 +800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9059720627307562316, guid: 84b0c7012fcbf494d8d1bc834e61402e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 20
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 9059720627307562316, guid: 84b0c7012fcbf494d8d1bc834e61402e, type: 3}
       propertyPath: m_LocalRotation.w

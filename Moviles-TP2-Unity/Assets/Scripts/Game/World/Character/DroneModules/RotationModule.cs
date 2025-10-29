@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.World.Character
+namespace Game.World.Character.DroneModules
 {
     internal sealed class RotationModule
     {

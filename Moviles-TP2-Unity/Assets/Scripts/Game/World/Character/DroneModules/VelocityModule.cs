@@ -1,8 +1,9 @@
 ﻿using System;
+using Game.Events;
 using Tools.EventSystem;
 using UnityEngine;
 
-namespace Game.World.Character
+namespace Game.World.Character.DroneModules
 {
     internal sealed class VelocityModule
     {

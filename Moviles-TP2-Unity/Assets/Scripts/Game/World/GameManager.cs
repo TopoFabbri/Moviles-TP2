@@ -1,6 +1,9 @@
+using Game.Events;
 using Game.World.Character;
+using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Game.World
 {
@@ -12,6 +15,7 @@ namespace Game.World
         
         private void Awake()
         {
+            EventSystem.Subscribe<DroneCollisionEvent>(OnDroneCollision);
             Application.targetFrameRate = 60;
             
             if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
@@ -24,6 +28,16 @@ namespace Game.World
                 playerInput.SwitchCurrentActionMap(androidDefaultMap);
                 playerInput.actions.FindActionMap(pcDefaultMap).Disable();
             }
+        }
+
+        private void OnDestroy()
+        {
+            EventSystem.Unsubscribe<DroneCollisionEvent>(OnDroneCollision);
+        }
+
+        private static void OnDroneCollision(DroneCollisionEvent obj)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         private void Update()

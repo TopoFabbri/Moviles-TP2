@@ -1,6 +1,6 @@
 ﻿using Tools.EventSystem;
 
-namespace Game.World.Character
+namespace Game.Events
 {
     internal sealed class VelocityDebugEvent : IEvent
     {

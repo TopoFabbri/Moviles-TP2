@@ -1400,7 +1400,7 @@ MonoBehaviour:
   rotationSpeed: 100
   camRotationCatchupSpeed: 10
   camPositionCatchupSpeed: 30
-  maxSpeed: 30
+  maxSpeed: 60
   acceleration: 100
   deceleration: 100
   gravity: 9.81

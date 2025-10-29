@@ -16,6 +16,8 @@ namespace Game.World
         private void Awake()
         {
             EventSystem.Subscribe<DroneCollisionEvent>(OnDroneCollision);
+            EventSystem.Subscribe<GameOverEvent>(OnGameOver);
+            
             Application.targetFrameRate = 60;
             
             if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
@@ -33,11 +35,17 @@ namespace Game.World
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<DroneCollisionEvent>(OnDroneCollision);
+            EventSystem.Unsubscribe<GameOverEvent>(OnGameOver);
         }
 
-        private static void OnDroneCollision(DroneCollisionEvent obj)
+        private void OnDroneCollision(DroneCollisionEvent obj)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            RestartLevel();
+        }
+
+        private void OnGameOver(GameOverEvent obj)
+        {
+            RestartLevel();
         }
 
         private void Update()
@@ -49,6 +57,11 @@ namespace Game.World
                 InputSystem.EnableDevice(Accelerometer.current);
                 GyroscopeHandler.Active = true;
             }
+        }
+        
+        private static void RestartLevel()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

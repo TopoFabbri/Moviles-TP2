@@ -1,6 +1,5 @@
 using System;
 using Game.Events;
-using Game.Input;
 using Game.World.Character.DroneModules;
 using Tools.EventSystem;
 using UnityEngine;
@@ -24,7 +23,6 @@ namespace Game.World.Character
 
         private RotationModule rotationModule;
         private MoveModule moveModule;
-        private GravityModule gravityModule;
         
         private Vector3 moveInput = Vector3.zero;
         private Vector3 lookInput = Vector3.zero;
@@ -42,7 +40,6 @@ namespace Game.World.Character
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
-            gravityModule = new GravityModule(dronePivot, gravity, droneUpForce, maxGravityCombat);
         }
 
         private void OnDestroy()
@@ -60,7 +57,6 @@ namespace Game.World.Character
 
             rotationModule.Rotate(lookInput);
             moveModule.Move(moveInput);
-            gravityModule.Update();
 
             moveModule.VelocityModule.RaiseDebugVelocity();
         }
@@ -75,7 +71,7 @@ namespace Game.World.Character
             lookInput.z = rot.z;
         }
 
-        public void Calibrate()
+        private static void Calibrate()
         {
             GyroscopeHandler.Calibrate();
         }

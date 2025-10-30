@@ -28,7 +28,7 @@ namespace Game.World.Character.DroneModules
         {
             CalculateRotation(lookInput);
 
-            dronePivot.rotation = Quaternion.Euler(rotation);
+            dronePivot.localRotation = Quaternion.Euler(rotation);
             float t = 1f - Mathf.Exp(-camCatchupSpeed * Time.deltaTime);
             camPivot.rotation = Quaternion.Slerp(camPivot.rotation, dronePivot.rotation, t);
         }

@@ -34,6 +34,69 @@ Transform:
   - {fileID: 1508912272546806389}
   m_Father: {fileID: 7938743130781639875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3196963517622573057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1490391739994318586}
+  - component: {fileID: 6718313632729920465}
+  m_Layer: 0
+  m_Name: TargetSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1490391739994318586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196963517622573057}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1453086296823208750}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6718313632729920465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196963517622573057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8656d71b19b292c458a6737b8b3b7938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &3544621733279521751
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,6 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a886d194fe6269439d032f1392ea0f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInput: {fileID: 2818229556252393432}
+  pcDefaultMap: Analogs+Shoulders
+  androidDefaultMap: Gyro
 --- !u!114 &2818229556252393432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,6 +443,7 @@ Transform:
   - {fileID: 4798391782034579990}
   - {fileID: 5106203611193165867}
   - {fileID: 1021553069901750918}
+  - {fileID: 1490391739994318586}
   m_Father: {fileID: 7938743130781639875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8479726486449942347
@@ -423,9 +490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05db600e8f173c74cb86b855ba9d93f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInput: {fileID: 2818229556252393432}
-  pcDefaultMap: Analogs+Shoulders
-  androidDefaultMap: Gyro
+  targetSpawner: {fileID: 6718313632729920465}
 --- !u!1 &8494484014052441519
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,10 +14,6 @@ namespace Game.World.Character
         [SerializeField] private float camPositionCatchupSpeed = 10f;
         [SerializeField] private float maxSpeed = 10f;
         [SerializeField] private float acceleration = 10f;
-        [SerializeField] private float deceleration = 10f;
-        [SerializeField] private float gravity = 9.81f;
-        [SerializeField] private float droneUpForce = 9.81f;
-        [SerializeField] private float maxGravityCombat = 10f;
         [SerializeField] private Transform camPivot;
         [SerializeField] private Transform dronePivot;
 
@@ -39,7 +35,7 @@ namespace Game.World.Character
             EventSystem.Subscribe(lookAction);
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
-            moveModule = new MoveModule(dronePivot, camPivot, acceleration, deceleration, maxSpeed, camPositionCatchupSpeed);
+            moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
         }
 
         private void OnDestroy()

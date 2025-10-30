@@ -9,6 +9,8 @@ namespace Game.World.GameManager
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private TargetSpawner targetSpawner;
+
+        private const string TMPScene = "TmpScene";
         
         private void Awake()
         {
@@ -41,7 +43,9 @@ namespace Game.World.GameManager
         
         private static void RestartLevel()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(TMPScene);
+            SceneManager.LoadScene(currentSceneIndex);
         }
     }
 }

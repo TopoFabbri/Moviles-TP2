@@ -29,11 +29,13 @@ namespace Game.Input
         
         private void Update()
         {
+#if UNITY_EDITOR
             if (EditorApplication.isRemoteConnected)
             {
                 playerInput.SwitchCurrentActionMap(androidDefaultMap);
                 playerInput.actions.FindActionMap(pcDefaultMap).Disable();
             }
+#endif
             
             if (playerInput.currentActionMap.name != "Gyro") return;
             

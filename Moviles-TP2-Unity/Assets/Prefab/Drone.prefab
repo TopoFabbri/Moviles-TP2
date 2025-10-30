@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2309679320692283007}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: CamPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7092632630451719384}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 4478376075280724293}
   - component: {fileID: 5689867225360816470}
   - component: {fileID: 8031337319360377615}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 1307671743952162896}
   - component: {fileID: 596434087683211158}
   - component: {fileID: 3789550363543711272}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1180,7 +1180,8 @@ GameObject:
   - component: {fileID: 1023466861478574569}
   - component: {fileID: 3769501740588992063}
   - component: {fileID: 6118828029542035815}
-  m_Layer: 5
+  - component: {fileID: 524317135369397629}
+  m_Layer: 6
   m_Name: DronePivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1218,7 +1219,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1236,10 +1237,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dbba67fcd446624c92603b7ff59c067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  box: {fileID: 3769501740588992063}
-  mask:
+--- !u!54 &524317135369397629
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7575209108406649361}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 2
 --- !u!1 &7636729951852959333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1441,7 @@ GameObject:
   - component: {fileID: 9096454997012278480}
   - component: {fileID: 5340665982585111618}
   - component: {fileID: 8968416213662882441}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Drone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1760,27 +1784,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8446626529288738656, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6762035636062868010, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6490498379373709757, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -1018664272722485354, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -844242140097572791, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 61221710263167579, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Name
@@ -1788,11 +1812,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6323636774095419552, guid: 9e486be5e5a2b7a48a1f82028fa459f0, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1884,7 +1908,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 1b3c43d238b0d6343a82e36b212e42fc, type: 2}
     - target: {fileID: -6709133607166920927, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6545539506759594438, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1892,7 +1916,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 986d756de20c9024b8bc1524e2a8a0c7, type: 2}
     - target: {fileID: -6198745495481480612, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -4365565196428502486, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1904,11 +1928,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 986d756de20c9024b8bc1524e2a8a0c7, type: 2}
     - target: {fileID: -2679606410389123429, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -674382357360132614, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Name
@@ -1916,7 +1940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6027934057102272696, guid: 30a0bf5eb53d2774fa5a8aeb668da1d2, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

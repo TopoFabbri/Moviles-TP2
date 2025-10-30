@@ -3,6 +3,7 @@ using Game.World.Targets;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Time = Tools.Time.Time;
 
 namespace Game.World.GameManager
 {
@@ -18,6 +19,7 @@ namespace Game.World.GameManager
             EventSystem.Subscribe<GameOverEvent>(OnGameOver);
             
             Application.targetFrameRate = 60;
+            Time.Start();
         }
 
         private void Start()
@@ -29,6 +31,11 @@ namespace Game.World.GameManager
         {
             EventSystem.Unsubscribe<DroneCollisionEvent>(OnDroneCollision);
             EventSystem.Unsubscribe<GameOverEvent>(OnGameOver);
+        }
+
+        private void Update()
+        {
+            Time.Update();
         }
 
         private void OnDroneCollision(DroneCollisionEvent obj)

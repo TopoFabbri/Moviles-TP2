@@ -1466,6 +1466,10 @@ PrefabInstance:
       value: SceneDefaults
       objectReference: {fileID: 0}
     - target: {fileID: 6718313632729920465, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: spawnPoints.Array.size
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6718313632729920465, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
       propertyPath: 'spawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 17789157}

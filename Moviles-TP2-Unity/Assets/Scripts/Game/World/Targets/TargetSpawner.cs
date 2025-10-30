@@ -61,6 +61,8 @@ namespace Game.World.Targets
             
             for (int i = 0; i < spawnPoints.Count - 1; i++)
             {
+                if (!spawnPoints[i] || !spawnPoints[i + 1]) continue;
+                
                 Vector3 curPos = spawnPoints[i].transform.position;
                 Vector3 nextPos = spawnPoints[i + 1].transform.position;
 

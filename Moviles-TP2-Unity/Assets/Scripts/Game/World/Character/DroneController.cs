@@ -19,7 +19,7 @@ namespace Game.World.Character
 
         private RotationModule rotationModule;
         private MoveModule moveModule;
-        
+
         private Vector3 moveInput = Vector3.zero;
         private Vector3 lookInput = Vector3.zero;
 
@@ -63,7 +63,7 @@ namespace Game.World.Character
 
             Vector3 rot = GyroscopeHandler.GetRotation();
 
-            lookInput.y = rot.y;
+            lookInput.y = Mathf.Clamp(rot.y * 2f, -1f, 1f);
             lookInput.z = rot.z;
         }
 

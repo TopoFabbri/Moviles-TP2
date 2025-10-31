@@ -15,8 +15,8 @@ namespace Game.World.Character
         private static Vector3 _smoothed;
 
         // Dead zone to avoid jitter
-        private const float DeadZone = 0.1f;
-        private const float SmoothSpeed = 2f;
+        private const float DeadZone = 0.05f;
+        private const float SmoothSpeed = 60f;
 
         public static Vector3 GetRotation()
         {

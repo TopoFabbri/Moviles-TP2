@@ -59,9 +59,9 @@ namespace Game.World.Character
 
         private void ReadAccelerometer()
         {
-            if (!GyroscopeHandler.Active) return;
+            if (!AccelerometerHandler.Active) return;
 
-            Vector3 rot = GyroscopeHandler.GetRotation();
+            Vector3 rot = AccelerometerHandler.GetRotation();
 
             lookInput.y = rot.y;
             lookInput.z = rot.z;
@@ -69,7 +69,7 @@ namespace Game.World.Character
 
         private static void Calibrate()
         {
-            GyroscopeHandler.Calibrate();
+            AccelerometerHandler.Calibrate();
         }
     }
 }

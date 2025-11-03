@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace Game.World.Character
 {
-    internal static class GyroscopeHandler
+    internal static class AccelerometerHandler
     {
         public static bool Active { get; set; } = false;
 

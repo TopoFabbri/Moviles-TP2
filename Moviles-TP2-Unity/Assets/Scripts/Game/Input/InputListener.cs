@@ -42,8 +42,8 @@ namespace Game.Input
             if (Accelerometer.current != null && !Accelerometer.current.enabled)
                 InputSystem.EnableDevice(Accelerometer.current);
                 
-            if (!GyroscopeHandler.Active)
-                GyroscopeHandler.Active = true;
+            if (!AccelerometerHandler.Active)
+                AccelerometerHandler.Active = true;
         }
         
         public void OnMove(InputValue input)

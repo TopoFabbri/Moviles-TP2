@@ -21,12 +21,13 @@ namespace Game.World.Character.DroneModules
 
         internal void RaiseDebugVelocity()
         {
-            EventSystem.Raise<VelocityDebugEvent>(velocity.magnitude);
+            EventSystem.Raise<VelocityDebugEvent>(velocity.magnitude, maxSpeed);
         }
 
         internal void Accelerate(Vector3 throttle, float dt)
         {
             Vector3 targetVel = throttle * maxSpeed;
+            targetVel = Vector3.ClampMagnitude(targetVel, maxSpeed);
             
             velocity.x = Mathf.MoveTowards(velocity.x, targetVel.x, acceleration * dt);
             velocity.y = Mathf.MoveTowards(velocity.y, targetVel.y, acceleration * dt);

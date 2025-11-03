@@ -4,6 +4,7 @@ using TMPro;
 using Tools.EventSystem;
 using Tools.Time;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.World.UI
 {
@@ -12,8 +13,9 @@ namespace Game.World.UI
         [SerializeField] private GameObject androidControls;
         [SerializeField] private TextMeshProUGUI velocityText;
         [SerializeField] private TextMeshProUGUI timerTxt;
-        
-        private const string SpeedString = "Speed: ";
+        [SerializeField] private Image speedBar;
+        [SerializeField] private int speedBarSegments = 32;
+
         private Timer timer;
 
         private void Awake()
@@ -34,13 +36,16 @@ namespace Game.World.UI
             int minutes = (int)(seconds / 60f);
             seconds -= minutes * 60f;
             seconds %= 60f;
-            
+
             timerTxt.text = $"{minutes:00}:{seconds:00}";
         }
 
         private void OnVelocityDebugEvent(VelocityDebugEvent obj)
         {
-            velocityText.text = SpeedString + obj.speed.ToString("F2");
+            float fillAmount = obj.speed / obj.maxSpeed;
+            fillAmount = Mathf.Round(fillAmount * speedBarSegments) / speedBarSegments;
+            speedBar.fillAmount = fillAmount;
+            velocityText.text = obj.speed.ToString("00");
         }
     }
 }

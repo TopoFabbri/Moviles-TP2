@@ -21,6 +21,8 @@ namespace Game.World.UI
         private void Awake()
         {
             EventSystem.Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
+            EventSystem.Subscribe<PauseEvent>(OnPause);
+            
             androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
             timer = new Timer();
         }
@@ -28,6 +30,7 @@ namespace Game.World.UI
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
+            EventSystem.Unsubscribe<PauseEvent>(OnPause);
         }
 
         private void Update()
@@ -46,6 +49,14 @@ namespace Game.World.UI
             fillAmount = Mathf.Round(fillAmount * speedBarSegments) / speedBarSegments;
             speedBar.fillAmount = fillAmount;
             velocityText.text = obj.speed.ToString("00");
+        }
+
+        private void OnPause(PauseEvent obj)
+        {
+            if (obj.paused)
+                timer.Pause();
+            else
+                timer.Resume();
         }
     }
 }

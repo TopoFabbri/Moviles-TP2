@@ -5,7 +5,6 @@ namespace Game.World.Character
 {
     internal static class AccelerometerHandler
     {
-        public static bool Active { get; set; } = false;
 
         // Store the raw accelerometer value at neutral pose
         private static Vector3 _origin; // components in [-1,1]
@@ -20,7 +19,7 @@ namespace Game.World.Character
 
         public static Vector3 GetRotation()
         {
-            if (!Active || Accelerometer.current == null || !Accelerometer.current.enabled)
+            if (Accelerometer.current == null || !Accelerometer.current.enabled)
                 return Vector3.zero;
 
             // Auto-calibrate if not yet calibrated
@@ -59,7 +58,7 @@ namespace Game.World.Character
 
         internal static void Calibrate()
         {
-            if (!Active || Accelerometer.current == null || !Accelerometer.current.enabled)
+            if (Accelerometer.current == null || !Accelerometer.current.enabled)
             {
                 _calibrated = false;
                 return;

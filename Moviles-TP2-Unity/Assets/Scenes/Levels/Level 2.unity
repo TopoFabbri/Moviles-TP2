@@ -1621,6 +1621,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5743896431974570695, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743896431974570695, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743896431974570695, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743896431974570695, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743896431974570695, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6587932921151512173, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
       propertyPath: m_Name
       value: SceneDefaults

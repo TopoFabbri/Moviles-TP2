@@ -1,6 +1,7 @@
 using System;
 using Game.Events;
 using Game.World.Character.DroneModules;
+using Game.World.GameManager;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -33,8 +34,14 @@ namespace Game.World.Character
 
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
+        }
 
-            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
+        private void Start()
+        {
+            if (GameSave.RotationSensitivity <= 0f)
+                GameSave.RotationSensitivity = rotationSpeed;
+
+            rotationModule = new RotationModule(dronePivot, camPivot, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
         }
 
@@ -59,7 +66,8 @@ namespace Game.World.Character
 
         private void ReadAccelerometer()
         {
-            if (!AccelerometerHandler.Active) return;
+            if (GameSave.ControlScheme != 0)
+                return;
 
             Vector3 rot = AccelerometerHandler.GetRotation();
 

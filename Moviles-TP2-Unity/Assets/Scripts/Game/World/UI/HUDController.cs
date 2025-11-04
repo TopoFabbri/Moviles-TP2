@@ -1,4 +1,3 @@
-using System;
 using Game.Events;
 using TMPro;
 using Tools.EventSystem;

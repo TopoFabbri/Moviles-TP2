@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using Game.Events;
 using Game.World.Character;
+using Game.World.GameManager;
 using Game.World.UI;
 using Tools.EventSystem;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,50 +12,61 @@ namespace Game.Input
     internal class InputListener : MonoBehaviour
     {
         [SerializeField] private PlayerInput playerInput;
-        [SerializeField] private string analogsMap = "Analogs+Shoulders";
-        [SerializeField] private string gyroMap = "Gyro";
         [SerializeField] private string uiMap = "UI";
+        [SerializeField] private List<string> schemes = new();
 
+        internal static List<string> Schemes;
+        
         private void Awake()
         {
+            Schemes = schemes;
+            
             playerInput.actions.FindActionMap(uiMap).Disable();
-
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
-            {
-                playerInput.SwitchCurrentActionMap(analogsMap);
-                playerInput.actions.FindActionMap(gyroMap).Disable();
-            }
-            else if (Application.platform == RuntimePlatform.Android)
-            {
-                playerInput.SwitchCurrentActionMap(gyroMap);
-                playerInput.actions.FindActionMap(analogsMap).Disable();
-            }
             
             EventSystem.Subscribe<PauseEvent>(OnPaused);
+            EventSystem.Subscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
+
+            if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= schemes.Count)
+                GameSave.ControlScheme = Application.platform == RuntimePlatform.WindowsPlayer ? 1 : 0;
+            
+            SwitchScheme(GameSave.ControlScheme);
+        }
+
+        private void OnControlSchemeChanged(ControlSchemeChangedEvent obj)
+        {
+            SwitchScheme(obj.schemeId);
+        }
+
+        private void SwitchScheme(int schemeId)
+        {
+            if (schemeId < 0 || schemeId > schemes.Count) return;
+            
+            foreach (string scheme in schemes)
+                playerInput.actions.FindActionMap(scheme).Disable();
+            
+            playerInput.SwitchCurrentActionMap(schemes[schemeId]);
         }
 
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<PauseEvent>(OnPaused);
+            EventSystem.Unsubscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
         }
 
         private void Update()
         {
-#if UNITY_EDITOR
-            if (EditorApplication.isRemoteConnected)
+            if (Accelerometer.current == null) return;
+            
+            if (GameSave.ControlScheme == 0)
             {
-                playerInput.SwitchCurrentActionMap(gyroMap);
-                playerInput.actions.FindActionMap(analogsMap).Disable();
+                if (!Accelerometer.current.enabled)
+                    InputSystem.EnableDevice(Accelerometer.current);
             }
-#endif
-            
-            if (playerInput.currentActionMap.name != "Gyro") return;
-            
-            if (Accelerometer.current != null && !Accelerometer.current.enabled)
-                InputSystem.EnableDevice(Accelerometer.current);
-                
-            if (!AccelerometerHandler.Active)
-                AccelerometerHandler.Active = true;
+            else
+            {
+                if (Accelerometer.current.enabled)
+                    InputSystem.DisableDevice(Accelerometer.current);
+            }
         }
         
         public void OnMove(InputValue input)

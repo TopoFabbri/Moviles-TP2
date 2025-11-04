@@ -18,6 +18,7 @@ namespace Game.World.UI
         private void Start()
         {
             EventSystem.Subscribe<PauseAction>(OnPause);
+            EventSystem.Subscribe<CancelAction>(OnCancel);
 
             gameObject.SetActive(false);
         }
@@ -25,6 +26,7 @@ namespace Game.World.UI
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<PauseAction>(OnPause);
+            EventSystem.Unsubscribe<CancelAction>(OnCancel);
         }
 
         public void CloseAllSubMenus()
@@ -52,6 +54,14 @@ namespace Game.World.UI
         private void OnPause(PauseAction obj)
         {
             TogglePause();
+        }
+        
+        public void OnCancel(CancelAction obj)
+        {
+            if (subMenuBg.activeInHierarchy)
+                CloseAllSubMenus();
+            else
+                TogglePause();
         }
     }
 }

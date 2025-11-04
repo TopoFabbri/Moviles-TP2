@@ -91,6 +91,11 @@ namespace Game.Input
             EventSystem.Raise<PauseAction>();
         }
 
+        public void OnCancel()
+        {
+            EventSystem.Raise<CancelAction>();
+        }
+
         private void OnPaused(PauseEvent obj)
         {
             if (obj.paused)

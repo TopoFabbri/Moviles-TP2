@@ -51,6 +51,11 @@ namespace Game.World.UI
             EventSystem.Raise<PauseEvent>(paused);
         }
 
+        public void OnReturnToMenu()
+        {
+            LevelList.LoadMainMenu();
+        }
+        
         private void OnPause(PauseAction obj)
         {
             TogglePause();

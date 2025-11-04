@@ -70,7 +70,7 @@ namespace Game.World.Character
                 return;
 
             Vector3 rot = AccelerometerHandler.GetRotation();
-
+            
             lookInput.y = rot.y * GameSave.RotationSensitivity / 100f;
             lookInput.z = rot.z * GameSave.RotationSensitivity / 100f;
         }

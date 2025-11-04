@@ -44,9 +44,9 @@ namespace Game.World.GameManager
             RestartLevel();
         }
 
-        private void OnGameOver(GameOverEvent obj)
+        private static void OnGameOver(GameOverEvent obj)
         {
-            RestartLevel();
+            LevelList.LoadNextLevel();
         }
         
         private static void RestartLevel()

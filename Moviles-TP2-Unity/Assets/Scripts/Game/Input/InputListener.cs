@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Game.Events;
-using Game.World.Character;
 using Game.World.GameManager;
 using Game.World.UI;
 using Tools.EventSystem;
@@ -13,20 +12,20 @@ namespace Game.Input
     {
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private string uiMap = "UI";
-        [SerializeField] private List<string> schemes = new();
+        [SerializeField] private List<string> actionMaps = new();
 
-        internal static List<string> Schemes;
+        internal static List<string> ActionMaps;
         
         private void Awake()
         {
-            Schemes = schemes;
+            ActionMaps = actionMaps;
             
             playerInput.actions.FindActionMap(uiMap).Disable();
             
             EventSystem.Subscribe<PauseEvent>(OnPaused);
             EventSystem.Subscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
 
-            if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= schemes.Count)
+            if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= actionMaps.Count)
                 GameSave.ControlScheme = Application.platform == RuntimePlatform.WindowsPlayer ? 1 : 0;
             
             SwitchScheme(GameSave.ControlScheme);
@@ -39,12 +38,12 @@ namespace Game.Input
 
         private void SwitchScheme(int schemeId)
         {
-            if (schemeId < 0 || schemeId > schemes.Count) return;
+            if (schemeId < 0 || schemeId > actionMaps.Count) return;
             
-            foreach (string scheme in schemes)
+            foreach (string scheme in actionMaps)
                 playerInput.actions.FindActionMap(scheme).Disable();
             
-            playerInput.SwitchCurrentActionMap(schemes[schemeId]);
+            playerInput.SwitchCurrentActionMap(actionMaps[schemeId]);
         }
 
         private void OnDestroy()
@@ -80,6 +79,10 @@ namespace Game.Input
         {
             Vector3 inputVector = input.Get<Vector3>();
             
+            inputVector.x *= GameSave.InvertCamX ? -1 : 1;
+            inputVector.y *= GameSave.InvertCamY ? 1 : -1;
+            inputVector *= GameSave.RotationSensitivity / 100f;
+            
             EventSystem.Raise<LookAction>(inputVector);
         }
 
@@ -91,9 +94,15 @@ namespace Game.Input
         private void OnPaused(PauseEvent obj)
         {
             if (obj.paused)
-                playerInput.actions.FindActionMap(uiMap).Disable();
-            else
+            {
+                playerInput.actions.FindActionMap(actionMaps[GameSave.ControlScheme]).Disable();
                 playerInput.actions.FindActionMap(uiMap).Enable();
+            }
+            else
+            {
+                playerInput.actions.FindActionMap(actionMaps[GameSave.ControlScheme]).Enable();
+                playerInput.actions.FindActionMap(uiMap).Disable();
+            }
         }
     }
 }

@@ -12,13 +12,13 @@ namespace Game.World.UI
         [SerializeField] private GameObject pauseMenu;
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject pauseFirstSelected;
-        
+
         private bool paused;
 
         private void Start()
         {
             EventSystem.Subscribe<PauseAction>(OnPause);
-            
+
             gameObject.SetActive(false);
         }
 
@@ -31,18 +31,21 @@ namespace Game.World.UI
         {
             foreach (GameObject subMenu in subMenus)
                 subMenu.SetActive(false);
-            
+
             subMenuBg.SetActive(false);
         }
 
         public void TogglePause()
         {
             paused = !paused;
-            
+
             pauseMenu.SetActive(paused);
-            
+
             CloseAllSubMenus();
             
+            if (PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad")
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(pauseFirstSelected);
+
             EventSystem.Raise<PauseEvent>(paused);
         }
 

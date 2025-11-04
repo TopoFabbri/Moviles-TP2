@@ -53,9 +53,9 @@ namespace Game.World.UI
         private void OnPause(PauseEvent obj)
         {
             if (obj.paused)
-                timer.Pause();
-            else
                 timer.Resume();
+            else
+                timer.Pause();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Game.World.Character
             if (GameSave.RotationSensitivity <= 0f)
                 GameSave.RotationSensitivity = rotationSpeed;
 
-            rotationModule = new RotationModule(dronePivot, camPivot, camRotationCatchupSpeed);
+            rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
         }
 
@@ -71,8 +71,8 @@ namespace Game.World.Character
 
             Vector3 rot = AccelerometerHandler.GetRotation();
 
-            lookInput.y = rot.y;
-            lookInput.z = rot.z;
+            lookInput.y = rot.y * GameSave.RotationSensitivity / 100f;
+            lookInput.z = rot.z * GameSave.RotationSensitivity / 100f;
         }
 
         private static void Calibrate()

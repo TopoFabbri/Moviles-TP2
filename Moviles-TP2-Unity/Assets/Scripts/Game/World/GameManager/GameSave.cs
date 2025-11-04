@@ -20,7 +20,7 @@ namespace Game.World.GameManager
             get
             {
                 if (_controlScheme < 0)
-                    PlayerPrefs.GetInt(ControlSchemeKey, -1);
+                    _controlScheme = PlayerPrefs.GetInt(ControlSchemeKey, -1);
                 
                 if (_controlScheme < 0)
                     return -1;
@@ -31,10 +31,10 @@ namespace Game.World.GameManager
             {
                 _controlScheme = value;
                 
-                PlayerPrefs.SetInt(ControlSchemeKey, value);
+                PlayerPrefs.SetInt(ControlSchemeKey, _controlScheme);
                 PlayerPrefs.Save();
                 
-                EventSystem.Raise<ControlSchemeChangedEvent>(value);
+                EventSystem.Raise<ControlSchemeChangedEvent>(_controlScheme);
             }
         }
         
@@ -43,7 +43,7 @@ namespace Game.World.GameManager
             get
             {
                 if (_rotationSensitivity <= 0f)
-                    PlayerPrefs.GetFloat(RotationSensitivityKey, 0f);
+                    _rotationSensitivity = PlayerPrefs.GetFloat(RotationSensitivityKey, 0f);
                 
                 if (_rotationSensitivity <= 0f)
                     return 0f;
@@ -55,7 +55,7 @@ namespace Game.World.GameManager
             {
                 _rotationSensitivity = value;
                 
-                PlayerPrefs.SetFloat(RotationSensitivityKey, value);
+                PlayerPrefs.SetFloat(RotationSensitivityKey, _rotationSensitivity);
                 PlayerPrefs.Save();
             }
         }

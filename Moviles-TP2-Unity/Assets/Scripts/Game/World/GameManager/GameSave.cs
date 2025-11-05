@@ -9,11 +9,13 @@ namespace Game.World.GameManager
         private static float _rotationSensitivity = -1f;
         private static int _invertCamX = -1;
         private static int _invertCamY = -1;
+        private static int _currentLevel = -1;
         
         private const string ControlSchemeKey = "ControlScheme";
         private const string RotationSensitivityKey = "RotationSensitivity";
         private const string InvertCamXKey = "InvertCamX";
         private const string InvertCamYKey = "InvertCamY";
+        private const string CurrentLevelKey = "CurrentLevel";
 
         public static int ControlScheme
         {
@@ -99,6 +101,29 @@ namespace Game.World.GameManager
                 
                 PlayerPrefs.SetInt(InvertCamYKey, _invertCamY);
                 PlayerPrefs.Save();
+            }
+        }
+
+        public static int CurrentLevel
+        {
+            get
+            {
+                if (_currentLevel < 0)
+                    _currentLevel = PlayerPrefs.GetInt(CurrentLevelKey, -1);
+                
+                if (_currentLevel < 0)
+                    CurrentLevel = 0;
+                
+                return _currentLevel;
+            }
+            set
+            {
+                _currentLevel = value;
+                
+                PlayerPrefs.SetInt(CurrentLevelKey, _currentLevel);
+                PlayerPrefs.Save();
+                
+                EventSystem.Raise<ControlSchemeChangedEvent>(_currentLevel);
             }
         }
     }

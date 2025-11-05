@@ -115,6 +115,8 @@ namespace Tools.FSM
             transitions[CurrentState, Convert.ToInt32(flag)].onTrnasition?.Invoke();
             CurrentState = transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState;
             ExecuteBehaviour(GetCurrentOnEnterBehaviour);
+
+            EventSystem.EventSystem.Raise<ChangedStateEvent<TStateType>>(CurrentState);
         }
 
         /// <summary>

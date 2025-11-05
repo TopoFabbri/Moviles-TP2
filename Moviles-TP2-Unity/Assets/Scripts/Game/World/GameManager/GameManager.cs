@@ -17,17 +17,9 @@ namespace Game.World.GameManager
             Play
         }
 
-        private enum States
-        {
-            Play,
-            GameOver,
-            Won,
-            Paused
-        }
-
         [SerializeField] private TargetSpawner targetSpawner;
         [SerializeField] private DroneController drone;
-        
+
         private FSM<States, Flags> fsm;
 
         private void Awake()
@@ -38,10 +30,15 @@ namespace Game.World.GameManager
             fsm = new FSM<States, Flags>(States.GameOver);
 
             fsm.AddState<GameOverState>(States.GameOver, onExitParameters: () => new object[] { targetSpawner, drone });
-            fsm.AddState<PlayState>(States.Play, onEnterParameters: () => new object[] { targetSpawner });
-            
+            fsm.AddState<PlayState>(States.Play, onEnterParameters: () => new object[] { targetSpawner }, onTickParameters: () => new object[] { drone });
+
             fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
             fsm.SetTransition(States.Play, Flags.Crashed, States.GameOver);
+        }
+
+        private void Start()
+        {
+            fsm.Transition(Flags.Play);
         }
 
         private void Update()

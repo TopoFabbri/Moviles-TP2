@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Events;
+using Game.World.Character;
 using Game.World.Targets;
 using Game.World.UI;
 using Tools.EventSystem;
@@ -15,6 +16,7 @@ namespace Game.World.GameManager.GameStates
         private bool paused;
         
         public override Type[] OnEnterParamTypes => new[] { typeof(TargetSpawner) };
+        public override Type[] OnTickParamTypes => new[] { typeof(DroneController) };
 
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
@@ -38,24 +40,31 @@ namespace Game.World.GameManager.GameStates
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
+            DroneController drone = (DroneController) parameters[0];
+            
             BehaviourActions actions = Pool.Get<BehaviourActions>();
 
             actions.AddMainThreadBehaviour(0, () =>
             {
                 if (crashed)
+                {
                     flag.Invoke(Flags.Crashed);
-            });
-
-            actions.AddMainThreadBehaviour(0, () =>
-            {
+                    return;
+                }
+                
                 if (won)
+                {
                     flag.Invoke(Flags.Won);
+                    return;
+                }
+                
+                if (paused)
+                    flag.Invoke(Flags.Paused);
             });
             
             actions.AddMainThreadBehaviour(0, () =>
             {
-                if (paused)
-                    flag.Invoke(Flags.Paused);
+                drone.OnUpdate();
             });
             
             return actions;
@@ -82,9 +91,9 @@ namespace Game.World.GameManager.GameStates
             won = true;
         }
 
-        private void OnPause(PauseEvent _)
+        private void OnPause(PauseEvent pauseEvent)
         {
-            paused = true;
+            paused = pauseEvent.paused;
         }
     }
 }

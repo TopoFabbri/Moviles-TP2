@@ -14,9 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Level 2.unity
     guid: 6b3f6d2af119b614d8427fa3ef44d226
-  - enabled: 1
-    path: Assets/Scenes/TmpScene.unity
-    guid: 6e11ae8877dc2494db0b8ac2b3ef6ed9
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 0bbb2ba30d1c0884db0ad5bb343967f6, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: a8e147709ec8715419de1b3dfaeb088e, type: 2}

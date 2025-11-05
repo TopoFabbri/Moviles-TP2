@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.World.GameManager;
 using UnityEngine.SceneManagement;
 
 namespace Game.World.UI
@@ -7,7 +8,6 @@ namespace Game.World.UI
     internal static class LevelList
     {
         private static readonly List<string> Levels = new();
-        private static int _currentLevel = -1;
 
         private static string MainMenu => SceneUtility.GetScenePathByBuildIndex(0);
 
@@ -25,21 +25,29 @@ namespace Game.World.UI
 
             return Levels;
         }
+
+        internal static void LoadCurrentLevel()
+        {
+            if (Levels.Count == 0)
+                GetLevels();
+
+            SceneManager.LoadScene(Levels[GameSave.CurrentLevel]);
+        }
         
         internal static void LoadNextLevel()
         {
             if (Levels.Count == 0)
                 GetLevels();
             
-            if (_currentLevel >= Levels.Count - 1)
+            if (GameSave.CurrentLevel >= Levels.Count - 1)
             {
-                _currentLevel = -1;
+                GameSave.CurrentLevel = -1;
                 SceneManager.LoadScene(MainMenu);
                 return;
             }
 
-            _currentLevel++;
-            SceneManager.LoadScene(Levels[_currentLevel]);
+            GameSave.CurrentLevel++;
+            LoadCurrentLevel();
         }
 
         public static void LoadMainMenu()

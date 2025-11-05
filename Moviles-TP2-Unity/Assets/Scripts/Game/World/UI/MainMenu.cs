@@ -57,7 +57,7 @@ namespace Game.World.UI
 
         public void OnPlay()
         {
-            LevelList.LoadNextLevel();
+            LevelList.LoadCurrentLevel();
         }
 
         public void OnExit()

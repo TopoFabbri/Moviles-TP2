@@ -7,7 +7,7 @@ namespace Game.World.Character
 {
     public class DroneCollisionController : MonoBehaviour
     {
-        private void OnCollisionEnter()
+        private void OnCollisionEnter(Collision collision)
         {
             EventSystem.Raise<DroneCollisionEvent>();
         }

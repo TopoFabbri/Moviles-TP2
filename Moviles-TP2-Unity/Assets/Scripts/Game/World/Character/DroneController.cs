@@ -37,12 +37,6 @@ namespace Game.World.Character
 
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
-        }
-
-        private void Start()
-        {
-            if (GameSave.RotationSensitivity <= 0f)
-                GameSave.RotationSensitivity = rotationSpeed;
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
@@ -51,13 +45,19 @@ namespace Game.World.Character
             initRot = dronePivot.rotation;
         }
 
+        private void Start()
+        {
+            if (GameSave.RotationSensitivity <= 0f)
+                GameSave.RotationSensitivity = rotationSpeed;
+        }
+
         private void OnDestroy()
         {
             EventSystem.Unsubscribe(moveAction);
             EventSystem.Unsubscribe(lookAction);
         }
 
-        private void Update()
+        internal void OnUpdate()
         {
             if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
                 Calibrate();
@@ -74,7 +74,7 @@ namespace Game.World.Character
         {
             dronePivot.position = initPos;
             dronePivot.rotation = initRot;
-            
+
             rotationModule.Restart();
             moveModule.Restart();
         }

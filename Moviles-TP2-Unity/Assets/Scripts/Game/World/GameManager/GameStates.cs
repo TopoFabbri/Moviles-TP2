@@ -5,7 +5,7 @@
         Restart,
         Play,
         GameOver,
-        Won,
+        Win,
         Paused,
     }
 }

@@ -16,6 +16,7 @@ namespace Game.World.UI
             
             EventSystem.Subscribe<ChangedStateEvent<States>>(OnGameStateChanged);
         }
+        
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnGameStateChanged);

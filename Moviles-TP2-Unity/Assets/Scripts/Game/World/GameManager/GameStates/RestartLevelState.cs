@@ -20,6 +20,7 @@ namespace Game.World.GameManager.GameStates
             actions.AddMainThreadBehaviour(0, () => targetSpawner.Spawn());
             actions.AddMainThreadBehaviour(0, () => drone.Restart());
             actions.AddMainThreadBehaviour(0, () => flag.Invoke(GameManager.Flags.Play));
+            actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Restart());
             
             return actions;
         }

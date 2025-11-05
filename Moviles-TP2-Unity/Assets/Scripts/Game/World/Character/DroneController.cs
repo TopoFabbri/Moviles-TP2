@@ -34,7 +34,12 @@ namespace Game.World.Character
 
         private void Awake()
         {
-            moveAction = action => moveInput = action.input;
+            moveAction = action =>
+            {
+                moveInput = action.input;
+                GameTime.Timer.Start();
+            };
+            
             lookAction = action => lookInput = action.input;
 
             EventSystem.Subscribe(moveAction);
@@ -79,8 +84,6 @@ namespace Game.World.Character
 
             rotationModule.Restart();
             moveModule.Restart();
-            
-            hudController.Restart();
         }
         
         private void ReadAccelerometer()

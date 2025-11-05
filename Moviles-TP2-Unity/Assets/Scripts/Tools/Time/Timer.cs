@@ -46,6 +46,8 @@ namespace Tools.Time
 
         public void Resume()
         {
+            if (!started) return;
+            
             paused = false;
             pausedTime += (float)(Time.DateTime - pausedDateTime).TotalSeconds;
         }

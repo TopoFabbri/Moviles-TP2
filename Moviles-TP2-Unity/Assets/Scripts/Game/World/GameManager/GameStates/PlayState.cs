@@ -23,6 +23,7 @@ namespace Game.World.GameManager.GameStates
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<GameOverEvent>(OnWon));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Resume());
             actions.AddMainThreadBehaviour(0, () =>
             {
                 crashed = false;
@@ -64,6 +65,7 @@ namespace Game.World.GameManager.GameStates
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<GameOverEvent>(OnWon));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Pause());
             
             return actions;
         }

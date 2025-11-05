@@ -3,9 +3,10 @@ using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
 using Tools.FSM;
-using Tools.Time;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Timer = Tools.Time.Timer;
 
 namespace Game.World.UI
 {
@@ -23,9 +24,15 @@ namespace Game.World.UI
         {
             EventSystem.Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
             EventSystem.Subscribe<ChangedStateEvent<States>>(OnStateChanged);
+            EventSystem.Subscribe<MoveAction>(OnMove);
             
             androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
             timer = new Timer();
+        }
+
+        private void OnMove(MoveAction obj)
+        {
+            timer.Start();
         }
 
         private void OnDestroy()
@@ -42,6 +49,11 @@ namespace Game.World.UI
             seconds %= 60f;
 
             timerTxt.text = $"{minutes:00}:{seconds:00}";
+        }
+
+        internal void Restart()
+        {
+            timer.Restart();
         }
 
         private void OnVelocityDebugEvent(VelocityDebugEvent obj)

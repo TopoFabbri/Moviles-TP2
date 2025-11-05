@@ -2,6 +2,7 @@ using System;
 using Game.Events;
 using Game.World.Character.DroneModules;
 using Game.World.GameManager;
+using Game.World.UI;
 using Tools.EventSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,6 +18,7 @@ namespace Game.World.Character
         [SerializeField] private float acceleration = 10f;
         [SerializeField] private Transform camPivot;
         [SerializeField] private Transform dronePivot;
+        [SerializeField] private HUDController hudController;
         
         private Vector3 initPos;
         private Quaternion initRot;
@@ -77,6 +79,8 @@ namespace Game.World.Character
 
             rotationModule.Restart();
             moveModule.Restart();
+            
+            hudController.Restart();
         }
         
         private void ReadAccelerometer()

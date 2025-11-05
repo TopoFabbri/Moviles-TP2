@@ -33,6 +33,11 @@ namespace Game.World.Character.DroneModules
             camPivot.rotation = Quaternion.Slerp(camPivot.rotation, dronePivot.rotation, t);
         }
 
+        internal void Restart()
+        {
+            rotation = Vector3.zero;
+        }
+        
         private void CalculateRotation(Vector3 lookInput)
         {
             targetPitch = Mathf.LerpAngle(MinAngle, MaxAngle, (lookInput.y + 1f) / 2f);

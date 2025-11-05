@@ -130,6 +130,7 @@ MonoBehaviour:
   actionMaps:
   - Gyro
   - Analogs+Shoulders
+  inMenu: 0
 --- !u!114 &2818229556252393432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetSpawner: {fileID: 6718313632729920465}
+  drone: {fileID: 4689183294915904915}
 --- !u!1 &8494484014052441519
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,6 +1173,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96dc042e48d8326418c88f63b2139325, type: 3}
+--- !u!114 &4689183294915904915 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8968416213662882441, guid: 96dc042e48d8326418c88f63b2139325, type: 3}
+  m_PrefabInstance: {fileID: 4424052552326340378}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d47fa4132223a64fbc3fcbf4771237d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4852766882432562122 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9096454997012278480, guid: 96dc042e48d8326418c88f63b2139325, type: 3}

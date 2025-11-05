@@ -54,7 +54,7 @@ namespace Tools.FSM
         /// <summary>
         /// Gets the behaviour actions to be executed upon exiting the current state.
         /// </summary>
-        private BehaviourActions GetCurrentOnExitBehaviour => states[CurrentState].GetOnExitBehaviour(behaviourOnExitParameters[CurrentState]?.Invoke());
+        private BehaviourActions GetCurrentOnExitBehaviour => states[CurrentState].GetOnExitBehaviours(behaviourOnExitParameters[CurrentState]?.Invoke());
 
         /// <summary>
         /// Adds a new state to the FSM.

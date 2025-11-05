@@ -1,59 +1,53 @@
-using Game.Events;
+using Game.World.Character;
+using Game.World.GameManager.GameStates;
 using Game.World.Targets;
-using Game.World.UI;
-using Tools.EventSystem;
+using Tools.FSM;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Time = Tools.Time.Time;
 
 namespace Game.World.GameManager
 {
-    public class GameManager : MonoBehaviour
+    internal sealed class GameManager : MonoBehaviour
     {
-        [SerializeField] private TargetSpawner targetSpawner;
+        internal enum Flags
+        {
+            Crashed,
+            Won,
+            Paused,
+            Play
+        }
 
-        private const string TMPScene = "TmpScene";
+        private enum States
+        {
+            Play,
+            GameOver,
+            Won,
+            Paused
+        }
+
+        [SerializeField] private TargetSpawner targetSpawner;
+        [SerializeField] private DroneController drone;
         
+        private FSM<States, Flags> fsm;
+
         private void Awake()
         {
-            EventSystem.Subscribe<DroneCollisionEvent>(OnDroneCollision);
-            EventSystem.Subscribe<GameOverEvent>(OnGameOver);
-            
             Application.targetFrameRate = 60;
             Time.Start();
-        }
 
-        private void Start()
-        {
-            targetSpawner.Spawn();
-        }
+            fsm = new FSM<States, Flags>(States.GameOver);
 
-        private void OnDestroy()
-        {
-            EventSystem.Unsubscribe<DroneCollisionEvent>(OnDroneCollision);
-            EventSystem.Unsubscribe<GameOverEvent>(OnGameOver);
+            fsm.AddState<GameOverState>(States.GameOver, onExitParameters: () => new object[] { targetSpawner, drone });
+            fsm.AddState<PlayState>(States.Play, onEnterParameters: () => new object[] { targetSpawner });
+            
+            fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
+            fsm.SetTransition(States.Play, Flags.Crashed, States.GameOver);
         }
 
         private void Update()
         {
             Time.Update();
-        }
-
-        private void OnDroneCollision(DroneCollisionEvent obj)
-        {
-            RestartLevel();
-        }
-
-        private static void OnGameOver(GameOverEvent obj)
-        {
-            LevelList.LoadNextLevel();
-        }
-        
-        private static void RestartLevel()
-        {
-            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(TMPScene);
-            SceneManager.LoadScene(currentSceneIndex);
+            fsm.Tick();
         }
     }
 }

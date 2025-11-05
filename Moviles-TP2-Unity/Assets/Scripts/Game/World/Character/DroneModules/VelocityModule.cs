@@ -34,6 +34,11 @@ namespace Game.World.Character.DroneModules
             velocity.z = Mathf.MoveTowards(velocity.z, targetVel.z, acceleration * dt);
         }
 
+        internal void Restart()
+        {
+            velocity = Vector3.zero;
+        }
+        
         public float GetMaxSpeed()
         {
             return maxSpeed;

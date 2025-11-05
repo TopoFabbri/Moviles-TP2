@@ -26,6 +26,11 @@ namespace Game.World.Character.DroneModules
             float t = 1f - Mathf.Exp(-camCatchupSpeed * Time.deltaTime);
             camPivot.position = Vector3.Lerp(camPivot.position, dronePivot.position, t);
         }
+        
+        internal void Restart()
+        {
+            VelocityModule.Restart();
+        }
 
         private Vector3 CalculateVelocity(Vector3 moveInput)
         {

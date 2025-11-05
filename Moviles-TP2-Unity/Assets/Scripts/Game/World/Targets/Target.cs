@@ -26,6 +26,7 @@ namespace Game.World.Targets
             transform.localScale = scale;
 
             obstacleScore.SetOrder(order);
+            obstacleScore.AddScore();
             
             gameObject.SetActive(true);
         }

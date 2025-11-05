@@ -32,7 +32,12 @@ namespace Game.World.Targets
             this.order = order;
         }
         
-        private void Start()
+        internal static void ResetScores()
+        {
+            Scores.Clear();
+        }
+        
+        internal void AddScore()
         {
             Scores.Add(this);
         }

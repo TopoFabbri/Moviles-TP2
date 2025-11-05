@@ -17,7 +17,10 @@ namespace Game.World.Character
         [SerializeField] private float acceleration = 10f;
         [SerializeField] private Transform camPivot;
         [SerializeField] private Transform dronePivot;
-
+        
+        private Vector3 initPos;
+        private Quaternion initRot;
+        
         private RotationModule rotationModule;
         private MoveModule moveModule;
         
@@ -43,6 +46,9 @@ namespace Game.World.Character
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
+            
+            initPos = dronePivot.position;
+            initRot = dronePivot.rotation;
         }
 
         private void OnDestroy()
@@ -64,6 +70,15 @@ namespace Game.World.Character
             moveModule.VelocityModule.RaiseDebugVelocity();
         }
 
+        internal void Restart()
+        {
+            dronePivot.position = initPos;
+            dronePivot.rotation = initRot;
+            
+            rotationModule.Restart();
+            moveModule.Restart();
+        }
+        
         private void ReadAccelerometer()
         {
             if (GameSave.ControlScheme != 0)

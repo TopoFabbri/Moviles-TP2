@@ -45,6 +45,7 @@ namespace Game.World.GameManager.GameStates
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
             actions.AddMainThreadBehaviour(0, () => targetSpawner.Restart());
+            actions.AddMainThreadBehaviour(0, () => targetSpawner.Spawn());
             actions.AddMainThreadBehaviour(0, () => drone.Restart());
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<RestartLevelEvent>(OnRestart));
             

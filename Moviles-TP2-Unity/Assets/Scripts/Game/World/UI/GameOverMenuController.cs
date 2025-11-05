@@ -30,6 +30,8 @@ namespace Game.World.UI
         private void OnGameStateChanged(ChangedStateEvent<States> obj)
         {
             gameObject.SetActive(obj.state == States.GameOver);
+
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
         }
 
         public void OnRestart()

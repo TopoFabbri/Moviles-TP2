@@ -3,6 +3,7 @@ using Game.Events;
 using Game.World.GameManager;
 using Game.World.UI;
 using Tools.EventSystem;
+using Tools.FSM;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,10 +26,8 @@ namespace Game.Input
                 actionMaps = ActionMaps;
 
             if (inMenu) return;
-            
-            playerInput.actions.FindActionMap(uiMap).Disable();
 
-            EventSystem.Subscribe<PauseEvent>(OnPaused);
+            EventSystem.Subscribe<ChangedStateEvent<States>>(OnStateChanged);
             EventSystem.Subscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
 
             if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= actionMaps.Count)
@@ -41,7 +40,7 @@ namespace Game.Input
         {
             if (inMenu) return;
             
-            EventSystem.Unsubscribe<PauseEvent>(OnPaused);
+            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
             EventSystem.Unsubscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
         }
 
@@ -106,17 +105,17 @@ namespace Game.Input
             EventSystem.Raise<CancelAction>();
         }
 
-        private void OnPaused(PauseEvent obj)
+        private void OnStateChanged(ChangedStateEvent<States> obj)
         {
-            if (obj.paused)
-            {
-                playerInput.actions.FindActionMap(actionMaps[GameSave.ControlScheme]).Disable();
-                playerInput.actions.FindActionMap(uiMap).Enable();
-            }
-            else
+            if (obj.state == States.Play)
             {
                 playerInput.actions.FindActionMap(actionMaps[GameSave.ControlScheme]).Enable();
                 playerInput.actions.FindActionMap(uiMap).Disable();
+            }
+            else
+            {
+                playerInput.actions.FindActionMap(actionMaps[GameSave.ControlScheme]).Disable();
+                playerInput.actions.FindActionMap(uiMap).Enable();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Events;
+using Game.Input;
 using Game.World.Character;
 using Game.World.Targets;
 using Game.World.UI;
@@ -15,19 +16,15 @@ namespace Game.World.GameManager.GameStates
         private bool won;
         private bool paused;
         
-        public override Type[] OnEnterParamTypes => new[] { typeof(TargetSpawner) };
         public override Type[] OnTickParamTypes => new[] { typeof(DroneController) };
 
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
-            TargetSpawner targetSpawner = (TargetSpawner) parameters[0];
-            
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<GameOverEvent>(OnWon));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseEvent>(OnPause));
-            actions.AddMainThreadBehaviour(0, () => targetSpawner.Spawn());
+            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPause));
             actions.AddMainThreadBehaviour(0, () =>
             {
                 crashed = false;
@@ -76,7 +73,7 @@ namespace Game.World.GameManager.GameStates
             
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<GameOverEvent>(OnWon));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseEvent>(OnPause));
+            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPause));
             
             return actions;
         }
@@ -91,9 +88,9 @@ namespace Game.World.GameManager.GameStates
             won = true;
         }
 
-        private void OnPause(PauseEvent pauseEvent)
+        private void OnPause(PauseAction _)
         {
-            paused = pauseEvent.paused;
+            paused = true;
         }
     }
 }

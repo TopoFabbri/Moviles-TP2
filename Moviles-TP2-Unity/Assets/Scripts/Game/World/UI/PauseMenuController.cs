@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Game.Input;
+using Game.World.GameManager;
 using Tools.EventSystem;
+using Tools.FSM;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,20 +15,24 @@ namespace Game.World.UI
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject pauseFirstSelected;
 
-        private bool paused;
-
         private void Start()
         {
-            EventSystem.Subscribe<PauseAction>(OnPause);
             EventSystem.Subscribe<CancelAction>(OnCancel);
+            EventSystem.Subscribe<ChangedStateEvent<States>>(OnChangedState);
 
             gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<PauseAction>(OnPause);
             EventSystem.Unsubscribe<CancelAction>(OnCancel);
+            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnChangedState);
+        }
+
+        private void Update()
+        {
+            if (!UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject && PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad")
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(pauseFirstSelected);
         }
 
         public void CloseAllSubMenus()
@@ -37,36 +43,34 @@ namespace Game.World.UI
             subMenuBg.SetActive(false);
         }
 
-        public void TogglePause()
+        private void OnChangedState(ChangedStateEvent<States> obj)
         {
-            paused = !paused;
-
-            pauseMenu.SetActive(paused);
+            pauseMenu.SetActive(obj.state == States.Paused);
+            
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
 
             CloseAllSubMenus();
-            
-            if (PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad")
-                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(pauseFirstSelected);
-
-            EventSystem.Raise<PauseEvent>(paused);
         }
 
+        public void OnResume()
+        {
+            EventSystem.Raise<PauseAction>();
+        }
+        
+        public void OnRestart()
+        {
+            EventSystem.Raise<RestartLevelEvent>();
+        }
+        
         public void OnReturnToMenu()
         {
             LevelList.LoadMainMenu();
-        }
-        
-        private void OnPause(PauseAction obj)
-        {
-            TogglePause();
         }
         
         public void OnCancel(CancelAction obj)
         {
             if (subMenuBg.activeInHierarchy)
                 CloseAllSubMenus();
-            else
-                TogglePause();
         }
     }
 }

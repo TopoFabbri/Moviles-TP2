@@ -5,24 +5,30 @@ namespace Tools.Time
     public sealed class Timer
     {
         private readonly DateTime startTime;
+        private DateTime pausedDateTime;
 
         private float pausedTime;
+        private bool paused;
         
-        public float TimeElapsed => (float)(Time.DateTime - startTime).TotalSeconds - pausedTime;
+        public float TimeElapsed => (float)(Time.DateTime - startTime).TotalSeconds - pausedTime - (paused ? (float)(Time.DateTime - pausedDateTime).TotalSeconds : 0f);
         
         public Timer()
         {
             startTime = Time.DateTime;
+            pausedDateTime = Time.DateTime;
+            pausedTime = 0f;
         }
         
         public void Pause()
         {
-            pausedTime += (float)(Time.DateTime - startTime).TotalSeconds;
+            pausedDateTime = Time.DateTime;
+            paused = true;
         }
         
         public void Resume()
         {
-            pausedTime -= (float)(Time.DateTime - startTime).TotalSeconds;
+            paused = false;
+            pausedTime += (float)(Time.DateTime - pausedDateTime).TotalSeconds;
         }
     }
 }

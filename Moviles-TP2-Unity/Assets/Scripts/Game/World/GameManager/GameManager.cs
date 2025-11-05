@@ -30,10 +30,15 @@ namespace Game.World.GameManager
             fsm = new FSM<States, Flags>(States.GameOver);
 
             fsm.AddState<GameOverState>(States.GameOver, onExitParameters: () => new object[] { targetSpawner, drone });
-            fsm.AddState<PlayState>(States.Play, onEnterParameters: () => new object[] { targetSpawner }, onTickParameters: () => new object[] { drone });
+            fsm.AddState<PlayState>(States.Play, onTickParameters: () => new object[] { drone });
+            fsm.AddState<PauseState>(States.Paused);
 
             fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
+            
             fsm.SetTransition(States.Play, Flags.Crashed, States.GameOver);
+            fsm.SetTransition(States.Play, Flags.Paused, States.Paused);
+            
+            fsm.SetTransition(States.Paused, Flags.Play, States.Play);
         }
 
         private void Start()

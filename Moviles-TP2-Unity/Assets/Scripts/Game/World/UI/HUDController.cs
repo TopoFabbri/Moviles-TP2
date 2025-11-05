@@ -1,6 +1,8 @@
 using Game.Events;
+using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
+using Tools.FSM;
 using Tools.Time;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +22,7 @@ namespace Game.World.UI
         private void Awake()
         {
             EventSystem.Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
-            EventSystem.Subscribe<PauseEvent>(OnPause);
+            EventSystem.Subscribe<ChangedStateEvent<States>>(OnStateChanged);
             
             androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
             timer = new Timer();
@@ -29,7 +31,7 @@ namespace Game.World.UI
         private void OnDestroy()
         {
             EventSystem.Unsubscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
-            EventSystem.Unsubscribe<PauseEvent>(OnPause);
+            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
         }
 
         private void Update()
@@ -50,9 +52,9 @@ namespace Game.World.UI
             velocityText.text = obj.speed.ToString("00");
         }
 
-        private void OnPause(PauseEvent obj)
+        private void OnStateChanged(ChangedStateEvent<States> obj)
         {
-            if (obj.paused)
+            if (obj.state == States.Play)
                 timer.Resume();
             else
                 timer.Pause();

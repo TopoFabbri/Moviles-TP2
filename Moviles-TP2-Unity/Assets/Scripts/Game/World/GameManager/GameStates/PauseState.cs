@@ -1,4 +1,5 @@
 ﻿using Game.Input;
+using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
 
@@ -7,6 +8,7 @@ namespace Game.World.GameManager.GameStates
     internal class PauseState : State
     {
         private bool resume;
+        private bool restart;
         
         public override BehaviourActions GetOnEnterBehaviours(params object[] parameters)
         {
@@ -14,11 +16,13 @@ namespace Game.World.GameManager.GameStates
             
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<CancelAction>(OnCancelAction));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPauseAction));
-            actions.AddMainThreadBehaviour(0, () => resume = false);
+            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<RestartLevelEvent>(OnRestart));
+            actions.AddMultiThreadableBehaviour(0, () => resume = false);
+            actions.AddMultiThreadableBehaviour(0, () => restart = false);
             
             return actions;
         }
-        
+
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
@@ -27,6 +31,8 @@ namespace Game.World.GameManager.GameStates
             {
                 if (resume)
                     flag.Invoke(GameManager.Flags.Play);
+                else if (restart)
+                    flag.Invoke(GameManager.Flags.Restart);
             });
 
             return actions;
@@ -38,6 +44,7 @@ namespace Game.World.GameManager.GameStates
             
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<CancelAction>(OnCancelAction));
             actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPauseAction));
+            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<RestartLevelEvent>(OnRestart));
             
             return actions;
         }
@@ -55,6 +62,11 @@ namespace Game.World.GameManager.GameStates
         private void Resume()
         {
             resume = true;
+        }
+
+        private void OnRestart(RestartLevelEvent obj)
+        {
+            restart = true;
         }
     }
 }

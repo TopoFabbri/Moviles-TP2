@@ -2,9 +2,10 @@
 {
     internal enum States
     {
+        Restart,
         Play,
         GameOver,
         Won,
-        Paused
+        Paused,
     }
 }

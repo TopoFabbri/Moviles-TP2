@@ -2,8 +2,6 @@
 using Game.Events;
 using Game.Input;
 using Game.World.Character;
-using Game.World.Targets;
-using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
 using Flags = Game.World.GameManager.GameManager.Flags;
@@ -44,18 +42,10 @@ namespace Game.World.GameManager.GameStates
             actions.AddMainThreadBehaviour(0, () =>
             {
                 if (crashed)
-                {
                     flag.Invoke(Flags.Crashed);
-                    return;
-                }
-                
-                if (won)
-                {
+                else if (won)
                     flag.Invoke(Flags.Won);
-                    return;
-                }
-                
-                if (paused)
+                else if (paused)
                     flag.Invoke(Flags.Paused);
             });
             

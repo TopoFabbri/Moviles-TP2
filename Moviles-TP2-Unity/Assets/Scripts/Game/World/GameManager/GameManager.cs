@@ -14,7 +14,8 @@ namespace Game.World.GameManager
             Crashed,
             Won,
             Paused,
-            Play
+            Play,
+            Restart
         }
 
         [SerializeField] private TargetSpawner targetSpawner;
@@ -27,23 +28,23 @@ namespace Game.World.GameManager
             Application.targetFrameRate = 60;
             Time.Start();
 
-            fsm = new FSM<States, Flags>(States.GameOver);
+            fsm = new FSM<States, Flags>(States.Restart);
 
-            fsm.AddState<GameOverState>(States.GameOver, onExitParameters: () => new object[] { targetSpawner, drone });
+            fsm.AddState<RestartLevelState>(States.Restart, onTickParameters: () => new object[] { targetSpawner, drone });
             fsm.AddState<PlayState>(States.Play, onTickParameters: () => new object[] { drone });
+            fsm.AddState<GameOverState>(States.GameOver);
             fsm.AddState<PauseState>(States.Paused);
 
-            fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
+            fsm.SetTransition(States.Restart, Flags.Play, States.Play);
             
             fsm.SetTransition(States.Play, Flags.Crashed, States.GameOver);
             fsm.SetTransition(States.Play, Flags.Paused, States.Paused);
             
+            fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
+            fsm.SetTransition(States.GameOver, Flags.Restart, States.Restart);
+            
             fsm.SetTransition(States.Paused, Flags.Play, States.Play);
-        }
-
-        private void Start()
-        {
-            fsm.Transition(Flags.Play);
+            fsm.SetTransition(States.Paused, Flags.Restart, States.Restart);
         }
 
         private void Update()

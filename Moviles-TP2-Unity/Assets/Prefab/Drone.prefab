@@ -3376,6 +3376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstSelected: {fileID: 6469384996515470534}
   title: {fileID: 1348471827319765862}
+  titleText: 'Time: '
 --- !u!114 &4778168245876859837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4883,7 +4884,7 @@ MonoBehaviour:
   rotationSpeed: 100
   camRotationCatchupSpeed: 10
   camPositionCatchupSpeed: 30
-  maxSpeed: 60
+  maxSpeed: 50
   acceleration: 100
   camPivot: {fileID: 2309679320692283007}
   dronePivot: {fileID: 1023466861478574569}
@@ -5974,12 +5975,20 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 313459120967899545, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
+      propertyPath: m_Value
+      value: 0.9999995
+      objectReference: {fileID: 0}
     - target: {fileID: 334386027051079229, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 334386027051079229, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 334386027051079229, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}

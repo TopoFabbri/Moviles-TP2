@@ -13,8 +13,18 @@ namespace Game.World.UI
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject firstSelected;
 
+        private const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
+        
+#if UNITY_ANDROID
+        private AndroidJavaClass loggerClass;
+#endif
+        
         private void Start()
         {
+#if UNITY_ANDROID
+            loggerClass = new AndroidJavaClass(LoggerClassName);
+#endif
+            
             foreach (InputAction inputAction in PlayerInput.GetPlayerByIndex(0).actions)
                 inputAction.Disable();
 
@@ -58,6 +68,13 @@ namespace Game.World.UI
         public void OnPlay()
         {
             LevelList.LoadCurrentLevel();
+        }
+
+        public void OnLogger()
+        {
+#if UNITY_ANDROID
+            loggerClass?.CallStatic<AndroidJavaClass>("SendLog", "LogSent", 1);
+#endif
         }
 
         public void OnExit()

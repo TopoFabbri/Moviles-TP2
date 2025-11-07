@@ -29,8 +29,6 @@ namespace Game.World.Character
 
             Vector3 a = Accelerometer.current.acceleration.value; // [-1,1] per axis
             
-            a.x *= GameSave.InvertCamX ? -1 : 1;
-            a.y *= GameSave.InvertCamY ? -1 : 1;
             a.z = 0f; // ignore z axis
 
             // Normalise each axis around the calibrated origin so that origin -> 0, extremes -> +/-1
@@ -40,6 +38,9 @@ namespace Game.World.Character
             if (Mathf.Abs(normY) < DeadZone) normY = 0f;
             if (Mathf.Abs(normX) < DeadZone) normX = 0f;
 
+            normX *= GameSave.InvertCamX ? -1 : 1;
+            normY *= GameSave.InvertCamY ? -1 : 1;
+            
             // Map to look axes consistent with previous code
             Vector3 target = new(0f, normY, -normX);
 

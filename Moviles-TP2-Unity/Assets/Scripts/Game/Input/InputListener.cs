@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Events;
+using Game.World.Character;
 using Game.World.GameManager;
 using Game.World.UI;
 using Tools.EventSystem;

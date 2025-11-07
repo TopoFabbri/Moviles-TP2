@@ -1,6 +1,6 @@
 ﻿using Tools.EventSystem;
 
-namespace Game.Input
+namespace Game.Events
 {
     internal sealed class CancelAction : IEvent
     {

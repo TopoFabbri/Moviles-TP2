@@ -40,6 +40,8 @@ namespace Tools.Time
         
         public void Pause()
         {
+            if (!started) return;
+            
             pausedDateTime = Time.DateTime;
             paused = true;
         }

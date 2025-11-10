@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Game.Events;
-using Game.Input;
 using Tools.EventSystem;
 using UnityEditor;
 using UnityEngine;
@@ -32,6 +31,8 @@ namespace Game.World.UI
             PlayerInput.GetPlayerByIndex(0).actions.FindActionMap("UI").Enable();
 
             EventSystem.Subscribe<CancelAction>(OnCancel);
+            
+            CloseAllSubMenus();
         }
 
         private void OnDestroy()

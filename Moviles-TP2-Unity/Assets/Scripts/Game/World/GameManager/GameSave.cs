@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Tools.EventSystem;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Game.World.GameManager
         private static int _currentLevel = -1;
         private static int _credits = -1;
         private static float _addedSpeed = -1f;
+        private static Dictionary<int, float> _levelTimes = new();
         
         private const string ControlSchemeKey = "ControlScheme";
         private const string RotationSensitivityKey = "RotationSensitivity";
@@ -20,6 +22,7 @@ namespace Game.World.GameManager
         private const string CurrentLevelKey = "CurrentLevel";
         private const string CreditsKey = "Credits";
         private const string AddedSpeedKey = "AddedSpeed";
+        private const string LevelTimesKey = "Level<level>Time";
 
         public static int ControlScheme
         {
@@ -172,6 +175,26 @@ namespace Game.World.GameManager
                 PlayerPrefs.Save();
             }
         }
+
+        public static void SetLevelTime(int level, float time)
+        {
+            _levelTimes.TryAdd(level, time);
+            _levelTimes[level] = time;
+            
+            string key = LevelTimesKey.Replace("<level>", level.ToString());
+            PlayerPrefs.SetFloat(key, time);
+            PlayerPrefs.Save();
+        }
+        
+        public static float GetLevelTime(int level)
+        {
+            if (!_levelTimes.ContainsKey(level))
+                _levelTimes.TryAdd(level, -1f);
+            
+            _levelTimes[level] = PlayerPrefs.GetFloat(LevelTimesKey.Replace("<level>", level.ToString()), -1f);
+            
+            return _levelTimes[level];
+        }
         
         public static void Reset()
         {
@@ -182,6 +205,7 @@ namespace Game.World.GameManager
             _currentLevel = -1;
             _credits = -1;
             _addedSpeed = -1f;
+            _levelTimes.Clear();
             
             PlayerPrefs.DeleteAll();
         }

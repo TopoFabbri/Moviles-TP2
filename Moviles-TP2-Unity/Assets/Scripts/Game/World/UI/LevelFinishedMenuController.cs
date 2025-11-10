@@ -5,6 +5,7 @@ using Tools.EventSystem;
 using Tools.FSM;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Time = Tools.Time.Time;
 
 namespace Game.World.UI
 {
@@ -12,7 +13,9 @@ namespace Game.World.UI
     {
         [SerializeField] private GameObject firstSelected;
         [SerializeField] private TextMeshProUGUI title;
+        [SerializeField] private TextMeshProUGUI bestTime;
         [SerializeField] private string titleText = "Time: ";
+        [SerializeField] private string bestTimeText = "Best Time: ";
 
         private void Awake()
         {
@@ -34,13 +37,16 @@ namespace Game.World.UI
 
         private void OnEnable()
         {
-            float seconds = GameTime.Timer.TimeElapsed;
-            int minutes = (int)(seconds / 60f);
-            seconds -= minutes * 60f;
-            int centiseconds = Mathf.RoundToInt((seconds % 1f) * 100f);
-            seconds %= 60f;
+            float time = GameTime.Timer.TimeElapsed;
+            
+            if (GameSave.GetLevelTime(GameSave.CurrentLevel) > time || GameSave.GetLevelTime(GameSave.CurrentLevel) <= 0f)
+                GameSave.SetLevelTime(GameSave.CurrentLevel, time);
 
+            Time.ConvertToMinutes(time, out int minutes, out int seconds, out int centiseconds);
             title.text = titleText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
+            
+            Time.ConvertToMinutes(GameSave.GetLevelTime(GameSave.CurrentLevel), out minutes, out seconds, out centiseconds);
+            bestTime.text = bestTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
         }
 
         private void OnDisable()

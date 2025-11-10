@@ -31,5 +31,22 @@ namespace Tools.Time
         public static float TickTime { get; private set; }
 
         private static DateTime _lastTickTime;
+
+        public static void ConvertToHours(float time, out int hours, out int minutes, out int seconds)
+        {
+            hours = (int)time / 3600;
+            time -= hours * 3600;
+            minutes = (int)time / 60;
+            time -= minutes * 60;
+            seconds = (int)time;
+        }
+
+        public static void ConvertToMinutes(float time, out int minutes, out int seconds, out int centiseconds)
+        {
+            minutes = (int)time / 60;
+            time -= minutes * 60;
+            seconds = (int)time;
+            centiseconds = (int)((time - seconds) * 100);
+        }
     }
 }

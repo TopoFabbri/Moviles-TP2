@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Events;
+using Game.World.GameManager;
 using Tools.EventSystem;
 using UnityEditor;
 using UnityEngine;
@@ -86,6 +87,12 @@ namespace Game.World.UI
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
 #endif
+        }
+
+        [ContextMenu( "Reset All Saves" )]
+        private void ResetAllSaves()
+        {
+            GameSave.Reset();
         }
     }
 }

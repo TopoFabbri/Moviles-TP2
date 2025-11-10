@@ -10,12 +10,16 @@ namespace Game.World.GameManager
         private static int _invertCamX = -1;
         private static int _invertCamY = -1;
         private static int _currentLevel = -1;
+        private static int _credits = -1;
+        private static float _addedSpeed = -1f;
         
         private const string ControlSchemeKey = "ControlScheme";
         private const string RotationSensitivityKey = "RotationSensitivity";
         private const string InvertCamXKey = "InvertCamX";
         private const string InvertCamYKey = "InvertCamY";
         private const string CurrentLevelKey = "CurrentLevel";
+        private const string CreditsKey = "Credits";
+        private const string AddedSpeedKey = "AddedSpeed";
 
         public static int ControlScheme
         {
@@ -125,6 +129,61 @@ namespace Game.World.GameManager
                 
                 EventSystem.Raise<ControlSchemeChangedEvent>(_currentLevel);
             }
+        }
+
+        public static int Credits
+        {
+            get
+            { 
+                if (_credits < 0)
+                    _credits = PlayerPrefs.GetInt(CreditsKey, -1);
+                
+                if (_credits < 0)
+                    Credits = 0;
+                
+                return _credits;
+            }
+            set
+            {
+                _credits = value;
+                
+                PlayerPrefs.SetInt(CreditsKey, _credits);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static float AddedSpeed
+        {
+            get
+            {
+                if (_addedSpeed <= 0f)
+                    _addedSpeed = PlayerPrefs.GetFloat(AddedSpeedKey, 0f);
+                
+                if (_addedSpeed <= 0f)
+                    return 0f;
+                
+                return _addedSpeed;
+            }
+            set
+            {
+                _addedSpeed = value;
+                
+                PlayerPrefs.SetFloat(AddedSpeedKey, _addedSpeed);
+                PlayerPrefs.Save();
+            }
+        }
+        
+        public static void Reset()
+        {
+            _controlScheme = -1;
+            _rotationSensitivity = -1f;
+            _invertCamX = -1;
+            _invertCamY = -1;
+            _currentLevel = -1;
+            _credits = -1;
+            _addedSpeed = -1f;
+            
+            PlayerPrefs.DeleteAll();
         }
     }
 }

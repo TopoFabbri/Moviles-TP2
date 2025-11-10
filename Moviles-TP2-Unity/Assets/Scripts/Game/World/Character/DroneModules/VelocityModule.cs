@@ -1,4 +1,5 @@
 ﻿using Game.Events;
+using Game.World.GameManager;
 using Tools.EventSystem;
 using UnityEngine;
 
@@ -21,13 +22,13 @@ namespace Game.World.Character.DroneModules
 
         internal void RaiseDebugVelocity()
         {
-            EventSystem.Raise<VelocityDebugEvent>(velocity.magnitude, maxSpeed);
+            EventSystem.Raise<VelocityDebugEvent>(velocity.magnitude, maxSpeed + GameSave.AddedSpeed);;
         }
 
         internal void Accelerate(Vector3 throttle, float dt)
         {
-            Vector3 targetVel = throttle * maxSpeed;
-            targetVel = Vector3.ClampMagnitude(targetVel, maxSpeed);
+            Vector3 targetVel = throttle * (maxSpeed + GameSave.AddedSpeed);
+            targetVel = Vector3.ClampMagnitude(targetVel, maxSpeed + GameSave.AddedSpeed);
             
             velocity.x = Mathf.MoveTowards(velocity.x, targetVel.x, acceleration * dt);
             velocity.y = Mathf.MoveTowards(velocity.y, targetVel.y, acceleration * dt);
@@ -37,11 +38,6 @@ namespace Game.World.Character.DroneModules
         internal void Restart()
         {
             velocity = Vector3.zero;
-        }
-        
-        public float GetMaxSpeed()
-        {
-            return maxSpeed;
         }
     }
 }

@@ -28,8 +28,8 @@ namespace Game.World.UI
             
             foreach (InputAction inputAction in PlayerInput.GetPlayerByIndex(0).actions)
                 inputAction.Disable();
-
-            PlayerInput.GetPlayerByIndex(0).actions.FindActionMap("UI").Enable();
+            
+            PlayerInput.GetPlayerByIndex(0)?.actions.FindActionMap("UI").Enable();
 
             EventSystem.Subscribe<CancelAction>(OnCancel);
             

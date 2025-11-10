@@ -50,8 +50,16 @@ namespace Game.World.UI
             LoadCurrentLevel();
         }
 
-        public static void LoadMainMenu()
+        public static void LoadMainMenu(bool levelFinished)
         {
+            if (levelFinished)
+            {
+                if (GameSave.CurrentLevel >= Levels.Count - 1)
+                    GameSave.CurrentLevel = -1;
+                else
+                    GameSave.CurrentLevel++;
+            }
+            
             SceneManager.LoadScene(MainMenu);
         }
     }

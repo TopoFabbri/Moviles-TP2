@@ -65,7 +65,7 @@ namespace Game.World.UI
         
         public void OnReturnToMenu()
         {
-            LevelList.LoadMainMenu();
+            LevelList.LoadMainMenu(false);
         }
         
         public void OnCancel(CancelAction obj)

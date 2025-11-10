@@ -60,7 +60,7 @@ namespace Game.World.UI
 
         public void OnMainMenu()
         {
-            LevelList.LoadMainMenu();
+            LevelList.LoadMainMenu(true);
         }
 
         public void OnNextLevel()

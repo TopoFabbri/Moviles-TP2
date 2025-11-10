@@ -1,5 +1,6 @@
 using Game.Events;
 using Game.World.Targets;
+using GooglePlayGames;
 using Tools.EventSystem;
 using UnityEngine;
 
@@ -11,7 +12,10 @@ namespace Game.World.Character
         private void OnCollisionEnter(Collision collision)
         {
             EventSystem.Raise<DroneCollisionEvent>();
-            
+
+#if UNITY_ANDROID           
+            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_crash);
+#endif
             AndroidVibrator.Vibrate(100L);
         }
 

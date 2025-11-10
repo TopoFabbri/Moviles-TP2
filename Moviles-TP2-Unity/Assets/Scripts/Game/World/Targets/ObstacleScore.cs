@@ -17,10 +17,7 @@ namespace Game.World.Targets
         internal void MarkDone()
         {
             if (Current == this)
-            {
                 Scores.Remove(this);
-                GameSave.Credits++;
-            }
             
             if (Scores.Count <= 0)
                 EventSystem.Raise<GameOverEvent>();

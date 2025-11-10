@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Game.Events;
 using Game.World.GameManager;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 using Tools.EventSystem;
 using UnityEditor;
 using UnityEngine;
@@ -15,25 +18,41 @@ namespace Game.World.UI
         [SerializeField] private GameObject firstSelected;
 
         private const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
-        
+
 #if UNITY_ANDROID
         private AndroidJavaClass loggerClass;
 #endif
-        
+
         private void Start()
         {
-#if UNITY_ANDROID
-            loggerClass = new AndroidJavaClass(LoggerClassName);
-#endif
-            
+            InitLogger();
+
             foreach (InputAction inputAction in PlayerInput.GetPlayerByIndex(0).actions)
                 inputAction.Disable();
-            
-            PlayerInput.GetPlayerByIndex(0)?.actions.FindActionMap("UI").Enable();
+
+            if (PlayerInput.all.Count > 0)
+                PlayerInput.GetPlayerByIndex(0)?.actions.FindActionMap("UI").Enable();
 
             EventSystem.Subscribe<CancelAction>(OnCancel);
-            
+
             CloseAllSubMenus();
+
+            PlayLogin();
+        }
+
+        private void InitLogger()
+        {
+#if UNITY_ANDROID
+            try
+            {
+                loggerClass = new AndroidJavaClass(LoggerClassName);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                throw;
+            }
+#endif
         }
 
         private void OnDestroy()
@@ -43,7 +62,7 @@ namespace Game.World.UI
 
         private void Update()
         {
-            if (PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad")
+            if (PlayerInput.GetPlayerByIndex(0)?.currentControlScheme == "Gamepad")
             {
                 if (!UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject)
                     UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(firstSelected);
@@ -89,10 +108,32 @@ namespace Game.World.UI
 #endif
         }
 
-        [ContextMenu( "Reset All Saves" )]
+        [ContextMenu("Reset All Saves")]
         private void ResetAllSaves()
         {
             GameSave.Reset();
         }
+
+        private static void PlayLogin()
+        {
+            Debug.Log("Enabling Play Games");
+            
+#if UNITY_ANDROID
+            PlayGamesPlatform.DebugLogEnabled = true;
+            PlayGamesPlatform.Activate();
+            PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+#endif
+        }
+
+#if UNITY_ANDROID
+        private static void ProcessAuthentication(SignInStatus status)
+        {
+            Debug.Log("Authentication status: " + status);
+            if (status != SignInStatus.Success) return;
+
+            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_first_flight,
+                success => { Debug.Log("Unlocked achievement: " + GPGSIds.achievement_first_flight + " " + success); });
+        }
+#endif
     }
 }

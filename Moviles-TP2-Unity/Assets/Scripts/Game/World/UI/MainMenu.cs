@@ -116,8 +116,6 @@ namespace Game.World.UI
 
         private static void PlayLogin()
         {
-            Debug.Log("Enabling Play Games");
-            
 #if UNITY_ANDROID
             PlayGamesPlatform.DebugLogEnabled = true;
             PlayGamesPlatform.Activate();
@@ -128,11 +126,9 @@ namespace Game.World.UI
 #if UNITY_ANDROID
         private static void ProcessAuthentication(SignInStatus status)
         {
-            Debug.Log("Authentication status: " + status);
             if (status != SignInStatus.Success) return;
 
-            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_first_flight,
-                success => { Debug.Log("Unlocked achievement: " + GPGSIds.achievement_first_flight + " " + success); });
+            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_first_flight);
         }
 #endif
     }

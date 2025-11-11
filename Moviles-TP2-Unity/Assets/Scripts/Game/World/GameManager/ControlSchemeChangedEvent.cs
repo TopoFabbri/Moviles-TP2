@@ -6,7 +6,7 @@ namespace Game.World.GameManager
     {
         internal int schemeId;
         
-        public void Reset()
+        public void Restart()
         {
             schemeId = -1;
         }

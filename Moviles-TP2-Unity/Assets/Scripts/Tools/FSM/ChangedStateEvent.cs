@@ -7,7 +7,7 @@ namespace Tools.FSM
     {
         internal TStateType state;
         
-        public void Reset()
+        public void Restart()
         {
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Tools.FSM
 {
@@ -112,8 +113,11 @@ namespace Tools.FSM
 
             if (transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState == UnassignedTransition) return;
 
+            Debug.Log("Exited state: " + states[CurrentState].GetType().Name);
             transitions[CurrentState, Convert.ToInt32(flag)].onTrnasition?.Invoke();
             CurrentState = transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState;
+            Debug.Log("Entered state: " + states[CurrentState].GetType().Name);
+            
             ExecuteBehaviour(GetCurrentOnEnterBehaviour);
 
             EventSystem.EventSystem.Raise<ChangedStateEvent<TStateType>>(CurrentState);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Tools.Pool;
 using UnityEditor;
@@ -17,6 +16,12 @@ namespace Game.World.Targets
         private readonly GoPool<Target> pool = new();
         private readonly List<Target> targets = new();
 
+        private void Awake()
+        {
+            spawnPoints.Clear();
+            GetComponentsInChildren(spawnPoints);
+        }
+
         internal void Spawn()
         {
             for (int i = 0; i < spawnPoints.Count; i++)
@@ -33,7 +38,7 @@ namespace Game.World.Targets
                 Vector3 lookAt = nextPos - prevPos;
                 Quaternion rot = Quaternion.LookRotation(lookAt);
 
-                targets.Add(pool.Get(spawnPoints[i].prefab, transform, spawnPoints[i].transform.position, rot, spawnPoints[i].prefab.transform.localScale, i));
+                targets.Add(pool.Get(spawnPoints[i].prefab, transform, spawnPoints[i].transform.position, rot, spawnPoints[i].prefab.transform.localScale, i, spawnPoints[i].prefab));
                 spawnPoints[i].gameObject.SetActive(false);
             }
         }
@@ -42,8 +47,8 @@ namespace Game.World.Targets
         {
             foreach (Target target in targets)
             {
-                Destroy(target.gameObject);
                 pool.Release(target);
+                Destroy(target.gameObject);
             }
 
             targets.Clear();
@@ -83,6 +88,13 @@ namespace Game.World.Targets
             if (Application.isPlaying) return;
 
             _drawPath = !_drawPath;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (Application.isPlaying) return;
+
+            GetComponentsInChildren(spawnPoints);
         }
 #endif
     }

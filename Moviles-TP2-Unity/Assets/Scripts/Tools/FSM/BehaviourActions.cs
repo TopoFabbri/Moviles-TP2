@@ -19,7 +19,7 @@ namespace Tools.FSM
                    Equals(TransitionBehaviour, other.TransitionBehaviour);
         }
 
-        public void Reset()
+        public void Restart()
         {
             if (MainThreadBehaviours != null)
             {

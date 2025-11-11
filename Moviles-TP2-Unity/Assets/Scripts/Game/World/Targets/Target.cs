@@ -3,11 +3,13 @@ using UnityEngine;
 
 namespace Game.World.Targets
 {
-    public class Target : MonoBehaviour, IResetable
+    public class Target : MonoBehaviour, IGoResetable
     {
         [SerializeField] private ObstacleScore obstacleScore;
-        
-        public void Reset()
+
+        public int PrefabId { get; set; }
+
+        public void Restart()
         {
             gameObject.SetActive(false);
         }

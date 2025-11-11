@@ -2,7 +2,7 @@
 {
     public interface IResetable
     {
-        public void Reset();
+        public void Restart();
         public void Assign(params object[] parameters);
     }
 }

@@ -4,7 +4,7 @@ namespace Game.Events
 {
     internal class GameOverEvent : IEvent
     {
-        public void Reset()
+        public void Restart()
         {
         }
 

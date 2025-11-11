@@ -4,7 +4,7 @@ namespace Game.Events
 {
     internal sealed class PauseAction : IEvent
     {
-        public void Reset()
+        public void Restart()
         {
         }
 

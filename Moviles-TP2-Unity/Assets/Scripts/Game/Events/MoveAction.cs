@@ -7,7 +7,7 @@ namespace Game.Events
     {
         public Vector3 input;
         
-        public void Reset()
+        public void Restart()
         {
             input = Vector3.zero;
         }

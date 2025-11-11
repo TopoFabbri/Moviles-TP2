@@ -7,7 +7,7 @@ namespace Game.Events
         internal float speed;
         internal float maxSpeed;
         
-        public void Reset()
+        public void Restart()
         {
             speed = 0f;
             maxSpeed = 0f;

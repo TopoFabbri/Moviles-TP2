@@ -4,6 +4,7 @@ using Game.Events;
 using Game.World.GameManager;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+using TMPro;
 using Tools.EventSystem;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +17,8 @@ namespace Game.World.UI
         [SerializeField] private List<GameObject> subMenus;
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject firstSelected;
-
+        [SerializeField] private TextMeshProUGUI versionTxt;
+        
         private const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
 
 #if UNITY_ANDROID
@@ -25,6 +27,9 @@ namespace Game.World.UI
 
         private void Start()
         {
+            if (versionTxt)
+                versionTxt.text = $"v{Application.version}";
+            
             InitLogger();
 
             foreach (InputAction inputAction in PlayerInput.GetPlayerByIndex(0).actions)

@@ -24,15 +24,26 @@ namespace Game.World.GameManager
         {
             if (obj.state != States.Win) return;
 
-            if (GameTime.Timer.TimeElapsed < aceTime)
+            GrantTimeRewards();
+            GrantLevelCompletedRewards();
+        }
+
+        private void GrantTimeRewards()
+        {
+            float time = GameTime.Timer.TimeElapsed;
+            float bestTime = GameSave.GetLevelTime(GameSave.CurrentLevel);
+
+            if (time < aceTime)
             {
 #if UNITY_ANDROID
                 PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_great_time);
-                PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_ace, 1, _ => { });
+                
+                if (time < bestTime && bestTime > aceTime && bestTime > 0f)
+                    PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_ace, 1, _ => { });
 #endif
                 GameSave.Credits += 10;
             }
-            else if (GameTime.Timer.TimeElapsed < niceTime)
+            else if (time < niceTime)
             {
                 GameSave.Credits += 5;
             }
@@ -40,7 +51,10 @@ namespace Game.World.GameManager
             {
                 GameSave.Credits += 2;
             }
+        }
 
+        private static void GrantLevelCompletedRewards()
+        {
             if (GameSave.CurrentLevel == 0)
             {
 #if UNITY_ANDROID
@@ -50,7 +64,8 @@ namespace Game.World.GameManager
             else
             {
 #if UNITY_ANDROID
-                PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_levels_completed, 1, _ => { });
+                if (GameSave.GetLevelTime(GameSave.CurrentLevel) < 0)
+                    PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_levels_completed, 1, _ => { });
 #endif
             }
         }

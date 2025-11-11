@@ -1,5 +1,4 @@
-﻿using System;
-using Game.World.GameManager;
+﻿using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
 using Tools.FSM;
@@ -47,6 +46,8 @@ namespace Game.World.UI
             
             Time.ConvertToMinutes(GameSave.GetLevelTime(GameSave.CurrentLevel), out minutes, out seconds, out centiseconds);
             bestTime.text = bestTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
+            
+            LeaderboardManager.UpdateLeaderboard();
         }
 
         private void OnDisable()

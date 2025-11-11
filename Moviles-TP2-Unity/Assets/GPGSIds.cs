@@ -28,6 +28,7 @@ public static class GPGSIds
         public const string achievement_first_flight = "CgkItcG8x_kKEAIQAQ"; // <GPGSID>
         public const string achievement_tutorial = "CgkItcG8x_kKEAIQBg"; // <GPGSID>
         public const string achievement_great_time = "CgkItcG8x_kKEAIQBQ"; // <GPGSID>
+        public const string leaderboard_total_time = "CgkItcG8x_kKEAIQCA"; // <GPGSID>
         public const string achievement_levels_completed = "CgkItcG8x_kKEAIQAw"; // <GPGSID>
         public const string achievement_crash = "CgkItcG8x_kKEAIQAg"; // <GPGSID>
 

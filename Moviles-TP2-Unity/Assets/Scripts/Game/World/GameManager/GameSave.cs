@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using Game.World.UI;
+using GooglePlayGames;
 using Tools.EventSystem;
 using UnityEngine;
 
@@ -13,17 +16,31 @@ namespace Game.World.GameManager
         private static int _currentLevel = -1;
         private static int _credits = -1;
         private static float _addedSpeed = -1f;
-        private static Dictionary<int, float> _levelTimes = new();
-        
-        private const string ControlSchemeKey = "ControlScheme";
-        private const string RotationSensitivityKey = "RotationSensitivity";
-        private const string InvertCamXKey = "InvertCamX";
-        private const string InvertCamYKey = "InvertCamY";
-        private const string CurrentLevelKey = "CurrentLevel";
-        private const string CreditsKey = "Credits";
-        private const string AddedSpeedKey = "AddedSpeed";
-        private const string LevelTimesKey = "Level<level>Time";
+        private static readonly Dictionary<int, float> LevelTimes = new();
 
+        private const string NoGooglePlayPlayerId = "defaultPlayer";
+        private static string ControlSchemeKey => PlayerId + "ControlScheme";
+        private static string RotationSensitivityKey => PlayerId + "RotationSensitivity";
+        private static string InvertCamXKey => PlayerId + "InvertCamX";
+        private static string InvertCamYKey => PlayerId + "InvertCamY";
+        private static string CurrentLevelKey => PlayerId + "CurrentLevel";
+        private static string CreditsKey => PlayerId + "Credits";
+        private static string AddedSpeedKey => PlayerId + "AddedSpeed";
+        private static string LevelTimesKey => PlayerId + "Level<level>Time";
+
+        private static string _playerId;
+
+        private static string PlayerId
+        {
+            get
+            {
+                _playerId ??= PlayGamesPlatform.Instance.IsAuthenticated() ? PlayGamesPlatform.Instance.GetUserId() : NoGooglePlayPlayerId;
+                _playerId ??= NoGooglePlayPlayerId;
+
+                return _playerId;
+            }
+        }
+        
         public static int ControlScheme
         {
             get
@@ -178,8 +195,8 @@ namespace Game.World.GameManager
 
         public static void SetLevelTime(int level, float time)
         {
-            _levelTimes.TryAdd(level, time);
-            _levelTimes[level] = time;
+            LevelTimes.TryAdd(level, time);
+            LevelTimes[level] = time;
             
             string key = LevelTimesKey.Replace("<level>", level.ToString());
             PlayerPrefs.SetFloat(key, time);
@@ -188,12 +205,12 @@ namespace Game.World.GameManager
         
         public static float GetLevelTime(int level)
         {
-            if (!_levelTimes.ContainsKey(level))
-                _levelTimes.TryAdd(level, -1f);
+            if (!LevelTimes.ContainsKey(level))
+                LevelTimes.TryAdd(level, -1f);
             
-            _levelTimes[level] = PlayerPrefs.GetFloat(LevelTimesKey.Replace("<level>", level.ToString()), -1f);
+            LevelTimes[level] = PlayerPrefs.GetFloat(LevelTimesKey.Replace("<level>", level.ToString()), -1f);
             
-            return _levelTimes[level];
+            return LevelTimes[level];
         }
         
         public static void Reset()
@@ -205,9 +222,63 @@ namespace Game.World.GameManager
             _currentLevel = -1;
             _credits = -1;
             _addedSpeed = -1f;
-            _levelTimes.Clear();
+            LevelTimes.Clear();
             
             PlayerPrefs.DeleteAll();
+        }
+
+        private static List<byte> Serialize()
+        {
+            List<byte> bytes = new();
+            
+            bytes.AddRange(BitConverter.GetBytes(ControlScheme));
+            bytes.AddRange(BitConverter.GetBytes(RotationSensitivity));
+            bytes.AddRange(BitConverter.GetBytes(InvertCamX));
+            bytes.AddRange(BitConverter.GetBytes(InvertCamY));
+            bytes.AddRange(BitConverter.GetBytes(CurrentLevel));
+            bytes.AddRange(BitConverter.GetBytes(Credits));
+            bytes.AddRange(BitConverter.GetBytes(AddedSpeed));
+            
+            bytes.AddRange(BitConverter.GetBytes(LevelList.GetLevels().Count));
+            
+            for (int i = 0; i < LevelList.GetLevels().Count; i++)
+                bytes.AddRange(BitConverter.GetBytes(GetLevelTime(i)));
+            
+            return bytes;
+        }
+        
+        private static void Deserialize(byte[] bytes)
+        {
+            int index = 0;
+            
+            ControlScheme = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            RotationSensitivity = BitConverter.ToSingle(bytes, index);
+            index += sizeof(float);
+            
+            _invertCamX = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            _invertCamY = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            CurrentLevel = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            Credits = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            AddedSpeed = BitConverter.ToSingle(bytes, index);
+            index += sizeof(float);
+            
+            int levelsCount = BitConverter.ToInt32(bytes, index);
+            index += sizeof(int);
+            
+            for (int i = 0; i < levelsCount; i++)
+                SetLevelTime(i, BitConverter.ToSingle(bytes, index));
+            
+            index += sizeof(float) * levelsCount;
         }
     }
 }

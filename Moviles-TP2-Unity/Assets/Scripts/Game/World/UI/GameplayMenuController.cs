@@ -12,6 +12,7 @@ namespace Game.World.UI
         [SerializeField] private TextMeshProUGUI controlSchemeText;
         [SerializeField] private Toggle invertCamXToggle;
         [SerializeField] private Toggle invertCamYToggle;
+        [SerializeField] private Toggle godModeToggle;
         
         private void Start()
         {
@@ -19,6 +20,7 @@ namespace Game.World.UI
             controlSchemeText.text = InputListener.ActionMaps[GameSave.ControlScheme];
             invertCamXToggle.isOn = GameSave.InvertCamX;
             invertCamYToggle.isOn = GameSave.InvertCamY;
+            godModeToggle.isOn = GameSave.GodMode;
         }
 
         public void OnControllerSchemeChanged()
@@ -44,6 +46,11 @@ namespace Game.World.UI
         public void OnInvertCamYChanged(bool value)
         {
             GameSave.InvertCamY = value;
+        }
+        
+        public void OnGodModeChanged(bool value)
+        {
+            GameSave.GodMode = value;
         }
     }
 }

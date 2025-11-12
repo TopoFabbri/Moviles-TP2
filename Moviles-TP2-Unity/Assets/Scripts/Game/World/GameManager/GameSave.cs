@@ -16,6 +16,7 @@ namespace Game.World.GameManager
         private static int _currentLevel = -1;
         private static int _credits = -1;
         private static float _addedSpeed = -1f;
+        private static int _godMode = -1;
         private static readonly Dictionary<int, float> LevelTimes = new();
 
         private const string NoGooglePlayPlayerId = "defaultPlayer";
@@ -26,6 +27,7 @@ namespace Game.World.GameManager
         private static string CurrentLevelKey => PlayerId + "CurrentLevel";
         private static string CreditsKey => PlayerId + "Credits";
         private static string AddedSpeedKey => PlayerId + "AddedSpeed";
+        private static string GodModeKey => PlayerId + "GodMode";
         private static string LevelTimesKey => PlayerId + "Level<level>Time";
 
         private static string _playerId;
@@ -146,8 +148,6 @@ namespace Game.World.GameManager
                 
                 PlayerPrefs.SetInt(CurrentLevelKey, _currentLevel);
                 PlayerPrefs.Save();
-                
-                EventSystem.Raise<ControlSchemeChangedEvent>(_currentLevel);
             }
         }
 
@@ -189,6 +189,27 @@ namespace Game.World.GameManager
                 _addedSpeed = value;
                 
                 PlayerPrefs.SetFloat(AddedSpeedKey, _addedSpeed);
+                PlayerPrefs.Save();
+            }
+        }
+        
+        public static bool GodMode
+        {
+            get
+            {
+                if (_godMode < 0)
+                    _godMode = PlayerPrefs.GetInt(GodModeKey, -1);
+                
+                if (_godMode < 0)
+                    GodMode = false;
+                
+                return _godMode > 0;
+            }
+            set
+            {
+                _godMode = value ? 1 : 0;
+                
+                PlayerPrefs.SetInt(GodModeKey, _godMode);
                 PlayerPrefs.Save();
             }
         }

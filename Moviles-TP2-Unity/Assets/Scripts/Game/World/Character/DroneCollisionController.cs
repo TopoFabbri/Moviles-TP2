@@ -1,4 +1,5 @@
 using Game.Events;
+using Game.World.GameManager;
 using Game.World.Targets;
 using GooglePlayGames;
 using Tools.EventSystem;
@@ -9,8 +10,9 @@ namespace Game.World.Character
     public class DroneCollisionController : MonoBehaviour
     {
         
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter()
         {
+            if (GameSave.GodMode) return;
             EventSystem.Raise<DroneCollisionEvent>();
 
 #if UNITY_ANDROID           

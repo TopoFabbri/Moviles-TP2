@@ -14,6 +14,7 @@ namespace Game.World.GameManager.GameStates
         private bool crashed;
         private bool won;
         private bool paused;
+        private bool popup;
         
         public override Type[] OnTickParamTypes => new[] { typeof(DroneController) };
 
@@ -21,15 +22,17 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<DroneCollisionEvent>(OnCrashed));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<GameOverEvent>(OnWon));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<DroneCollisionEvent>(OnCrashed));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<GameOverEvent>(OnWon));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<TriggerPopupEvent>(OnPopup));
             actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Resume());
-            actions.AddMainThreadBehaviour(0, () =>
+            actions.AddMultiThreadableBehaviour(0, () =>
             {
                 crashed = false;
                 won = false;
                 paused = false;
+                popup = false;
             });
             
             return actions;
@@ -49,6 +52,8 @@ namespace Game.World.GameManager.GameStates
                     flag.Invoke(Flags.Won);
                 else if (paused)
                     flag.Invoke(Flags.Paused);
+                else if (popup)
+                    flag.Invoke(Flags.Popup);
             });
             
             actions.AddMainThreadBehaviour(0, () =>
@@ -63,9 +68,9 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<DroneCollisionEvent>(OnCrashed));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<GameOverEvent>(OnWon));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<DroneCollisionEvent>(OnCrashed));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<GameOverEvent>(OnWon));
+            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPause));
             actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Pause());
             
             return actions;
@@ -84,6 +89,11 @@ namespace Game.World.GameManager.GameStates
         private void OnPause(PauseAction _)
         {
             paused = true;
+        }
+
+        private void OnPopup(TriggerPopupEvent _)
+        {
+            popup = true;
         }
     }
 }

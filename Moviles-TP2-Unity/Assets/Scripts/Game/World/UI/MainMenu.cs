@@ -54,7 +54,7 @@ namespace Game.World.UI
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.LogError(e);
                 throw;
             }
 #endif

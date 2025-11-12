@@ -15,12 +15,13 @@ namespace Game.World.GameManager
             Won,
             Paused,
             Play,
-            Restart
+            Restart,
+            Popup
         }
 
         [SerializeField] private TargetSpawner targetSpawner;
         [SerializeField] private DroneController drone;
-
+        
         private FSM<States, Flags> fsm;
 
         private void Awake()
@@ -29,6 +30,12 @@ namespace Game.World.GameManager
             Time.Start();
 
             InitializeFiniteStateMachine();
+        }
+
+        private void Update()
+        {
+            Time.Update();
+            fsm.Tick();
         }
 
         private void InitializeFiniteStateMachine()
@@ -40,12 +47,14 @@ namespace Game.World.GameManager
             fsm.AddState<GameOverState>(States.GameOver);
             fsm.AddState<GameOverState>(States.Win);
             fsm.AddState<PauseState>(States.Paused);
+            fsm.AddState<PopupState>(States.Popup);
 
             fsm.SetTransition(States.Restart, Flags.Play, States.Play);
             
             fsm.SetTransition(States.Play, Flags.Crashed, States.GameOver);
             fsm.SetTransition(States.Play, Flags.Paused, States.Paused);
             fsm.SetTransition(States.Play, Flags.Won, States.Win);
+            fsm.SetTransition(States.Play, Flags.Popup, States.Popup);
             
             fsm.SetTransition(States.GameOver, Flags.Play, States.Play);
             fsm.SetTransition(States.GameOver, Flags.Restart, States.Restart);
@@ -53,13 +62,9 @@ namespace Game.World.GameManager
             fsm.SetTransition(States.Paused, Flags.Play, States.Play);
             fsm.SetTransition(States.Paused, Flags.Restart, States.Restart);
             
+            fsm.SetTransition(States.Popup, Flags.Play, States.Play);
+            
             fsm.SetTransition(States.Win, Flags.Restart, States.Restart);
-        }
-
-        private void Update()
-        {
-            Time.Update();
-            fsm.Tick();
         }
     }
 }

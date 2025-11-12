@@ -7,5 +7,6 @@
         GameOver,
         Win,
         Paused,
+        Popup
     }
 }

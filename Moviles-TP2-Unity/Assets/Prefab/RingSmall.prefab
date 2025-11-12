@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.5, y: 0.08, z: 3.5}
+  m_LocalScale: {x: 3.5, y: 0.16, z: 3.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7959209693998836820}
@@ -275,7 +275,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleScore: {fileID: 1739086181510044986}
-  prefab: {fileID: 7295580298007623406}
 --- !u!4 &7959209693998836820 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}

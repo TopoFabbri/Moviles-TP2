@@ -9,8 +9,9 @@ namespace Game.World.Targets
     {
         [SerializeField] private List<SpawnPoint> spawnPoints = new();
 
-        [Header("Debug")] [SerializeField] private Color pathColor = Color.red;
-
+        [Header("Debug")]
+        [SerializeField] private float maxDistance = 50f;
+        
         private static bool _drawPath;
 
         private readonly GoPool<Target> pool = new();
@@ -69,8 +70,6 @@ namespace Game.World.Targets
         {
             if (!_drawPath || Application.isPlaying) return;
 
-            Gizmos.color = pathColor;
-
             for (int i = 0; i < spawnPoints.Count - 1; i++)
             {
                 if (!spawnPoints[i] || !spawnPoints[i + 1]) continue;
@@ -78,6 +77,9 @@ namespace Game.World.Targets
                 Vector3 curPos = spawnPoints[i].transform.position;
                 Vector3 nextPos = spawnPoints[i + 1].transform.position;
 
+                float t = Mathf.Clamp(Vector3.Distance(curPos, nextPos), 0, maxDistance) / maxDistance;
+                Gizmos.color = Color.Lerp(Color.green, Color.red, t);
+                
                 Gizmos.DrawLine(curPos, nextPos);
             }
         }

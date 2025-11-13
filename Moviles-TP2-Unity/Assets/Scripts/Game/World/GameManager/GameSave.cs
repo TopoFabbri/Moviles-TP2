@@ -18,6 +18,7 @@ namespace Game.World.GameManager
         private static float _addedSpeed = -1f;
         private static int _godMode = -1;
         private static readonly Dictionary<int, float> LevelTimes = new();
+        private static readonly Dictionary<int, float> LevelTimesGodMode = new();
 
         private const string NoGooglePlayPlayerId = "defaultPlayer";
         private static string ControlSchemeKey => PlayerId + "ControlScheme";
@@ -219,7 +220,7 @@ namespace Game.World.GameManager
             LevelTimes.TryAdd(level, time);
             LevelTimes[level] = time;
             
-            string key = LevelTimesKey.Replace("<level>", level.ToString());
+            string key = LevelTimesKey.Replace("<level>", level.ToString()) + (GodMode ? "GodMode" : "");
             PlayerPrefs.SetFloat(key, time);
             PlayerPrefs.Save();
         }
@@ -229,7 +230,8 @@ namespace Game.World.GameManager
             if (!LevelTimes.ContainsKey(level))
                 LevelTimes.TryAdd(level, -1f);
             
-            LevelTimes[level] = PlayerPrefs.GetFloat(LevelTimesKey.Replace("<level>", level.ToString()), -1f);
+            string key = LevelTimesKey.Replace("<level>", level.ToString()) + (GodMode ? "GodMode" : "");
+            LevelTimes[level] = PlayerPrefs.GetFloat(key, -1f);
             
             return LevelTimes[level];
         }

@@ -30,6 +30,7 @@ public static class GPGSIds
         public const string achievement_great_time = "CgkItcG8x_kKEAIQBQ"; // <GPGSID>
         public const string leaderboard_total_time = "CgkItcG8x_kKEAIQCA"; // <GPGSID>
         public const string achievement_levels_completed = "CgkItcG8x_kKEAIQAw"; // <GPGSID>
+        public const string leaderboard_total_time_godmode = "CgkItcG8x_kKEAIQCQ"; // <GPGSID>
         public const string achievement_crash = "CgkItcG8x_kKEAIQAg"; // <GPGSID>
 
 }

@@ -29,7 +29,7 @@ namespace Game.World.UI
             }
             
 #if UNITY_ANDROID
-            PlayGamesPlatform.Instance.ReportScore((long)score, GPGSIds.leaderboard_total_time, _ => { });
+            PlayGamesPlatform.Instance.ReportScore((long)score, GameSave.GodMode ? GPGSIds.leaderboard_total_time_godmode : GPGSIds.leaderboard_total_time, _ => { });
 #endif
         }
     }

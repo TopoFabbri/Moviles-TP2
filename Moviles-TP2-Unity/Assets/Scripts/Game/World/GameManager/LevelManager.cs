@@ -41,7 +41,7 @@ namespace Game.World.GameManager
 #if UNITY_ANDROID
                 PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_great_time);
                 
-                if (time < bestTime && bestTime > aceTime && bestTime > 0f)
+                if (time < aceTime && bestTime > aceTime && bestTime > 0f)
                     PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_ace, 1, _ => { });
 #endif
                 GameSave.Credits += 10;

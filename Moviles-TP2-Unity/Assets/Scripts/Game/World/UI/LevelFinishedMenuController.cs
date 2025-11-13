@@ -13,8 +13,10 @@ namespace Game.World.UI
         [SerializeField] private GameObject firstSelected;
         [SerializeField] private TextMeshProUGUI title;
         [SerializeField] private TextMeshProUGUI bestTime;
+        [SerializeField] private TextMeshProUGUI aceTime;
         [SerializeField] private string titleText = "Time: ";
         [SerializeField] private string bestTimeText = "Best Time: ";
+        [SerializeField] private string aceTimeText = "Ace Time: ";
 
         private void Awake()
         {
@@ -46,6 +48,9 @@ namespace Game.World.UI
             
             Time.ConvertToMinutes(GameSave.GetLevelTime(GameSave.CurrentLevel), out minutes, out seconds, out centiseconds);
             bestTime.text = bestTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
+            
+            Time.ConvertToMinutes(LevelManager.AceTime, out minutes, out seconds, out centiseconds);
+            aceTime.text = aceTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
             
             LeaderboardManager.UpdateLeaderboard();
         }

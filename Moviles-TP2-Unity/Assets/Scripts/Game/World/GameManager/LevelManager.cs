@@ -10,9 +10,12 @@ namespace Game.World.GameManager
         [SerializeField] private float aceTime = 40f;
         [SerializeField] private float niceTime = 60f;
 
+        public static float AceTime { get; private set; }
+        
         private void Awake()
         {
             EventSystem.Subscribe<ChangedStateEvent<States>>(OnChangedState);
+            AceTime = aceTime;
         }
 
         private void OnDestroy()

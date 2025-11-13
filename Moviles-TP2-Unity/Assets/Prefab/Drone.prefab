@@ -4843,7 +4843,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.003921569}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.49803922}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4872,7 +4872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/c
+  m_ControlPath: <Gamepad>/buttonNorth
 --- !u!1 &7950345233690589603
 GameObject:
   m_ObjectHideFlags: 0
@@ -6066,6 +6066,8 @@ MonoBehaviour:
   gyro: {fileID: 3494888737360493696}
   pointer: {fileID: 7092632630451719384}
   droneTransform: {fileID: 1023466861478574569}
+  overlayCam: {fileID: 3238007259564448464}
+  relativePos: {x: 0.9073565, y: 0.854761}
 --- !u!1001 &4577299300375137470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6270,11 +6272,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 313459120967899545, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_Size
-      value: 0.6621876
+      value: 0.7367629
       objectReference: {fileID: 0}
     - target: {fileID: 313459120967899545, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_Value
-      value: 1.0000002
+      value: 0.99999976
       objectReference: {fileID: 0}
     - target: {fileID: 334386027051079229, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_AnchorMax.x

@@ -96,6 +96,11 @@ namespace Game.Input
             EventSystem.Raise<LookAction>(inputVector);
         }
 
+        public void OnCalibrate()
+        {
+            EventSystem.Raise<CalibrateAction>();
+        }
+
         public void OnPause()
         {
             EventSystem.Raise<PauseAction>();

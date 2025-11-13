@@ -44,6 +44,7 @@ namespace Game.World.Character
 
             EventSystem.Subscribe(moveAction);
             EventSystem.Subscribe(lookAction);
+            EventSystem.Subscribe<CalibrateAction>(Calibrate);
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
@@ -62,13 +63,11 @@ namespace Game.World.Character
         {
             EventSystem.Unsubscribe(moveAction);
             EventSystem.Unsubscribe(lookAction);
+            EventSystem.Unsubscribe<CalibrateAction>(Calibrate);
         }
 
         internal void OnUpdate()
         {
-            if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
-                Calibrate();
-
             ReadAccelerometer();
 
             rotationModule.Rotate(lookInput);
@@ -97,7 +96,7 @@ namespace Game.World.Character
             lookInput.z = rot.z * GameSave.RotationSensitivity / 100f;
         }
 
-        private static void Calibrate()
+        private static void Calibrate(CalibrateAction _)
         {
             AccelerometerHandler.Calibrate();
         }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Game.Events;
 using Game.World.GameManager;
@@ -14,6 +13,16 @@ namespace Game.World.UI
 {
     internal sealed class MainMenu : MonoBehaviour
     {
+
+        public enum LogLevel 
+        {
+            Error,
+            Warning,
+            Info,
+            Debug,
+            Verbose
+        }
+        
         [SerializeField] private List<GameObject> subMenus;
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject firstSelected;
@@ -48,15 +57,7 @@ namespace Game.World.UI
         private void InitLogger()
         {
 #if UNITY_ANDROID
-            try
-            {
-                loggerClass = new AndroidJavaClass(LoggerClassName);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-                throw;
-            }
+            loggerClass = new AndroidJavaClass(LoggerClassName);
 #endif
         }
 
@@ -100,7 +101,7 @@ namespace Game.World.UI
         public void OnLogger()
         {
 #if UNITY_ANDROID
-            loggerClass?.CallStatic<AndroidJavaClass>("SendLog", "LogSent", 1);
+            loggerClass?.CallStatic("SendLog", "LogSent", (int)LogLevel.Debug);
 #endif
         }
 

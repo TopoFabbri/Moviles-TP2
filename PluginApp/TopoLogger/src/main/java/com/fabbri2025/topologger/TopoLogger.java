@@ -6,6 +6,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class TopoLogger {
 
     public static final String LOG_TAG = "TopoLogger";
@@ -18,7 +21,8 @@ public class TopoLogger {
         VERBOSE
     }
 
-    public static void SendLog(String log, LogLevel level)
+    @Keep
+    private static void SendLogInternal(String log, LogLevel level)
     {
         switch (level) {
             case ERROR:
@@ -41,6 +45,50 @@ public class TopoLogger {
         }
     }
 
+    public static void SendLog(String log, int level) {
+        LogLevel logLevel;
+        switch (level) {
+            case 0:
+                logLevel = LogLevel.ERROR;
+                break;
+            case 1:
+                logLevel = LogLevel.WARNING;
+                break;
+            case 2:
+                logLevel = LogLevel.INFO;
+                break;
+            case 3:
+                logLevel = LogLevel.DEBUG;
+                break;
+            case 4:
+                logLevel = LogLevel.VERBOSE;
+                break;
+            default:
+                logLevel = LogLevel.INFO; // Default to INFO
+                break;
+        }
+        SendLogInternal(log, logLevel);
+    }
+
+    public static void SendLog(String log, String level) {
+        LogLevel logLevel;
+        if (level.equalsIgnoreCase("error")) {
+            logLevel = LogLevel.ERROR;
+        } else if (level.equalsIgnoreCase("warning")) {
+            logLevel = LogLevel.WARNING;
+        } else if (level.equalsIgnoreCase("info")) {
+            logLevel = LogLevel.INFO;
+        } else if (level.equalsIgnoreCase("debug")) {
+            logLevel = LogLevel.DEBUG;
+        } else if (level.equalsIgnoreCase("verbose")) {
+            logLevel = LogLevel.VERBOSE;
+        } else {
+            logLevel = LogLevel.INFO; // Default to INFO
+        }
+        SendLogInternal(log, logLevel);
+    }
+
+    @Keep
     public static String GetLogs()
     {
         try {

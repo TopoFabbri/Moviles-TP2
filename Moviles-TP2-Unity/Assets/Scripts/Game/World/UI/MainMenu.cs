@@ -14,7 +14,7 @@ namespace Game.World.UI
     internal sealed class MainMenu : MonoBehaviour
     {
 
-        public enum LogLevel 
+        private enum LogLevel 
         {
             Error,
             Warning,

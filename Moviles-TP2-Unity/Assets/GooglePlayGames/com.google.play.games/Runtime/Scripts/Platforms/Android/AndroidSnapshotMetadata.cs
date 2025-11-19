@@ -1,13 +1,11 @@
+using System;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.SavedGame;
+using UnityEngine;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.Android
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
 {
-    using System;
-    using System.Collections.Generic;
-    using GooglePlayGames.BasicApi;
-    using GooglePlayGames.BasicApi.SavedGame;
-    using UnityEngine;
-
     internal class AndroidSnapshotMetadata : ISavedGameMetadata
     {
         private AndroidJavaObject mJavaSnapshot;

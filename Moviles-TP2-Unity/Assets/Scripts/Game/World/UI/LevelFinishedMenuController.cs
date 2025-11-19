@@ -1,7 +1,9 @@
-﻿using Game.World.GameManager;
+﻿using Game.Events;
+using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Time = Tools.Time.Time;
@@ -22,12 +24,12 @@ namespace Game.World.UI
         {
             gameObject.SetActive(false);
 
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnGameStateChanged);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnGameStateChanged);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnGameStateChanged);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnGameStateChanged);
         }
 
         private void Update()
@@ -38,21 +40,21 @@ namespace Game.World.UI
 
         private void OnEnable()
         {
-            float time = GameTime.Timer.TimeElapsed;
+            float time = ServiceProvider.GetService<GameTime>().Timer.TimeElapsed;
             
             if (GameSave.GetLevelTime(GameSave.CurrentLevel) > time || GameSave.GetLevelTime(GameSave.CurrentLevel) <= 0f)
                 GameSave.SetLevelTime(GameSave.CurrentLevel, time);
 
-            Time.ConvertToMinutes(time, out int minutes, out int seconds, out int centiseconds);
+            ServiceProvider.GetService<Time>().ConvertToMinutes(time, out int minutes, out int seconds, out int centiseconds);
             title.text = titleText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
             
-            Time.ConvertToMinutes(GameSave.GetLevelTime(GameSave.CurrentLevel), out minutes, out seconds, out centiseconds);
+            ServiceProvider.GetService<Time>().ConvertToMinutes(GameSave.GetLevelTime(GameSave.CurrentLevel), out minutes, out seconds, out centiseconds);
             bestTime.text = bestTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
             
-            Time.ConvertToMinutes(LevelManager.AceTime, out minutes, out seconds, out centiseconds);
+            ServiceProvider.GetService<Time>().ConvertToMinutes(LevelManager.AceTime, out minutes, out seconds, out centiseconds);
             aceTime.text = aceTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
             
-            LeaderboardManager.UpdateLeaderboard();
+            ServiceProvider.GetService<LeaderboardManager>().UpdateLeaderboard();
         }
 
         private void OnDisable()
@@ -67,17 +69,17 @@ namespace Game.World.UI
 
         public void OnRestart()
         {
-            EventSystem.Raise<RestartLevelEvent>();
+            ServiceProvider.GetService<EventSystem>().Raise<RestartLevelEvent>();
         }
 
         public void OnMainMenu()
         {
-            LevelList.LoadMainMenu(true);
+            ServiceProvider.GetService<LevelList>().LoadMainMenu(true);
         }
 
         public void OnNextLevel()
         {
-            LevelList.LoadNextLevel();
+            ServiceProvider.GetService<LevelList>().LoadNextLevel();
         }
     }
 }

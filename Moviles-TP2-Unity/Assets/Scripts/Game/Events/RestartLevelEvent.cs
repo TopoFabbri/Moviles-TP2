@@ -1,6 +1,6 @@
 ﻿using Tools.EventSystem;
 
-namespace Game.World.UI
+namespace Game.Events
 {
     internal sealed class RestartLevelEvent : IEvent
     {

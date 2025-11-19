@@ -16,7 +16,7 @@
 
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
     /// <summary>
     /// Common status codes.

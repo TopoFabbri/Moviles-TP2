@@ -1,6 +1,7 @@
 ﻿using Game.Events;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.GameManager.GameStates
@@ -12,12 +13,12 @@ namespace Game.World.GameManager.GameStates
 
         public PopupState()
         {
-            EventSystem.Subscribe<TriggerPopupEvent>(OnTriggerPopup);
+            ServiceProvider.GetService<EventSystem>().Subscribe<TriggerPopupEvent>(OnTriggerPopup);
         }
         
         ~PopupState()
         {
-            EventSystem.Unsubscribe<TriggerPopupEvent>(OnTriggerPopup);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<TriggerPopupEvent>(OnTriggerPopup);
         }
 
         private void OnTriggerPopup(TriggerPopupEvent obj)
@@ -29,8 +30,8 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
 
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<CancelAction>(OnCancelAction));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPauseAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<CancelAction>(OnCancelAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<PauseAction>(OnPauseAction));
             actions.AddMainThreadBehaviour(0, () => resume = false);
 
             return actions;

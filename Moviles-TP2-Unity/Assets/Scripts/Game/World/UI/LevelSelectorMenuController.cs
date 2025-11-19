@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Game.World.GameManager;
 using TMPro;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,9 +16,9 @@ namespace Game.World.UI
         
         private void Start()
         {
-            for (int i = 0; i < LevelList.GetLevels().Count; i++)
+            for (int i = 0; i < ServiceProvider.GetService<LevelList>().GetLevels().Count; i++)
             {
-                string levelName = Path.GetFileNameWithoutExtension(LevelList.GetLevels()[i]);
+                string levelName = Path.GetFileNameWithoutExtension(ServiceProvider.GetService<LevelList>().GetLevels()[i]);
 
                 GameObject button = Instantiate(buttonTemplate, buttonTemplate.transform.parent);
                 button.name = levelName + "Btn";
@@ -44,7 +45,7 @@ namespace Game.World.UI
         private static void LoadLevel(int level)
         {
             GameSave.CurrentLevel = level;
-            LevelList.LoadCurrentLevel();
+            ServiceProvider.GetService<LevelList>().LoadCurrentLevel();
         }
     }
 }

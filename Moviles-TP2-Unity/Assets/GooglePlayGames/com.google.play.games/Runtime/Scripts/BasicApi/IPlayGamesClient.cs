@@ -14,14 +14,14 @@
 //    limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using UnityEngine.SocialPlatforms;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
-    using System;
-    using System.Collections.Generic;
-    using UnityEngine.SocialPlatforms;
-
     /// <summary>
     /// Defines an abstract interface for a Play Games Client.
     /// </summary>

@@ -1,10 +1,9 @@
 ﻿using System;
 using Game.Events;
-using Game.Input;
 using Game.World.Character;
 using Tools.EventSystem;
 using Tools.FSM;
-using UnityEngine;
+using Tools.ServiceProvider;
 using Flags = Game.World.GameManager.GameManager.Flags;
 
 namespace Game.World.GameManager.GameStates
@@ -22,11 +21,11 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<DroneCollisionEvent>(OnCrashed));
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<GameOverEvent>(OnWon));
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPause));
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Subscribe<TriggerPopupEvent>(OnPopup));
-            actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Resume());
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<DroneCollisionEvent>(OnCrashed));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<GameOverEvent>(OnWon));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<TriggerPopupEvent>(OnPopup));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<GameTime>().Timer.Resume());
             actions.AddMultiThreadableBehaviour(0, () =>
             {
                 crashed = false;
@@ -68,10 +67,10 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<DroneCollisionEvent>(OnCrashed));
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<GameOverEvent>(OnWon));
-            actions.AddMultiThreadableBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPause));
-            actions.AddMultiThreadableBehaviour(0, () => GameTime.Timer.Pause());
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<DroneCollisionEvent>(OnCrashed));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<GameOverEvent>(OnWon));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<GameTime>().Timer.Pause());
             
             return actions;
         }

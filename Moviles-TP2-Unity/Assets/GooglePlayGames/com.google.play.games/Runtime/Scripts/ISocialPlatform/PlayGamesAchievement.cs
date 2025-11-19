@@ -14,17 +14,18 @@
 //    limitations under the License.
 // </copyright>
 
+using System;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SocialPlatforms;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform
 {
-    using System;
-    using GooglePlayGames.BasicApi;
-    using UnityEngine;
 #if UNITY_2017_1_OR_NEWER
-    using UnityEngine.Networking;
 #endif
-    using UnityEngine.SocialPlatforms;
 
     /// <summary>
     /// Delegate for reporting achievement progress.

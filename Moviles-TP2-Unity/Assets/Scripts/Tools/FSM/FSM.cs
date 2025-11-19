@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Tools.FSM
 {
@@ -11,7 +10,7 @@ namespace Tools.FSM
     /// </summary>
     /// <typeparam name="TStateType">An enum representing the different states of the FSM.</typeparam>
     /// <typeparam name="TFlagType">An enum representing the flags that can trigger transitions.</typeparam>
-    internal class FSM<TStateType, TFlagType> where TStateType : Enum where TFlagType : Enum
+    public class FSM<TStateType, TFlagType> where TStateType : Enum where TFlagType : Enum
     {
         private const int UnassignedTransition = -1;
         private readonly Dictionary<int, Func<object[]>> behaviourOnEnterParameters;
@@ -113,14 +112,14 @@ namespace Tools.FSM
 
             if (transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState == UnassignedTransition) return;
 
-            Debug.Log("Exited state: " + states[CurrentState].GetType().Name);
+            ServiceProvider.ServiceProvider.GetService<EventSystem.EventSystem>().Raise<DebugEvent>("Exited state: " + states[CurrentState].GetType().Name);
             transitions[CurrentState, Convert.ToInt32(flag)].onTrnasition?.Invoke();
             CurrentState = transitions[Convert.ToInt32(CurrentState), Convert.ToInt32(flag)].destinationState;
-            Debug.Log("Entered state: " + states[CurrentState].GetType().Name);
+            ServiceProvider.ServiceProvider.GetService<EventSystem.EventSystem>().Raise<DebugEvent>("Entered state: " + states[CurrentState].GetType().Name);
             
             ExecuteBehaviour(GetCurrentOnEnterBehaviour);
 
-            EventSystem.EventSystem.Raise<ChangedStateEvent<TStateType>>(CurrentState);
+            ServiceProvider.ServiceProvider.GetService<EventSystem.EventSystem>().Raise<ChangedStateEvent<TStateType>>(CurrentState);
         }
 
         /// <summary>

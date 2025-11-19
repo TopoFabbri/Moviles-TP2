@@ -1,8 +1,8 @@
 ﻿using Game.Events;
-using Game.Input;
 using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 
 namespace Game.World.GameManager.GameStates
 {
@@ -15,9 +15,9 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<CancelAction>(OnCancelAction));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<PauseAction>(OnPauseAction));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<RestartLevelEvent>(OnRestart));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<CancelAction>(OnCancelAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<PauseAction>(OnPauseAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<RestartLevelEvent>(OnRestart));
             actions.AddMultiThreadableBehaviour(0, () => resume = false);
             actions.AddMultiThreadableBehaviour(0, () => restart = false);
             
@@ -43,9 +43,9 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<CancelAction>(OnCancelAction));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<PauseAction>(OnPauseAction));
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<RestartLevelEvent>(OnRestart));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<CancelAction>(OnCancelAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPauseAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<RestartLevelEvent>(OnRestart));
             
             return actions;
         }

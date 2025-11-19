@@ -1,30 +1,31 @@
 ﻿using Game.World.GameManager;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Game.World.Character
 {
-    internal static class AccelerometerHandler
+    internal class AccelerometerHandler : IService
     {
 
         // Store the raw accelerometer value at neutral pose
-        private static Vector3 _origin; // components in [-1,1]
-        private static bool _calibrated;
+        private Vector3 origin; // components in [-1,1]
+        private bool calibrated;
 
         // Simple smoothing storage
-        private static Vector3 _smoothed;
+        private Vector3 smoothed;
 
         // Dead zone to avoid jitter
         private const float DeadZone = 0.1f;
         private const float SmoothSpeed = 2f;
 
-        public static Vector3 GetRotation()
+        public Vector3 GetRotation()
         {
             if (Accelerometer.current == null || !Accelerometer.current.enabled)
                 return Vector3.zero;
 
             // Auto-calibrate if not yet calibrated
-            if (!_calibrated)
+            if (!calibrated)
                 Calibrate();
 
             Vector3 a = Accelerometer.current.acceleration.value; // [-1,1] per axis
@@ -32,8 +33,8 @@ namespace Game.World.Character
             a.z = 0f; // ignore z axis
 
             // Normalise each axis around the calibrated origin so that origin -> 0, extremes -> +/-1
-            float normY = NormalizeAxis(a.y, _origin.y); // pitch
-            float normX = NormalizeAxis(a.x, _origin.x); // roll source (note: sign inverted below)
+            float normY = NormalizeAxis(a.y, origin.y); // pitch
+            float normX = NormalizeAxis(a.x, origin.x); // roll source (note: sign inverted below)
 
             if (Mathf.Abs(normY) < DeadZone) normY = 0f;
             if (Mathf.Abs(normX) < DeadZone) normX = 0f;
@@ -46,8 +47,8 @@ namespace Game.World.Character
 
             // Exponential smoothing for stability
             float t = 1f - Mathf.Exp(-SmoothSpeed * Time.deltaTime);
-            _smoothed = Vector3.Lerp(_smoothed, target, t);
-            return _smoothed;
+            smoothed = Vector3.Lerp(smoothed, target, t);
+            return smoothed;
         }
 
         private static float NormalizeAxis(float value, float origin)
@@ -62,21 +63,21 @@ namespace Game.World.Character
             return Mathf.Clamp(v, -1f, 1f);
         }
 
-        internal static void Calibrate()
+        internal void Calibrate()
         {
             if (Accelerometer.current == null || !Accelerometer.current.enabled)
             {
-                _calibrated = false;
+                calibrated = false;
                 return;
             }
 
-            _origin = Accelerometer.current.acceleration.value;
-            _origin.x = Mathf.Clamp(_origin.x, -1f, 1f);
-            _origin.y = Mathf.Clamp(_origin.y, -1f, 1f);
-            _origin.z = Mathf.Clamp(_origin.z, -1f, 1f);
+            origin = Accelerometer.current.acceleration.value;
+            origin.x = Mathf.Clamp(origin.x, -1f, 1f);
+            origin.y = Mathf.Clamp(origin.y, -1f, 1f);
+            origin.z = Mathf.Clamp(origin.z, -1f, 1f);
 
-            _calibrated = true;
-            _smoothed = Vector3.zero; // reset smoothing to avoid jump
+            calibrated = true;
+            smoothed = Vector3.zero; // reset smoothing to avoid jump
         }
     }
 }

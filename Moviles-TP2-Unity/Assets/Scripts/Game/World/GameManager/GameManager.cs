@@ -2,6 +2,7 @@ using Game.World.Character;
 using Game.World.GameManager.GameStates;
 using Game.World.Targets;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 using Time = Tools.Time.Time;
 
@@ -27,14 +28,14 @@ namespace Game.World.GameManager
         private void Awake()
         {
             Application.targetFrameRate = 60;
-            Time.Start();
+            ServiceProvider.GetService<Time>().Start();
 
             InitializeFiniteStateMachine();
         }
 
         private void Update()
         {
-            Time.Update();
+            ServiceProvider.GetService<Time>().Update();
             fsm.Tick();
         }
 

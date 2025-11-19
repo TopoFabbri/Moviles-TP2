@@ -1,4 +1,5 @@
-﻿using GooglePlayGames;
+﻿using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.UI
@@ -7,7 +8,7 @@ namespace Game.World.UI
     {
         public void ShowLeaderboard()
         {
-            LeaderboardManager.ShowLeaderboard();
+            ServiceProvider.GetService<LeaderboardManager>().ShowLeaderboard();
         }
 
         public void ShowAchievements()

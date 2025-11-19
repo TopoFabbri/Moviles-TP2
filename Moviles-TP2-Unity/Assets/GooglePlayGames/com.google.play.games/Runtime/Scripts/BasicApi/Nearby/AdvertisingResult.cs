@@ -14,12 +14,10 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.BasicApi.Nearby
-{
-    using System;
-    using System.Collections.Generic;
-    using GooglePlayGames.OurUtils;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
 
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+{
     /// <summary>
     /// Represents the result of an attempt to start advertising for nearby connections.
     /// </summary>

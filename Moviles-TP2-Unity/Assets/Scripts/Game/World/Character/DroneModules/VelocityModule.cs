@@ -1,6 +1,7 @@
 ﻿using Game.Events;
 using Game.World.GameManager;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.Character.DroneModules
@@ -22,7 +23,7 @@ namespace Game.World.Character.DroneModules
 
         internal void RaiseDebugVelocity()
         {
-            EventSystem.Raise<VelocityDebugEvent>(velocity.magnitude, maxSpeed + GameSave.AddedSpeed);;
+            ServiceProvider.GetService<EventSystem>().Raise<VelocityDebugEvent>(velocity.magnitude, maxSpeed + GameSave.AddedSpeed);;
         }
 
         internal void Accelerate(Vector3 throttle, float dt)

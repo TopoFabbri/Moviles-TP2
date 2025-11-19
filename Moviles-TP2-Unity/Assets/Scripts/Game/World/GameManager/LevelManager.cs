@@ -1,6 +1,7 @@
-using GooglePlayGames;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.GameManager
@@ -14,13 +15,13 @@ namespace Game.World.GameManager
         
         private void Awake()
         {
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnChangedState);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnChangedState);
             AceTime = aceTime;
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnChangedState);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnChangedState);
         }
 
         private void OnChangedState(ChangedStateEvent<States> obj)
@@ -33,7 +34,7 @@ namespace Game.World.GameManager
 
         private void GrantTimeRewards()
         {
-            float time = GameTime.Timer.TimeElapsed;
+            float time = ServiceProvider.GetService<GameTime>().Timer.TimeElapsed;
             float bestTime = GameSave.GetLevelTime(GameSave.CurrentLevel);
 
             if (time < aceTime)

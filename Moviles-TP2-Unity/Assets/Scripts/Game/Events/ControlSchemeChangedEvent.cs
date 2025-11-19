@@ -1,6 +1,6 @@
 ﻿using Tools.EventSystem;
 
-namespace Game.World.GameManager
+namespace Game.Events
 {
     internal sealed class ControlSchemeChangedEvent : IEvent
     {

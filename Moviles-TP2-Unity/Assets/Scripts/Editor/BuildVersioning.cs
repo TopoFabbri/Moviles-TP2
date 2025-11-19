@@ -4,7 +4,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace Game.Build
+namespace Editor
 {
     /// <summary>
     /// This class handles automatic versioning after a build is completed.

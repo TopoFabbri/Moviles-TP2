@@ -1,12 +1,13 @@
+using System;
+using System.Collections.Generic;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Events;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
+using UnityEngine;
+
 #if UNITY_ANDROID
-namespace GooglePlayGames.Android
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
 {
-    using System;
-    using System.Collections.Generic;
-    using GooglePlayGames.BasicApi;
-    using GooglePlayGames.BasicApi.Events;
-    using GooglePlayGames.OurUtils;
-    using UnityEngine;
     internal class AndroidEventsClient : IEventsClient
     {
         private volatile AndroidJavaObject mEventsClient;

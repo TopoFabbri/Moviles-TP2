@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Tools.Pool;
+using Tools.ServiceProvider;
 
 namespace Tools.EventSystem
 {
-    public static class EventSystem
+    public class EventSystem : IService
     {
-        private static readonly Dictionary<Type, List<Delegate>> EventListeners = new();
-        private static ConcurrentPool Pool { get; } = new();
+        private readonly Dictionary<Type, List<Delegate>> eventListeners = new();
+        private ConcurrentPool Pool { get; } = new();
         
-        public static void Raise<TEvent>(params object[] parameters) where TEvent : IEvent, new()
+        public void Raise<TEvent>(params object[] parameters) where TEvent : IEvent, new()
         {
             TEvent eventInstance = Pool.Get<TEvent>(parameters);
             eventInstance.Assign(parameters);
             
-            if (EventListeners.TryGetValue(eventInstance.GetType(), out List<Delegate> delegates))
+            if (eventListeners.TryGetValue(eventInstance.GetType(), out List<Delegate> delegates))
             {
                 foreach (Delegate del in delegates)
                     ((Action<TEvent>)del)?.Invoke(eventInstance);
@@ -23,17 +24,17 @@ namespace Tools.EventSystem
             Pool.Release(eventInstance);
         }
 
-        public static void Subscribe<TEvent>(Action<TEvent> action) where TEvent : IEvent
+        public void Subscribe<TEvent>(Action<TEvent> action) where TEvent : IEvent
         {
-            if (!EventListeners.ContainsKey(typeof(TEvent)))
-                EventListeners.Add(typeof(TEvent), new List<Delegate>());
+            if (!eventListeners.ContainsKey(typeof(TEvent)))
+                eventListeners.Add(typeof(TEvent), new List<Delegate>());
             
-            EventListeners[typeof(TEvent)].Add(action);
+            eventListeners[typeof(TEvent)].Add(action);
         }
         
-        public static void Unsubscribe<TEvent>(Action<TEvent> action) where TEvent : IEvent
+        public void Unsubscribe<TEvent>(Action<TEvent> action) where TEvent : IEvent
         {
-            if (EventListeners.TryGetValue(typeof(TEvent), out List<Delegate> delegates))
+            if (eventListeners.TryGetValue(typeof(TEvent), out List<Delegate> delegates))
                 delegates.Remove(action);
         }
     }

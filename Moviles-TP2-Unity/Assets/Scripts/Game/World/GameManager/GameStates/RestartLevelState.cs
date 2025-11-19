@@ -2,6 +2,7 @@
 using Game.World.Character;
 using Game.World.Targets;
 using Tools.FSM;
+using Tools.ServiceProvider;
 
 namespace Game.World.GameManager.GameStates
 {
@@ -20,7 +21,7 @@ namespace Game.World.GameManager.GameStates
             actions.AddMainThreadBehaviour(0, () => targetSpawner.Spawn());
             actions.AddMainThreadBehaviour(0, () => drone.Restart());
             actions.AddMainThreadBehaviour(1, () => flag.Invoke(GameManager.Flags.Play));
-            actions.AddMultiThreadableBehaviour(1, () => GameTime.Timer.Restart());
+            actions.AddMultiThreadableBehaviour(1, () => ServiceProvider.GetService<GameTime>().Timer.Restart());
             
             return actions;
         }

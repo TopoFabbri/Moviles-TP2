@@ -14,9 +14,11 @@
 //    limitations under the License.
 // </copyright>
 
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi {
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi {
   /// <summary>
   /// Represents a player, a real-world person (tied to a Games account).
   /// </summary>

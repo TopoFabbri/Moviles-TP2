@@ -16,11 +16,8 @@
 
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
-    using System.Collections.Generic;
-    using UnityEngine.SocialPlatforms;
-
     /// <summary>
     /// Recall Access data. This is the callback data
     /// when requesting Recall Access.

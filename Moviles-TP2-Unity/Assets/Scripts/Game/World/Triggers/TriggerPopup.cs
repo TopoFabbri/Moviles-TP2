@@ -2,6 +2,7 @@ using Game.Events;
 using Game.World.GameManager;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.Triggers
@@ -21,12 +22,12 @@ namespace Game.World.Triggers
             collider.isTrigger = true;
             collider.enabled = false;
             
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnStateChanged);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnStateChanged);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
         }
 
         private void OnStateChanged(ChangedStateEvent<States> obj)
@@ -42,7 +43,7 @@ namespace Game.World.Triggers
             triggered = true;
             
             popup.SetActive(true);
-            EventSystem.Raise<TriggerPopupEvent>(popup);
+            ServiceProvider.GetService<EventSystem>().Raise<TriggerPopupEvent>(popup);
             
             if (triggerOnce)
                 Destroy(gameObject);

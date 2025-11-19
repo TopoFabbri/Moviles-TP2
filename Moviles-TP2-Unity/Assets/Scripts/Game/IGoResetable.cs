@@ -1,4 +1,6 @@
-﻿namespace Tools.Pool
+﻿using Tools.Pool;
+
+namespace Game
 {
     public interface IGoResetable : IResetable
     {

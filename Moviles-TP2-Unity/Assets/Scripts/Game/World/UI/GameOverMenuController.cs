@@ -1,6 +1,8 @@
+using Game.Events;
 using Game.World.GameManager;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,12 +16,12 @@ namespace Game.World.UI
         {
             gameObject.SetActive(false);
             
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnGameStateChanged);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnGameStateChanged);
         }
         
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnGameStateChanged);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnGameStateChanged);
         }
 
         private void Update()
@@ -37,12 +39,12 @@ namespace Game.World.UI
 
         public void OnRestart()
         {
-            EventSystem.Raise<RestartLevelEvent>();
+            ServiceProvider.GetService<EventSystem>().Raise<RestartLevelEvent>();
         }
         
         public void OnMainMenu()
         {
-            LevelList.LoadMainMenu(false);
+            ServiceProvider.GetService<LevelList>().LoadMainMenu(false);
         }
     }
 }

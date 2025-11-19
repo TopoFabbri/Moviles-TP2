@@ -15,11 +15,8 @@
 // </copyright>
 
 #if UNITY_ANDROID
-namespace GooglePlayGames.OurUtils
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils
 {
-    using UnityEngine;
-    using System;
-
     public static class PlatformUtils
     {
         /// <summary>

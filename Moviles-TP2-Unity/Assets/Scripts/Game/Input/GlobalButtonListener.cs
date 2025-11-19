@@ -1,4 +1,5 @@
 using Game.World.Character;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +24,7 @@ namespace Game.Input
 
         private static void OnSelectable()
         {
-            AndroidVibrator.Vibrate(5L);
+            ServiceProvider.GetService<AndroidVibrator>().Vibrate(5L);
         }
     }
 }

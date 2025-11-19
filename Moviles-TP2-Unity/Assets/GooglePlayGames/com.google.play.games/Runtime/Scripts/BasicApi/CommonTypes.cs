@@ -14,7 +14,7 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
     /// <summary>
     /// A enum describing where game data can be fetched from.

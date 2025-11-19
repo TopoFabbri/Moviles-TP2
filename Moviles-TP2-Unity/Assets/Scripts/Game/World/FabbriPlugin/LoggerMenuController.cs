@@ -1,9 +1,10 @@
 ﻿using Game.Events;
 using TMPro;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 
-namespace Game.World.UI
+namespace Game.World.FabbriPlugin
 {
     internal sealed class LoggerMenuController : MonoBehaviour
     {
@@ -11,7 +12,7 @@ namespace Game.World.UI
 
         private void Awake()
         {
-            EventSystem.Subscribe<LogsDeletedEvent>(OnLogsDeleted);
+            ServiceProvider.GetService<EventSystem>().Subscribe<LogsDeletedEvent>(OnLogsDeleted);
         }
         
         private void Start()
@@ -21,18 +22,18 @@ namespace Game.World.UI
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<LogsDeletedEvent>(OnLogsDeleted);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<LogsDeletedEvent>(OnLogsDeleted);
         }
 
         public void OnReadLogs()
         {
-            FileManager.WriteFile("Logs Loaded");
-            logsTxt.text = FileManager.ReadFile();
+            ServiceProvider.GetService<FileManager>().WriteFile("Logs Loaded");
+            logsTxt.text = ServiceProvider.GetService<FileManager>().ReadFile();
         }
 
         public void OnDeleteLogs()
         {
-            FileManager.DeleteFile();
+            ServiceProvider.GetService<FileManager>().DeleteFile();
         }
 
         private void OnLogsDeleted(LogsDeletedEvent _)

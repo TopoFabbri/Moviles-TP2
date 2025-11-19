@@ -14,11 +14,11 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.BasicApi.Nearby
-{
-    using System;
-    using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+{
     // move this inside IMessageListener and IDiscoveryListener are always declared.
 #if UNITY_ANDROID
 

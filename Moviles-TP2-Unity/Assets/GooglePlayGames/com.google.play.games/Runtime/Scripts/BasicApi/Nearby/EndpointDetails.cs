@@ -14,10 +14,10 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.BasicApi.Nearby
-{
-    using GooglePlayGames.OurUtils;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
 
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+{
     /// <summary>
     /// Represents details of an endpoint involved in a Nearby Connections operation.
     /// </summary>

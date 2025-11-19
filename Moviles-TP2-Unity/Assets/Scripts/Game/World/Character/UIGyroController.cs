@@ -1,4 +1,3 @@
-using System;
 using Game.World.Targets;
 using UnityEngine;
 

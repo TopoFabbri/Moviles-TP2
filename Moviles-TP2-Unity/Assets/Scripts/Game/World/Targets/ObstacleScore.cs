@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Game.Events;
-using Game.World.GameManager;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.Targets
@@ -20,7 +20,7 @@ namespace Game.World.Targets
                 Scores.Remove(this);
             
             if (Scores.Count <= 0)
-                EventSystem.Raise<GameOverEvent>();
+                ServiceProvider.GetService<EventSystem>().Raise<GameOverEvent>();
         }
 
         internal static void SortScores()

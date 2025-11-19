@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Events;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.UI
@@ -19,7 +20,7 @@ namespace Game.World.UI
 
         public void OnResume()
         {
-            EventSystem.Raise<CancelAction>();
+            ServiceProvider.GetService<EventSystem>().Raise<CancelAction>();
         }
     }
 }

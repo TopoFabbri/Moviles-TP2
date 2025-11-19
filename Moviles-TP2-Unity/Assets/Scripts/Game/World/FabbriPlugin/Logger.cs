@@ -1,9 +1,10 @@
 ﻿using System;
+using Tools.ServiceProvider;
 using UnityEngine;
 
-namespace Game.World.UI
+namespace Game.World.FabbriPlugin
 {
-    internal static class Logger
+    internal class Logger : IService
     {
         internal enum LogLevel
         {
@@ -14,15 +15,15 @@ namespace Game.World.UI
             Verbose
         }
 
-        const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
+        private const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
 
-        private static bool isInitialized;
+        private bool isInitialized;
 
 #if UNITY_ANDROID
-        private static AndroidJavaClass loggerClass;
+        private AndroidJavaClass loggerClass;
 #endif
 
-        private static void InitLogger()
+        private void InitLogger()
         {
             isInitialized = true;
 
@@ -31,7 +32,7 @@ namespace Game.World.UI
 #endif
         }
 
-        internal static void Log(string message)
+        internal void Log(string message)
         {
             if (!isInitialized) InitLogger();
 
@@ -40,7 +41,7 @@ namespace Game.World.UI
 #endif
         }
 
-        internal static string GetLogs()
+        internal string GetLogs()
         {
             string logs = "";
 
@@ -52,23 +53,32 @@ namespace Game.World.UI
         }
     }
 
-    internal static class AndroidAlert
+    internal class AndroidAlert : IService
     {
         private const string PluginName = "com.fabbri2025.topologger";
 
 #if UNITY_ANDROID
-        private static AndroidJavaClass playerClass = new("com.unity3d.player.UnityPlayer");
-        private static AndroidJavaObject activity = playerClass.GetStatic<AndroidJavaObject>("currentActivity");
-
-        private static AndroidJavaClass popupClass = new(PluginName + ".PopUp");
-        private static AndroidJavaObject popupClassInstance = popupClass.CallStatic<AndroidJavaObject>("GetInstance");
+        private readonly AndroidJavaObject popupClassInstance;
+        private const string PopupClassName = ".PopUp";
+        private const string MainActivityFieldName = "mainAct";
 #endif
 
-        public static void ShowAlert(string[] strings, Action<int> alertHandler = null)
+        public AndroidAlert()
         {
 #if UNITY_ANDROID
-            popupClass.SetStatic("mainAct", activity);
+            AndroidJavaClass playerClass1 = new("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity1 = playerClass1.GetStatic<AndroidJavaObject>("currentActivity");
 
+            AndroidJavaClass popupClass1 = new(PluginName + PopupClassName);
+            popupClassInstance = popupClass1.CallStatic<AndroidJavaObject>("GetInstance");
+            
+            popupClass1.SetStatic(MainActivityFieldName, activity1);
+#endif
+        }
+        
+        public void ShowAlert(string[] strings, Action<int> alertHandler = null)
+        {
+#if UNITY_ANDROID
             if (strings.Length < 3)
             {
                 Debug.LogError("Alert requires at least 3 strings");
@@ -80,9 +90,9 @@ namespace Game.World.UI
         }
 
 #if UNITY_ANDROID
-        class AlertViewCallback : AndroidJavaProxy
+        private class AlertViewCallback : AndroidJavaProxy
         {
-            private Action<int> alertHandler;
+            private readonly Action<int> alertHandler;
 
             public AlertViewCallback(Action<int> alertHandlerIn) : base(PluginName + ".PopUp$AlertViewCallBack")
             {

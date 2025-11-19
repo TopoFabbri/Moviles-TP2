@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Game.Events;
 using Game.World.UI;
-using GooglePlayGames;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.GameManager
@@ -63,7 +65,7 @@ namespace Game.World.GameManager
                 PlayerPrefs.SetInt(ControlSchemeKey, _controlScheme);
                 PlayerPrefs.Save();
                 
-                EventSystem.Raise<ControlSchemeChangedEvent>(_controlScheme);
+                ServiceProvider.GetService<EventSystem>().Raise<ControlSchemeChangedEvent>(_controlScheme);
             }
         }
         
@@ -262,9 +264,9 @@ namespace Game.World.GameManager
             bytes.AddRange(BitConverter.GetBytes(Credits));
             bytes.AddRange(BitConverter.GetBytes(AddedSpeed));
             
-            bytes.AddRange(BitConverter.GetBytes(LevelList.GetLevels().Count));
+            bytes.AddRange(BitConverter.GetBytes(ServiceProvider.GetService<LevelList>().GetLevels().Count));
             
-            for (int i = 0; i < LevelList.GetLevels().Count; i++)
+            for (int i = 0; i < ServiceProvider.GetService<LevelList>().GetLevels().Count; i++)
                 bytes.AddRange(BitConverter.GetBytes(GetLevelTime(i)));
             
             return bytes;

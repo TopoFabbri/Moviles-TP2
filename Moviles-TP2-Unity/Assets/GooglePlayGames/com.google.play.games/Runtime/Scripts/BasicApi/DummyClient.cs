@@ -14,15 +14,16 @@
 //    limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Events;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
+using UnityEngine.SocialPlatforms;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
-    using System;
-    using System.Collections.Generic;
-    using GooglePlayGames.OurUtils;
-    using UnityEngine.SocialPlatforms;
-
     /// <summary>
     /// Dummy client used in Editor.
     /// </summary>
@@ -456,7 +457,7 @@ namespace GooglePlayGames.BasicApi
         /// Retrieves the events client.
         /// </summary>
         /// <returns>Returns null since no events client is available.</returns>
-        public GooglePlayGames.BasicApi.Events.IEventsClient GetEventsClient()
+        public IEventsClient GetEventsClient()
         {
             LogUsage();
             return null;

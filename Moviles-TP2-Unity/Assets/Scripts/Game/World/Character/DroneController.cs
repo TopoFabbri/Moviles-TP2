@@ -4,8 +4,8 @@ using Game.World.Character.DroneModules;
 using Game.World.GameManager;
 using Game.World.UI;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Game.World.Character
 {
@@ -37,14 +37,14 @@ namespace Game.World.Character
             moveAction = action =>
             {
                 moveInput = action.input;
-                GameTime.Timer.Start();
+                ServiceProvider.GetService<GameTime>().Timer.Start();
             };
             
             lookAction = action => lookInput = action.input;
 
-            EventSystem.Subscribe(moveAction);
-            EventSystem.Subscribe(lookAction);
-            EventSystem.Subscribe<CalibrateAction>(Calibrate);
+            ServiceProvider.GetService<EventSystem>().Subscribe(moveAction);
+            ServiceProvider.GetService<EventSystem>().Subscribe(lookAction);
+            ServiceProvider.GetService<EventSystem>().Subscribe<CalibrateAction>(Calibrate);
 
             rotationModule = new RotationModule(dronePivot, camPivot, rotationSpeed, camRotationCatchupSpeed);
             moveModule = new MoveModule(dronePivot, camPivot, acceleration, maxSpeed, camPositionCatchupSpeed);
@@ -61,9 +61,9 @@ namespace Game.World.Character
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe(moveAction);
-            EventSystem.Unsubscribe(lookAction);
-            EventSystem.Unsubscribe<CalibrateAction>(Calibrate);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe(moveAction);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe(lookAction);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<CalibrateAction>(Calibrate);
         }
 
         internal void OnUpdate()
@@ -90,7 +90,7 @@ namespace Game.World.Character
             if (GameSave.ControlScheme != 0)
                 return;
 
-            Vector3 rot = AccelerometerHandler.GetRotation();
+            Vector3 rot = ServiceProvider.GetService<AccelerometerHandler>().GetRotation();
             
             lookInput.y = rot.y * GameSave.RotationSensitivity / 100f;
             lookInput.z = rot.z * GameSave.RotationSensitivity / 100f;
@@ -98,7 +98,7 @@ namespace Game.World.Character
 
         private static void Calibrate(CalibrateAction _)
         {
-            AccelerometerHandler.Calibrate();
+            ServiceProvider.GetService<AccelerometerHandler>().Calibrate();
         }
     }
 }

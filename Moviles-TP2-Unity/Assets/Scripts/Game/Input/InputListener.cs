@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Game.Events;
-using Game.World.Character;
 using Game.World.GameManager;
-using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,8 +27,8 @@ namespace Game.Input
 
             if (inMenu) return;
 
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnStateChanged);
-            EventSystem.Subscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnStateChanged);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
 
             if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= actionMaps.Count)
                 GameSave.ControlScheme = Application.platform == RuntimePlatform.WindowsPlayer ? 1 : 0;
@@ -41,8 +40,8 @@ namespace Game.Input
         {
             if (inMenu) return;
             
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
-            EventSystem.Unsubscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
         }
 
         private void OnControlSchemeChanged(ControlSchemeChangedEvent obj)
@@ -82,7 +81,7 @@ namespace Game.Input
         {
             Vector3 inputVector = input.Get<Vector3>();
 
-            EventSystem.Raise<MoveAction>(inputVector);
+            ServiceProvider.GetService<EventSystem>().Raise<MoveAction>(inputVector);
         }
 
         public void OnLook(InputValue input)
@@ -93,22 +92,22 @@ namespace Game.Input
             inputVector.y *= GameSave.InvertCamY ? 1 : -1;
             inputVector *= GameSave.RotationSensitivity / 100f;
 
-            EventSystem.Raise<LookAction>(inputVector);
+            ServiceProvider.GetService<EventSystem>().Raise<LookAction>(inputVector);
         }
 
         public void OnCalibrate()
         {
-            EventSystem.Raise<CalibrateAction>();
+            ServiceProvider.GetService<EventSystem>().Raise<CalibrateAction>();
         }
 
         public void OnPause()
         {
-            EventSystem.Raise<PauseAction>();
+            ServiceProvider.GetService<EventSystem>().Raise<PauseAction>();
         }
 
         public void OnCancel()
         {
-            EventSystem.Raise<CancelAction>();
+            ServiceProvider.GetService<EventSystem>().Raise<CancelAction>();
         }
 
         private void OnStateChanged(ChangedStateEvent<States> obj)

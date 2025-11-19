@@ -1,10 +1,11 @@
 ﻿using System;
+using Tools.ServiceProvider;
 
 namespace Tools.Time
 {
-    public static class Time
+    public class Time : IService
     {
-        public static float TimeElapsed
+        public float TimeElapsed
         {
             get
             {
@@ -14,25 +15,25 @@ namespace Tools.Time
             }
         }
 
-        public static void Start()
+        public void Start()
         {
             StartTime = DateTime.Now;
         }
 
-        public static void Update()
+        public void Update()
         {
             TickTime = (float)(DateTime - _lastTickTime).TotalSeconds;
             _lastTickTime = DateTime;
         }
 
-        public static DateTime DateTime => DateTime.UtcNow;
-        public static DateTime DateTimeNow => DateTime.Now;
-        public static DateTime StartTime { get; private set; }
-        public static float TickTime { get; private set; }
+        public DateTime DateTime => DateTime.UtcNow;
+        public DateTime DateTimeNow => DateTime.Now;
+        public DateTime StartTime { get; private set; }
+        public float TickTime { get; private set; }
 
-        private static DateTime _lastTickTime;
+        private DateTime _lastTickTime;
 
-        public static void ConvertToHours(float time, out int hours, out int minutes, out int seconds)
+        public void ConvertToHours(float time, out int hours, out int minutes, out int seconds)
         {
             hours = (int)time / 3600;
             time -= hours * 3600;
@@ -41,7 +42,7 @@ namespace Tools.Time
             seconds = (int)time;
         }
 
-        public static void ConvertToMinutes(float time, out int minutes, out int seconds, out int centiseconds)
+        public void ConvertToMinutes(float time, out int minutes, out int seconds, out int centiseconds)
         {
             minutes = (int)time / 60;
             time -= minutes * 60;

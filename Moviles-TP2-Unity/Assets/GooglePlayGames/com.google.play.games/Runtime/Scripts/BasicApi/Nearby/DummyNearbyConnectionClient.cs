@@ -16,10 +16,8 @@
 
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi.Nearby
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
 {
-    using UnityEngine;
-
     /// <summary>
     /// Dummy implementation of INearbyConnectionClient. This class can be used for testing purposes.
     /// It logs messages indicating that its methods have been called.

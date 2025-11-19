@@ -14,16 +14,14 @@
 //  limitations under the License.
 // </copyright>
 
-#if UNITY_ANDROID
-namespace GooglePlayGames.Android
-{
-    using GooglePlayGames.BasicApi;
-    using GooglePlayGames.BasicApi.SavedGame;
-    using OurUtils;
-    using UnityEngine;
-    using System;
-    using System.Collections.Generic;
+using System;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.SavedGame;
+using UnityEngine;
 
+#if UNITY_ANDROID
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
+{
     internal class AndroidHelperFragment
     {
         private const string HelperFragmentClass = "com.google.games.bridge.HelperFragment";

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Game.Events;
-using Game.Input;
 using Game.World.GameManager;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,16 +18,16 @@ namespace Game.World.UI
 
         private void Start()
         {
-            EventSystem.Subscribe<CancelAction>(OnCancel);
-            EventSystem.Subscribe<ChangedStateEvent<States>>(OnChangedState);
+            ServiceProvider.GetService<EventSystem>().Subscribe<CancelAction>(OnCancel);
+            ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnChangedState);
 
             gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<CancelAction>(OnCancel);
-            EventSystem.Unsubscribe<ChangedStateEvent<States>>(OnChangedState);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<CancelAction>(OnCancel);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnChangedState);
         }
 
         private void Update()
@@ -55,17 +55,17 @@ namespace Game.World.UI
 
         public void OnResume()
         {
-            EventSystem.Raise<PauseAction>();
+            ServiceProvider.GetService<EventSystem>().Raise<PauseAction>();
         }
         
         public void OnRestart()
         {
-            EventSystem.Raise<RestartLevelEvent>();
+            ServiceProvider.GetService<EventSystem>().Raise<RestartLevelEvent>();
         }
         
         public void OnReturnToMenu()
         {
-            LevelList.LoadMainMenu(false);
+            ServiceProvider.GetService<LevelList>().LoadMainMenu(false);
         }
         
         public void OnCancel(CancelAction obj)

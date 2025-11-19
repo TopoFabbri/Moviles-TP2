@@ -1,4 +1,4 @@
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
     /// <summary>
     /// Enum to specify the interactivity of the sign in flow.

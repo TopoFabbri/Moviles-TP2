@@ -1,24 +1,26 @@
-﻿#if UNITY_ANDROID
+﻿
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using Tools.ServiceProvider;
+#if UNITY_ANDROID
 using Game.World.GameManager;
-using GooglePlayGames;
 #endif
 
 namespace Game.World.UI
 {
-    internal static class LeaderboardManager
+    internal class LeaderboardManager : IService
     {
-        internal static void ShowLeaderboard()
+        internal void ShowLeaderboard()
         {
 #if UNITY_ANDROID
             PlayGamesPlatform.Instance.ShowLeaderboardUI();
 #endif
         }
 
-        internal static void UpdateLeaderboard()
+        internal void UpdateLeaderboard()
         {
             float score = 0f;
             
-            for (int i = 0; i < LevelList.GetLevels().Count; i++)
+            for (int i = 0; i < ServiceProvider.GetService<LevelList>().GetLevels().Count; i++)
             {
                 float currentLevelTime = GameSave.GetLevelTime(i);
                 

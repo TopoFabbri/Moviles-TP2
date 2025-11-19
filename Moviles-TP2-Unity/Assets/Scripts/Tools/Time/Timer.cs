@@ -12,7 +12,7 @@ namespace Tools.Time
         private bool started;
 
         public float TimeElapsed =>
-            started ? (float)(Time.DateTime - startTime).TotalSeconds - pausedTime - (paused ? (float)(Time.DateTime - pausedDateTime).TotalSeconds : 0f) : 0f;
+            started ? (float)(ServiceProvider.ServiceProvider.GetService<Time>().DateTime - startTime).TotalSeconds - pausedTime - (paused ? (float)(ServiceProvider.ServiceProvider.GetService<Time>().DateTime - pausedDateTime).TotalSeconds : 0f) : 0f;
 
         public Timer()
         {
@@ -24,8 +24,8 @@ namespace Tools.Time
             if (started) return;
             started = true;
 
-            startTime = Time.DateTime;
-            pausedDateTime = Time.DateTime;
+            startTime = ServiceProvider.ServiceProvider.GetService<Time>().DateTime;
+            pausedDateTime = ServiceProvider.ServiceProvider.GetService<Time>().DateTime;
             pausedTime = 0f;
         }
 
@@ -34,15 +34,15 @@ namespace Tools.Time
             started = false;
             pausedTime = 0f;
             paused = false;
-            startTime = Time.DateTime;
-            pausedDateTime = Time.DateTime;
+            startTime = ServiceProvider.ServiceProvider.GetService<Time>().DateTime;
+            pausedDateTime = ServiceProvider.ServiceProvider.GetService<Time>().DateTime;
         }
         
         public void Pause()
         {
             if (!started) return;
             
-            pausedDateTime = Time.DateTime;
+            pausedDateTime = ServiceProvider.ServiceProvider.GetService<Time>().DateTime;
             paused = true;
         }
 
@@ -51,7 +51,7 @@ namespace Tools.Time
             if (!started) return;
             
             paused = false;
-            pausedTime += (float)(Time.DateTime - pausedDateTime).TotalSeconds;
+            pausedTime += (float)(ServiceProvider.ServiceProvider.GetService<Time>().DateTime - pausedDateTime).TotalSeconds;
         }
     }
 }

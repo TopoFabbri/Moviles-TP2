@@ -1,15 +1,15 @@
+using System;
+using System.Collections.Generic;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
+using UnityEngine;
+
 #if UNITY_ANDROID
 #pragma warning disable 0642 // Possible mistaken empty statement
 
-namespace GooglePlayGames.Android
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
 {
-    using System;
-    using System.Collections.Generic;
-    using GooglePlayGames.BasicApi;
-    using GooglePlayGames.BasicApi.Nearby;
-    using GooglePlayGames.OurUtils;
-    using UnityEngine;
-
     public class AndroidNearbyConnectionClient : INearbyConnectionClient
     {
         private volatile AndroidJavaObject mClient;

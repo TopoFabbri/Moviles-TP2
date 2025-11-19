@@ -2,6 +2,7 @@ using Game.Events;
 using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,19 +18,19 @@ namespace Game.World.UI
 
         private void Awake()
         {
-            EventSystem.Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
+            ServiceProvider.GetService<EventSystem>().Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
             
             androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
         }
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
         }
 
         private void Update()
         {
-            float seconds = GameTime.Timer.TimeElapsed;
+            float seconds = ServiceProvider.GetService<GameTime>().Timer.TimeElapsed;
             int minutes = (int)(seconds / 60f);
             seconds -= minutes * 60f;
             seconds %= 60f;

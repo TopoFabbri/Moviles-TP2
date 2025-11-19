@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Game.Events;
 using Game.World.GameManager;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
 using TMPro;
 using Tools.EventSystem;
+using Tools.ServiceProvider;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,7 +30,7 @@ namespace Game.World.UI
             if (PlayerInput.all.Count > 0)
                 PlayerInput.GetPlayerByIndex(0)?.actions.FindActionMap("UI").Enable();
 
-            EventSystem.Subscribe<CancelAction>(OnCancel);
+            ServiceProvider.GetService<EventSystem>().Subscribe<CancelAction>(OnCancel);
 
             CloseAllSubMenus();
 
@@ -38,7 +39,7 @@ namespace Game.World.UI
 
         private void OnDestroy()
         {
-            EventSystem.Unsubscribe<CancelAction>(OnCancel);
+            ServiceProvider.GetService<EventSystem>().Unsubscribe<CancelAction>(OnCancel);
         }
 
         private void Update()
@@ -74,7 +75,7 @@ namespace Game.World.UI
         
         public void OnPlay()
         {
-            LevelList.LoadCurrentLevel();
+            ServiceProvider.GetService<LevelList>().LoadCurrentLevel();
         }
 
         public void OnExit()

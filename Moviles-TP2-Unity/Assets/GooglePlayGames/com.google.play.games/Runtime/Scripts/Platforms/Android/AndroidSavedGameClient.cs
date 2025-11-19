@@ -1,16 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.SavedGame;
+using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
+using UnityEngine;
+
 #if UNITY_ANDROID
 #pragma warning disable 0642 // Possible mistaken empty statement
 
-namespace GooglePlayGames.Android
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using GooglePlayGames.BasicApi;
-    using GooglePlayGames.BasicApi.SavedGame;
-    using GooglePlayGames.OurUtils;
-    using UnityEngine;
-
     internal class AndroidSavedGameClient : ISavedGameClient
     {
         // Regex for a valid filename. Valid file names are between 1 and 100 characters (inclusive)

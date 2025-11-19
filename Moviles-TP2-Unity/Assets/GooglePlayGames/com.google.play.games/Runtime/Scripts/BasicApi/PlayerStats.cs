@@ -16,10 +16,8 @@
 
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.BasicApi
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
 {
-    using System;
-
     /// <summary>
     /// Player stats. See https://developers.google.com/games/services/android/stats
     /// </summary>

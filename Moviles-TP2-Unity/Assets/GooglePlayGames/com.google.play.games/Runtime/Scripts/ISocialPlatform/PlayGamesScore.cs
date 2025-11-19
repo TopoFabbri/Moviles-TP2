@@ -14,13 +14,13 @@
 //    limitations under the License.
 // </copyright>
 
+using System;
+using UnityEngine.SocialPlatforms;
+
 #if UNITY_ANDROID
 
-namespace GooglePlayGames
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform
 {
-    using System;
-    using UnityEngine.SocialPlatforms;
-
     /// <summary>
     /// Represents a score on a Google Play Games leaderboard. Implements the Unity
     /// <c>IScore</c> interface.

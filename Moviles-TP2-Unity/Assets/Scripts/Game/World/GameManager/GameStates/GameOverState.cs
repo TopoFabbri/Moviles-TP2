@@ -1,6 +1,8 @@
-﻿using Game.World.UI;
+﻿using Game.Events;
+using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
+using Tools.ServiceProvider;
 using static Game.World.GameManager.GameManager;
 
 namespace Game.World.GameManager.GameStates
@@ -14,7 +16,7 @@ namespace Game.World.GameManager.GameStates
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
             actions.AddMainThreadBehaviour(0, () => restart = false);
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Subscribe<RestartLevelEvent>(OnRestart));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<RestartLevelEvent>(OnRestart));
             
             return actions;
         }
@@ -36,7 +38,7 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => EventSystem.Unsubscribe<RestartLevelEvent>(OnRestart));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<RestartLevelEvent>(OnRestart));
             
             return actions;
         }

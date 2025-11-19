@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tools.Pool
+namespace Game
 {
     internal sealed class GoPool<TResetable> where TResetable : MonoBehaviour, IGoResetable, new()
     {

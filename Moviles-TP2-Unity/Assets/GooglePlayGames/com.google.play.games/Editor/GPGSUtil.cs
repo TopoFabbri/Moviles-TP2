@@ -15,16 +15,16 @@
 // </copyright>
 // Keep this even on unsupported configurations.
 
-namespace GooglePlayGames.Editor
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Xml;
-    using UnityEditor;
-    using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+using UnityEditor;
+using UnityEngine;
 
+namespace GooglePlayGames.com.google.play.games.Editor
+{
     /// <summary>
     /// Utility class to perform various tasks in the editor.
     /// </summary>

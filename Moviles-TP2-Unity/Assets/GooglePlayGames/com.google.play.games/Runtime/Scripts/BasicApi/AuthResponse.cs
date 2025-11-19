@@ -13,12 +13,13 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-#if UNITY_ANDROID
-namespace GooglePlayGames.BasicApi
-{
-    using System;
-    using System.Collections.Generic;
 
+using System;
+using System.Collections.Generic;
+
+#if UNITY_ANDROID
+namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+{
     /// <summary>
     /// Represents the response received from Play Games Services when requesting a server-side OAuth 2.0
     /// authorization code for the signed-in player.

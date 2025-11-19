@@ -1,45 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.World.GameManager;
+using Tools.ServiceProvider;
 using UnityEngine.SceneManagement;
 
 namespace Game.World.UI
 {
-    internal static class LevelList
+    internal class LevelList : IService
     {
-        private static readonly List<string> Levels = new();
+        private readonly List<string> levels = new();
 
         private static string MainMenu => SceneUtility.GetScenePathByBuildIndex(0);
 
-        internal static List<string> GetLevels()
+        internal List<string> GetLevels()
         {
-            if (Levels.Count > 0) return Levels;
+            if (levels.Count > 0) return levels;
             
             for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 
                 if (scenePath.Contains("Level", StringComparison.CurrentCultureIgnoreCase))
-                    Levels.Add(scenePath);
+                    levels.Add(scenePath);
             }
 
-            return Levels;
+            return levels;
         }
 
-        internal static void LoadCurrentLevel()
+        internal void LoadCurrentLevel()
         {
-            if (Levels.Count == 0)
+            if (levels.Count == 0)
                 GetLevels();
 
-            SceneManager.LoadScene(Levels[GameSave.CurrentLevel]);
+            SceneManager.LoadScene(levels[GameSave.CurrentLevel]);
         }
         
-        internal static void LoadNextLevel()
+        internal void LoadNextLevel()
         {
-            if (Levels.Count == 0)
+            if (levels.Count == 0)
                 GetLevels();
             
-            if (GameSave.CurrentLevel >= Levels.Count - 1)
+            if (GameSave.CurrentLevel >= levels.Count - 1)
             {
                 GameSave.CurrentLevel = -1;
                 SceneManager.LoadScene(MainMenu);
@@ -50,11 +51,11 @@ namespace Game.World.UI
             LoadCurrentLevel();
         }
 
-        public static void LoadMainMenu(bool levelFinished)
+        public void LoadMainMenu(bool levelFinished)
         {
             if (levelFinished)
             {
-                if (GameSave.CurrentLevel >= Levels.Count - 1)
+                if (GameSave.CurrentLevel >= levels.Count - 1)
                     GameSave.CurrentLevel = -1;
                 else
                     GameSave.CurrentLevel++;

@@ -3,9 +3,9 @@ using Tools.EventSystem;
 
 namespace Tools.FSM
 {
-    internal class ChangedStateEvent<TStateType> : IEvent where TStateType : Enum
+    public class ChangedStateEvent<TStateType> : IEvent where TStateType : Enum
     {
-        internal TStateType state;
+        public TStateType state;
         
         public void Restart()
         {

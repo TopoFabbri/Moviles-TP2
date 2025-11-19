@@ -13,34 +13,16 @@ namespace Game.World.UI
 {
     internal sealed class MainMenu : MonoBehaviour
     {
-
-        private enum LogLevel 
-        {
-            Error,
-            Warning,
-            Info,
-            Debug,
-            Verbose
-        }
-        
         [SerializeField] private List<GameObject> subMenus;
         [SerializeField] private GameObject subMenuBg;
         [SerializeField] private GameObject firstSelected;
         [SerializeField] private TextMeshProUGUI versionTxt;
         
-        private const string LoggerClassName = "com.fabbri2025.topologger.TopoLogger";
-
-#if UNITY_ANDROID
-        private AndroidJavaClass loggerClass;
-#endif
-
         private void Start()
         {
             if (versionTxt)
                 versionTxt.text = $"v{Application.version}";
             
-            InitLogger();
-
             foreach (InputAction inputAction in PlayerInput.GetPlayerByIndex(0).actions)
                 inputAction.Disable();
 
@@ -52,13 +34,6 @@ namespace Game.World.UI
             CloseAllSubMenus();
 
             PlayLogin();
-        }
-
-        private void InitLogger()
-        {
-#if UNITY_ANDROID
-            loggerClass = new AndroidJavaClass(LoggerClassName);
-#endif
         }
 
         private void OnDestroy()
@@ -93,16 +68,13 @@ namespace Game.World.UI
                 CloseAllSubMenus();
         }
 
+        public void OnLogger()
+        {
+        }
+        
         public void OnPlay()
         {
             LevelList.LoadCurrentLevel();
-        }
-
-        public void OnLogger()
-        {
-#if UNITY_ANDROID
-            loggerClass?.CallStatic("SendLog", "LogSent", (int)LogLevel.Debug);
-#endif
         }
 
         public void OnExit()

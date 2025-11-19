@@ -1,3 +1,5 @@
+using Game.Events;
+using Tools.EventSystem;
 using UnityEngine;
 
 namespace Game.World.UI
@@ -13,9 +15,8 @@ namespace Game.World.UI
         public static string ReadFile()
         {
             if (fileManagerInstance == null)
-            {
                 Init();
-            }
+            
             string txt = fileManagerInstance?.Call<string>("ReadFile");
 
             return txt;
@@ -43,6 +44,8 @@ namespace Game.World.UI
                             Init();
                         }
                         fileManagerInstance?.Call("DeleteFiles");
+                        
+                        EventSystem.Raise<LogsDeletedEvent>();
                     }
                 });
         }
@@ -51,8 +54,8 @@ namespace Game.World.UI
         {
 #if UNITY_ANDROID
             fileManager = new AndroidJavaClass(packName + "." + loggerClassName);
-            AndroidJavaClass unityJC = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject activity = unityJC.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaClass playerClass = new("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity = playerClass.GetStatic<AndroidJavaObject>("currentActivity");
             fileManager.SetStatic("mainAct", activity);
 
             fileManagerInstance = fileManager.CallStatic<AndroidJavaObject>("GetInstance");

@@ -1,0 +1,20 @@
+FSM:
+Utilice una "Finite State Machine" para que el juego cambie su comportamiento dependiendo de su estado actual (pause, play, end screen, etc.). Le implemente 
+funcionalidades como behaviours con multithreading, flags para invocar cambios de estado y eventos llamados en cada cambio de estado y pooling de behaviours.
+
+Event Bus:
+Agregue el patrón “Event Bus” en combinación con el patrón Observer para crear un sistema en el cual cada script que necesite ser notificado de un evento, 
+lo sea sin necesidad de conocer el script que lo dispara. Le implemente funcionalidades como usar clases como eventos para que se pueda pasar parámetros como 
+información agregada además de solo un evento con un nombre y una implementación con el patrón Pool para reutilizar las clases descartadas.
+
+Service Provider:
+En lugar de usar el clásico patrón Singleton para objetos de una sola instancia utilice Service Provider como mi clase estática única que cree las instancias 
+únicas de cada servicio, las cuales se pueden acceder por medio del mismo.
+
+Pool (usado en el TP anterior):
+Use el patrón para los behaviours de la FSM, los eventos del evento bus y para instanciar objetos con el spawner de objetivos en el mapa. De esta manera evite 
+tener que destruir objetos que pueden ser utilizados más adelante e instanciarlos nuevamente.
+
+Factory (usado en el TP anterior):
+Añadí el patrón Factory en el spawn de objetos para configurarlos al momento de ser instanciados. De esta manera lo pude combinar con el uso del patrón Pool, 
+usar un objeto reciclado y asignarle sus propiedades. También lo use junto con las otras implementaciones de pool de la misma manera.

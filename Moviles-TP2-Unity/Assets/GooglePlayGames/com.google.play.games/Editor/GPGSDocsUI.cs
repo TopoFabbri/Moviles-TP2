@@ -14,12 +14,11 @@
 //    limitations under the License.
 // </copyright>
 
-using GooglePlayGames.com.google.play.games.Runtime.Scripts;
-using UnityEditor;
-using UnityEngine;
-
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using UnityEngine;
+    using UnityEditor;
+
     public class GPGSDocsUI
     {
         [MenuItem("Window/Google Play Games/Documentation/Plugin Getting Started Guide...", false, 100)]
@@ -39,7 +38,7 @@ namespace GooglePlayGames.com.google.play.games.Editor
         {
             string msg = GPGSStrings.AboutText +
                          PluginVersion.VersionString + " (" +
-                         string.Format("0x{0:X8}", PluginVersion.VersionInt) + ")";
+                         string.Format("0x{0:X8}", GooglePlayGames.PluginVersion.VersionInt) + ")";
             EditorUtility.DisplayDialog(GPGSStrings.AboutTitle, msg,
                 GPGSStrings.Ok);
         }

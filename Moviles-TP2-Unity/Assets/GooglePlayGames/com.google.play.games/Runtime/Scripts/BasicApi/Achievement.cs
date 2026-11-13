@@ -14,12 +14,12 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
+    using System;
+
     /// <summary>Data interface for retrieving achievement information.</summary>
     /// <remarks>
     /// There are 3 states an achievement can be in:
@@ -54,9 +54,9 @@ namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
         private string mUnlockedImageUrl;
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents the current <see cref="Achievement"/>.
+        /// Returns a <see cref="System.String"/> that represents the current <see cref="GooglePlayGames.BasicApi.Achievement"/>.
         /// </summary>
-        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Achievement"/>.</returns>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="GooglePlayGames.BasicApi.Achievement"/>.</returns>
         public override string ToString()
         {
             return string.Format(

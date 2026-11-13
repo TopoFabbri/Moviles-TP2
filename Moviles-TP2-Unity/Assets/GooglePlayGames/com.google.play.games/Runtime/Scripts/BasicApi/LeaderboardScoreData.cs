@@ -14,14 +14,13 @@
 //    limitations under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
-using UnityEngine.SocialPlatforms;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
+    using System.Collections.Generic;
+    using UnityEngine.SocialPlatforms;
+
     /// <summary>
     /// Leaderboard score data. This is the callback data
     /// when loading leaderboard scores.  There are several SDK

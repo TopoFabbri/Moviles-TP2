@@ -1,4 +1,4 @@
-﻿namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Events
+﻿namespace GooglePlayGames.BasicApi.Events
 {
     internal class Event : IEvent
     {

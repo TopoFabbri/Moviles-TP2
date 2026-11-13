@@ -16,11 +16,10 @@
 
 // Keep this file even on unsupported configurations.
 
-using System.Collections.Generic;
-using System.IO;
-
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using System.Collections.Generic;
+    using System.IO;
 #if UNITY_2017_3_OR_NEWER
     using UnityEngine.Networking;
 #else

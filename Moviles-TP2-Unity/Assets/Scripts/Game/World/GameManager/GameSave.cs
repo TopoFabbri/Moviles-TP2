@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game.Events;
 using Game.World.UI;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using GooglePlayGames;
 using Tools.EventSystem;
 using Tools.ServiceProvider;
 using UnityEngine;

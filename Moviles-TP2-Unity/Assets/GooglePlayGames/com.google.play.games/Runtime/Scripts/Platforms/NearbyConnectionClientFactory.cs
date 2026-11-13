@@ -16,26 +16,25 @@
 
 // Android only feature
 
-using System;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android;
-using UnityEngine;
-using Logger = GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils.Logger;
-
 #if (UNITY_ANDROID)
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms
+namespace GooglePlayGames
 {
+    using UnityEngine;
+    using System;
+    using GooglePlayGames.OurUtils;
+    using GooglePlayGames.BasicApi.Nearby;
+
     public static class NearbyConnectionClientFactory
     {
         public static void Create(Action<INearbyConnectionClient> callback)
         {
             if (Application.isEditor)
             {
-                Logger.d("Creating INearbyConnection in editor, using DummyClient.");
-                callback.Invoke(new DummyNearbyConnectionClient());
+                GooglePlayGames.OurUtils.Logger.d("Creating INearbyConnection in editor, using DummyClient.");
+                callback.Invoke(new GooglePlayGames.BasicApi.Nearby.DummyNearbyConnectionClient());
             }
 
-            callback.Invoke(new AndroidNearbyConnectionClient());
+            callback.Invoke(new GooglePlayGames.Android.AndroidNearbyConnectionClient());
         }
     }
 }

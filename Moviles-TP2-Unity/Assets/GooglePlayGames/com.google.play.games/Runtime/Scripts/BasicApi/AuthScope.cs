@@ -13,14 +13,13 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 #if UNITY_ANDROID
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// Represents type-safe constants for the specific OAuth 2.0 authorization scopes used when
     /// requesting server-side access to Play Games Services web APIs.

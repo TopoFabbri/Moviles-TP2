@@ -14,7 +14,7 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts
+namespace GooglePlayGames
 {
     public class PluginVersion
     {

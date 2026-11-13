@@ -1,11 +1,11 @@
-using System;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby;
-using UnityEngine;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils
+namespace GooglePlayGames.OurUtils
 {
+    using BasicApi.Nearby;
+    using System;
+    using UnityEngine;
+
     public class NearbyHelperObject : MonoBehaviour
     {
         // our (singleton) instance

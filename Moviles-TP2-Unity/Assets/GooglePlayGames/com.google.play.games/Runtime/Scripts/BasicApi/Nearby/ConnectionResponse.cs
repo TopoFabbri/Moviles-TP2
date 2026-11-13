@@ -14,10 +14,10 @@
 //    limitations under the License.
 // </copyright>
 
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
-
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+namespace GooglePlayGames.BasicApi.Nearby
 {
+    using GooglePlayGames.OurUtils;
+
     /// <summary>
     /// Represents a response to a connection request, including status, payload, and identifying information.
     /// </summary>

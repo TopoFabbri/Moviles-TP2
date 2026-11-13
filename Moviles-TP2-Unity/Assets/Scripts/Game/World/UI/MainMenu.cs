@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Game.Events;
 using Game.World.GameManager;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 using TMPro;
 using Tools.EventSystem;
 using Tools.ServiceProvider;

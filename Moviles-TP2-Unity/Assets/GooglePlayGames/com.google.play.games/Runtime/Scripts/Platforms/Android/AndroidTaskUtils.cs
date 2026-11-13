@@ -1,11 +1,11 @@
-using System;
-using UnityEngine;
-
 #if UNITY_ANDROID
 #pragma warning disable 0642 // Possible mistaken empty statement
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
+namespace GooglePlayGames.Android
 {
+    using UnityEngine;
+    using System;
+
     class AndroidTaskUtils
     {
         private AndroidTaskUtils()

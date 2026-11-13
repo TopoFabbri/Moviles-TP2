@@ -14,13 +14,13 @@
 //    limitations under the License.
 // </copyright>
 
-using UnityEditor;
-using UnityEngine;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using UnityEngine;
+    using UnityEditor;
+
     public class NearbyConnectionUI : EditorWindow
     {
         private string mNearbyServiceId = string.Empty;

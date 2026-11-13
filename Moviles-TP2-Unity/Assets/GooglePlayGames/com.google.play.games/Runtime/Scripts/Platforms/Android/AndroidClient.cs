@@ -14,22 +14,21 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Events;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.SavedGame;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
-using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using Logger = GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils.Logger;
-
 #if UNITY_ANDROID
 #pragma warning disable 0642 // Possible mistaken empty statement
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
+namespace GooglePlayGames.Android
 {
+    using GooglePlayGames.BasicApi;
+    using GooglePlayGames.BasicApi.Events;
+    using GooglePlayGames.BasicApi.SavedGame;
+    using GooglePlayGames.OurUtils;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine;
+    using UnityEngine.SocialPlatforms;
+
     public class AndroidClient : IPlayGamesClient
     {
         private enum AuthState
@@ -395,7 +394,7 @@ namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Androi
                         InvokeCallbackOnGameThread(callback, false);
                         break;
                     default:
-                        Logger.d("There was an error when loading friends." + result);
+                        GooglePlayGames.OurUtils.Logger.d("There was an error when loading friends." + result);
                         InvokeCallbackOnGameThread(callback, false);
                         break;
                 }
@@ -494,9 +493,9 @@ namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Androi
         {
             if (mFriendsResolutionException == null)
             {
-                Logger.d("The developer asked for access to the friends " +
-                         "list but there is no intent to trigger the UI. This may be because the user " +
-                         "has granted access already or the game has not called loadFriends() before.");
+                GooglePlayGames.OurUtils.Logger.d("The developer asked for access to the friends " +
+                                                  "list but there is no intent to trigger the UI. This may be because the user " +
+                                                  "has granted access already or the game has not called loadFriends() before.");
                 using (var playersClient = getPlayersClient())
                 using (
                     var task = playersClient.Call<AndroidJavaObject>("loadFriends", /* pageSize= */ 1,

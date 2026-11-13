@@ -73,3 +73,47 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Unity Test Framework & Addressables remote output
+InitTestScene*.unity
+InitTestScene*.unity.meta
+TestResults*.xml
+/[Ss]erverData/
+
+# Modern VS / Rider / VS Code & crash dumps
+*.slnx
+*.sln.iml
+*.rsuser
+*.stackdump
+*.gpState
+.vscode/
+
+# Android / Mobile build artifacts
+*-symbols.zip
+*.symbols.zip
+*.obb
+local.properties
+proguard_logs/
+
+# Node.js / npm
+node_modules/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Local AI / CodeGraph index
+.codegraph/
+
+# OS generated files
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini

@@ -51,7 +51,7 @@ namespace Game.Input
 
         private void SwitchScheme(int schemeId)
         {
-            if (schemeId < 0 || schemeId > actionMaps.Count) return;
+            if (schemeId < 0 || schemeId >= actionMaps.Count) return;
 
             foreach (string scheme in actionMaps)
                 playerInput.actions.FindActionMap(scheme).Disable();

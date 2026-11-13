@@ -14,10 +14,10 @@
 //    limitations under the License.
 // </copyright>
 
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
-
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+namespace GooglePlayGames.BasicApi.Nearby
 {
+    using GooglePlayGames.OurUtils;
+
     /// <summary>
     /// Represents a request to establish a connection with a remote endpoint.
     /// Contains information about the remote endpoint and an optional payload.

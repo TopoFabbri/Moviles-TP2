@@ -15,15 +15,15 @@
 // </copyright>
 
 
-using System;
-using System.Collections;
-using System.IO;
-using System.Xml;
-using UnityEditor;
-using UnityEngine;
-
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using System;
+    using System.Collections;
+    using System.IO;
+    using System.Xml;
+    using UnityEditor;
+    using UnityEngine;
+
     /// <summary>
     /// Google Play Game Services Setup dialog for Android.
     /// </summary>

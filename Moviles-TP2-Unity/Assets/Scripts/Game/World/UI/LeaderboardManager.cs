@@ -1,5 +1,5 @@
 ﻿
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using GooglePlayGames;
 using Tools.ServiceProvider;
 #if UNITY_ANDROID
 using Game.World.GameManager;

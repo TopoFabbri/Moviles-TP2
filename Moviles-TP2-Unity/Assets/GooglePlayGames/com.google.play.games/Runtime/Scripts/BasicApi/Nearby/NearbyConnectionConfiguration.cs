@@ -14,11 +14,11 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
-
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi.Nearby
+namespace GooglePlayGames.BasicApi.Nearby
 {
+    using System;
+    using GooglePlayGames.OurUtils;
+
     /// <summary>
     /// Represents the configuration for a Nearby Connections operation.
     /// Includes initialization status and client-specific configuration.

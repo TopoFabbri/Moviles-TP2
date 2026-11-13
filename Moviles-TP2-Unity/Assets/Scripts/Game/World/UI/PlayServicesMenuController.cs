@@ -1,4 +1,4 @@
-﻿using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+﻿using GooglePlayGames;
 using Tools.ServiceProvider;
 using UnityEngine;
 

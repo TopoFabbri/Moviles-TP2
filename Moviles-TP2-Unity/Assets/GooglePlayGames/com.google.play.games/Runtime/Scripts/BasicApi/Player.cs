@@ -13,11 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
-
 #if UNITY_ANDROID
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
     /// <summary>
     /// Represents a player. A player is different from a participant! The participant is

@@ -14,15 +14,17 @@
 //  limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
-using UnityEngine;
-using UnityEngine.SocialPlatforms;
-
 #if UNITY_ANDROID
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.Platforms.Android
+namespace GooglePlayGames.Android
 {
+    using GooglePlayGames.BasicApi;
+    using GooglePlayGames.BasicApi.SavedGame;
+    using OurUtils;
+    using UnityEngine;
+    using UnityEngine.SocialPlatforms;
+    using System;
+    using System.Collections.Generic;
+
     internal class AndroidJavaConverter
     {
         internal static System.DateTime ToDateTime(long milliseconds)

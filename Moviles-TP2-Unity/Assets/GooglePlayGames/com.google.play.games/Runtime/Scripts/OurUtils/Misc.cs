@@ -14,10 +14,10 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils
+namespace GooglePlayGames.OurUtils
 {
+    using System;
+
     public static class Misc
     {
         public static bool BuffersAreIdentical(byte[] a, byte[] b)

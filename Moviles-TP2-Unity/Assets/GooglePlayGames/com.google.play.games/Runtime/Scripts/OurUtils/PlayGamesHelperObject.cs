@@ -14,13 +14,13 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils
+namespace GooglePlayGames.OurUtils
 {
+    using System;
+    using System.Collections;
+    using UnityEngine;
+    using System.Collections.Generic;
+
     public class PlayGamesHelperObject : MonoBehaviour
     {
         // our (singleton) instance

@@ -1,7 +1,7 @@
 using Game.Events;
 using Game.World.GameManager;
 using Game.World.Targets;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform;
+using GooglePlayGames;
 using Tools.EventSystem;
 using Tools.ServiceProvider;
 using UnityEngine;

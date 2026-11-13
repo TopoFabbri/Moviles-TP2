@@ -14,12 +14,15 @@
 //    limitations under the License.
 // </copyright>
 
-using UnityEditor;
-using UnityEditor.Callbacks;
-
 #if UNITY_ANDROID
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using UnityEditor.Callbacks;
+    using UnityEditor;
+    using UnityEngine;
+
     public static class GPGSPostBuild
     {
         [PostProcessBuild(99999)]

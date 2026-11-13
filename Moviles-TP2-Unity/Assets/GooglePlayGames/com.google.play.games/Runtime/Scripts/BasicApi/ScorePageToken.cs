@@ -16,7 +16,7 @@
 
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
     /// <summary>
     /// Enum representing the direction of score page navigation.

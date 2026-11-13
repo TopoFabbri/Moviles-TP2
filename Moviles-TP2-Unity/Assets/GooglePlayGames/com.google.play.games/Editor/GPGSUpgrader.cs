@@ -14,14 +14,14 @@
 //    limitations under the License.
 // </copyright>
 
-using GooglePlayGames.com.google.play.games.Runtime.Scripts;
-using UnityEditor;
-using UnityEngine;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
+    using System.IO;
+    using UnityEditor;
+    using UnityEngine;
+
     /// <summary>
     /// GPGS upgrader handles performing and upgrade tasks.
     /// </summary>

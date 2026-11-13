@@ -16,7 +16,7 @@
 
 // Keep the strings all the time even if on an unsupported configuration.
 
-namespace GooglePlayGames.com.google.play.games.Editor
+namespace GooglePlayGames.Editor
 {
     public class GPGSStrings
     {

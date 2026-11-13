@@ -14,14 +14,14 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
-using UnityEngine.SocialPlatforms;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform
+namespace GooglePlayGames
 {
+    using System;
+    using GooglePlayGames.BasicApi;
+    using UnityEngine.SocialPlatforms;
+
     /// <summary>
     /// Represents the Google Play Games local user, providing access to
     /// authentication and user-specific functionality. Implements Unity's

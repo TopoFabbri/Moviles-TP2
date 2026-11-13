@@ -14,19 +14,18 @@
 //    limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.OurUtils;
-using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SocialPlatforms;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform
+namespace GooglePlayGames
 {
+    using System;
+    using System.Collections;
+    using GooglePlayGames.OurUtils;
+    using UnityEngine;
 #if UNITY_2017_2_OR_NEWER
+    using UnityEngine.Networking;
 #endif
+    using UnityEngine.SocialPlatforms;
 
     /// <summary>
     /// Represents a Google Play Games user profile. Implements the Unity's <c>IUserProfile</c>

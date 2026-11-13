@@ -14,14 +14,15 @@
 //    limitations under the License.
 // </copyright>
 
-using System.Collections.Generic;
-using GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi;
-using UnityEngine.SocialPlatforms;
-
 #if UNITY_ANDROID
 
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.ISocialPlatform
+namespace GooglePlayGames
 {
+    using System.Collections.Generic;
+    using GooglePlayGames.BasicApi;
+    using UnityEngine;
+    using UnityEngine.SocialPlatforms;
+
     /// <summary>
     /// Represents a Google Play Games leaderboard. The class provides a way to configure and store
     /// data for a specific leaderboard.

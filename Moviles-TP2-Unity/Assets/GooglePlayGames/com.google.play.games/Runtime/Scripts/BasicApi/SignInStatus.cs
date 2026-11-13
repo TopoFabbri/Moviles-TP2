@@ -1,4 +1,4 @@
-namespace GooglePlayGames.com.google.play.games.Runtime.Scripts.BasicApi
+namespace GooglePlayGames.BasicApi
 {
     /// <summary>
     /// Enum to specify the sign in status.

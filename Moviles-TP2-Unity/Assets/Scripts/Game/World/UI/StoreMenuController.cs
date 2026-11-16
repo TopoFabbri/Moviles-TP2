@@ -1,5 +1,7 @@
-﻿using Game.World.GameManager;
+﻿using Game.World.Ads;
+using Game.World.GameManager;
 using TMPro;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,13 +19,98 @@ namespace Game.World.UI
         [SerializeField] private string creditsString = "Credits: ";
         [SerializeField] private string buyBtnString = "Buy: <price> credits";
 
+        [Header("Rewarded Ad Configuration")]
+        [SerializeField] private Button watchAdBtn;
+        [SerializeField] private TextMeshProUGUI watchAdBtnText;
+        [SerializeField] private int rewardedCredits = 5;
+        [SerializeField] private string watchAdBtnString = "Free: +<credits> creds";
+        [SerializeField] private string adCooldownString = "Ad: <seconds>s";
+
         private int buyPrice = 1;
+        private IAdService adService;
 
         private void Start()
         {
+            adService = ServiceProvider.GetService<IAdService>();
+            SetupRewardedAdUI();
             UpdateBar();
             UpdateBuyPrice();
             UpdateCreditsText();
+        }
+
+        private void Update()
+        {
+            UpdateRewardedAdUI();
+        }
+
+        private void SetupRewardedAdUI()
+        {
+            if (watchAdBtn == null && buyBtnText != null)
+            {
+                Button originalBuyBtn = buyBtnText.GetComponentInParent<Button>();
+                if (originalBuyBtn != null && originalBuyBtn.transform.parent != null)
+                {
+                    Transform buyContainer = originalBuyBtn.transform.parent;
+                    Transform contentParent = buyContainer.parent;
+                    if (contentParent != null)
+                    {
+                        GameObject adContainer = Instantiate(buyContainer.gameObject, contentParent);
+                        adContainer.name = "WatchAdContainer";
+                        watchAdBtn = adContainer.GetComponentInChildren<Button>();
+                        watchAdBtnText = adContainer.GetComponentInChildren<TextMeshProUGUI>();
+                    }
+                }
+            }
+
+            if (watchAdBtn != null)
+            {
+                // Disable any persistent inspector listeners inherited from cloning the Buy button
+                for (int i = 0; i < watchAdBtn.onClick.GetPersistentEventCount(); i++)
+                {
+                    watchAdBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
+                }
+
+                watchAdBtn.onClick.RemoveAllListeners();
+                watchAdBtn.onClick.AddListener(OnWatchAdBtnClicked);
+            }
+        }
+
+        private void UpdateRewardedAdUI()
+        {
+            if (watchAdBtn == null || watchAdBtnText == null) return;
+
+            if (adService == null)
+                adService = ServiceProvider.GetService<IAdService>();
+
+            float remaining = 0f;
+            bool canShow = adService != null && adService.CanShowRewarded(out remaining);
+
+            watchAdBtn.interactable = canShow;
+            if (canShow)
+            {
+                watchAdBtnText.text = watchAdBtnString.Replace("<credits>", rewardedCredits.ToString());
+            }
+            else
+            {
+                watchAdBtnText.text = adCooldownString.Replace("<seconds>", Mathf.CeilToInt(remaining).ToString());
+            }
+        }
+
+        public void OnWatchAdBtnClicked()
+        {
+            if (adService == null)
+                adService = ServiceProvider.GetService<IAdService>();
+
+            if (adService == null || !adService.CanShowRewarded(out _)) return;
+
+            adService.ShowRewarded("Store", success =>
+            {
+                if (success)
+                {
+                    GameSave.Credits += rewardedCredits;
+                    UpdateCreditsText();
+                }
+            });
         }
 
         public void OnBuyBtnClicked()

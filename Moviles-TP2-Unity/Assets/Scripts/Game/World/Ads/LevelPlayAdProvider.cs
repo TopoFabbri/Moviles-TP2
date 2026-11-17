@@ -14,9 +14,9 @@ namespace Game.World.Ads
     public sealed class LevelPlayAdProvider
     {
 #pragma warning disable CS0414
-        [SerializeField] private string androidAppKey = "YOUR_ANDROID_APP_KEY";
-        [SerializeField] private string interstitialAdUnitId = "YOUR_INTERSTITIAL_AD_UNIT_ID";
-        [SerializeField] private string rewardedAdUnitId = "YOUR_REWARDED_AD_UNIT_ID";
+        [SerializeField] private string androidAppKey = "299f0d335";
+        [SerializeField] private string interstitialAdUnitId = "od2vuy9qld2ve46v";
+        [SerializeField] private string rewardedAdUnitId = "y6pgbn4vjxrewodl";
 #pragma warning restore CS0414
 
 #if ENABLE_LEVELPLAY

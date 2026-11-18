@@ -38,7 +38,7 @@ namespace Game.CloudSave
             ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
             savedGameClient.OpenWithAutomaticConflictResolution(
                 SaveFileName,
-                DataSource.ReadCacheOrNetwork,
+                DataSource.ReadNetworkOnly,
                 ConflictResolutionStrategy.UseLongestPlaytime,
                 (status, metadata) =>
                 {
@@ -86,7 +86,7 @@ namespace Game.CloudSave
             ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
             savedGameClient.OpenWithAutomaticConflictResolution(
                 SaveFileName,
-                DataSource.ReadCacheOrNetwork,
+                DataSource.ReadNetworkOnly,
                 ConflictResolutionStrategy.UseLongestPlaytime,
                 (status, metadata) =>
                 {

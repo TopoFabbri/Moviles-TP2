@@ -65,7 +65,7 @@ namespace Game.World.GameManager
                 _controlScheme = value;
                 
                 PlayerPrefs.SetInt(ControlSchemeKey, _controlScheme);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
                 
                 ServiceProvider.GetService<EventSystem>().Raise<ControlSchemeChangedEvent>(_controlScheme);
             }
@@ -89,7 +89,7 @@ namespace Game.World.GameManager
                 _rotationSensitivity = value;
                 
                 PlayerPrefs.SetFloat(RotationSensitivityKey, _rotationSensitivity);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
         
@@ -110,7 +110,7 @@ namespace Game.World.GameManager
                 _invertCamX = value ? 1 : 0;
                 
                 PlayerPrefs.SetInt(InvertCamXKey, _invertCamX);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
         
@@ -131,7 +131,7 @@ namespace Game.World.GameManager
                 _invertCamY = value ? 1 : 0;
                 
                 PlayerPrefs.SetInt(InvertCamYKey, _invertCamY);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
 
@@ -152,7 +152,7 @@ namespace Game.World.GameManager
                 _currentLevel = value;
                 
                 PlayerPrefs.SetInt(CurrentLevelKey, _currentLevel);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
 
@@ -173,7 +173,7 @@ namespace Game.World.GameManager
                 _credits = value;
                 
                 PlayerPrefs.SetInt(CreditsKey, _credits);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
 
@@ -194,7 +194,7 @@ namespace Game.World.GameManager
                 _addedSpeed = value;
                 
                 PlayerPrefs.SetFloat(AddedSpeedKey, _addedSpeed);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
         
@@ -215,7 +215,7 @@ namespace Game.World.GameManager
                 _godMode = value ? 1 : 0;
                 
                 PlayerPrefs.SetInt(GodModeKey, _godMode);
-                PlayerPrefs.Save();
+            PlayerPrefs.Save();
             }
         }
 
@@ -240,6 +240,22 @@ namespace Game.World.GameManager
             return LevelTimes[level];
         }
         
+        private const string LastSavedUtcTicksKey = "LastSavedUtcTicks";
+
+        public static long LastSavedUtcTicks
+        {
+            get
+            {
+                string raw = PlayerPrefs.GetString(LastSavedUtcTicksKey, "0");
+                return long.TryParse(raw, out long ticks) ? ticks : 0L;
+            }
+            set
+            {
+                PlayerPrefs.SetString(LastSavedUtcTicksKey, value.ToString());
+                PlayerPrefs.Save();
+            }
+        }
+
         public static bool HasCloudDecisionBeenMade
         {
             get => PlayerPrefs.GetInt(CloudDecisionKey, 0) == 1;
@@ -264,6 +280,8 @@ namespace Game.World.GameManager
                 godMode = GodMode,
                 savedAtUtcTicks = DateTime.UtcNow.Ticks
             };
+
+            LastSavedUtcTicks = data.savedAtUtcTicks;
 
             LevelList levelList = ServiceProvider.GetService<LevelList>();
             int levelsCount = levelList != null ? levelList.GetLevels().Count : 0;
@@ -321,6 +339,7 @@ namespace Game.World.GameManager
                 }
             }
 
+            LastSavedUtcTicks = data.savedAtUtcTicks > 0 ? data.savedAtUtcTicks : DateTime.UtcNow.Ticks;
             PlayerPrefs.Save();
         }
 

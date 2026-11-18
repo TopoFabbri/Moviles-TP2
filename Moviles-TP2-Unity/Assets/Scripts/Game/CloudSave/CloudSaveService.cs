@@ -36,6 +36,7 @@ namespace Game.CloudSave
         private ICloudSaveProvider _provider;
         private Coroutine _periodicSaveCoroutine;
         private bool _hasCheckedInitialSave;
+        private bool _isCheckingInitialSave;
 
         private void Awake()
         {
@@ -64,35 +65,43 @@ namespace Game.CloudSave
 
         public void OnPlayServicesAuthenticated()
         {
-            if (_hasCheckedInitialSave)
+            if (_hasCheckedInitialSave || _isCheckingInitialSave)
                 return;
-
-            _hasCheckedInitialSave = true;
 
             if (_provider == null || !_provider.IsAvailable)
                 return;
 
-            if (GameSave.HasCloudDecisionBeenMade)
-            {
-                StartPeriodicSave();
-                return;
-            }
+            _isCheckingInitialSave = true;
 
             _provider.LoadCloudSave((success, cloudData) =>
             {
+                _isCheckingInitialSave = false;
+
                 if (!success)
                 {
                     Debug.LogWarning("[CloudSave] Initial cloud save check failed.");
                     return;
                 }
 
+                _hasCheckedInitialSave = true;
+
                 if (cloudData != null)
                 {
-                    PendingCloudData = cloudData;
-                    OnCloudConflictDetected?.Invoke(cloudData);
+                    bool shouldPrompt = !GameSave.HasCloudDecisionBeenMade ||
+                                        (cloudData.savedAtUtcTicks > 0 && cloudData.savedAtUtcTicks > GameSave.LastSavedUtcTicks);
 
-                    if (FindFirstObjectByType<Game.World.UI.CloudSavePopupController>() == null)
-                        ShowFallbackPopup(cloudData);
+                    if (shouldPrompt)
+                    {
+                        PendingCloudData = cloudData;
+                        OnCloudConflictDetected?.Invoke(cloudData);
+
+                        if (FindFirstObjectByType<Game.World.UI.CloudSavePopupController>() == null)
+                            ShowFallbackPopup(cloudData);
+                    }
+                    else
+                    {
+                        StartPeriodicSave();
+                    }
                 }
                 else
                 {
@@ -125,7 +134,7 @@ namespace Game.CloudSave
             if (_provider == null || !_provider.IsAvailable)
                 return;
 
-            if (!GameSave.HasCloudDecisionBeenMade)
+            if (!GameSave.HasCloudDecisionBeenMade || !_hasCheckedInitialSave || PendingCloudData != null)
                 return;
 
             CloudSaveData snapshot = GameSave.ExportSnapshot();

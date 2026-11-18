@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 #if ENABLE_LEVELPLAY
@@ -20,16 +22,25 @@ namespace Game.World.Ads
 #pragma warning restore CS0414
 
 #if ENABLE_LEVELPLAY
+        private const int MaxRetryExponent = 6; // Cap backoff at 64s
+
         private LevelPlayInterstitialAd _interstitialAd;
         private LevelPlayRewardedAd _rewardedAd;
         private Action _onInterstitialClosedCallback;
         private Action<bool> _onRewardedResultCallback;
+        private SynchronizationContext _unityContext;
         private bool _isInitialized;
+        private bool _isInterstitialLoading;
+        private bool _isRewardedLoading;
+        private bool _rewardedEarned;
+        private int _interstitialRetryAttempt;
+        private int _rewardedRetryAttempt;
 
         public bool IsInitialized => _isInitialized;
 
         public void Initialize()
         {
+            _unityContext = SynchronizationContext.Current;
             LevelPlay.OnInitSuccess += OnInitSuccess;
             LevelPlay.OnInitFailed += OnInitFailed;
             LevelPlay.Init(androidAppKey);
@@ -42,16 +53,30 @@ namespace Game.World.Ads
 
             // Create and load Interstitial Ad
             _interstitialAd = new LevelPlayInterstitialAd(interstitialAdUnitId);
+            _interstitialAd.OnAdLoaded += OnInterstitialLoaded;
+            _interstitialAd.OnAdLoadFailed += OnInterstitialLoadFailed;
             _interstitialAd.OnAdClosed += OnInterstitialClosed;
-            _interstitialAd.OnAdDisplayFailed += (info, err) => OnInterstitialClosed(info);
-            _interstitialAd.LoadAd();
+            _interstitialAd.OnAdDisplayFailed += (info, err) =>
+            {
+                Debug.LogWarning($"[LevelPlayAdProvider] Interstitial display failed: {err?.ErrorMessage} (Code {err?.ErrorCode})");
+                OnInterstitialClosed(info);
+            };
+            LoadInterstitial();
 
             // Create and load Rewarded Ad
             _rewardedAd = new LevelPlayRewardedAd(rewardedAdUnitId);
+            _rewardedAd.OnAdLoaded += OnRewardedLoaded;
+            _rewardedAd.OnAdLoadFailed += OnRewardedLoadFailed;
             _rewardedAd.OnAdRewarded += OnRewardedEarned;
             _rewardedAd.OnAdClosed += OnRewardedClosed;
-            _rewardedAd.OnAdDisplayFailed += (info, err) => { _onRewardedResultCallback?.Invoke(false); _onRewardedResultCallback = null; };
-            _rewardedAd.LoadAd();
+            _rewardedAd.OnAdDisplayFailed += (info, err) =>
+            {
+                Debug.LogWarning($"[LevelPlayAdProvider] Rewarded display failed: {err?.ErrorMessage} (Code {err?.ErrorCode})");
+                _onRewardedResultCallback?.Invoke(false);
+                _onRewardedResultCallback = null;
+                LoadRewarded();
+            };
+            LoadRewarded();
         }
 
         private void OnInitFailed(LevelPlayInitError error)
@@ -61,6 +86,14 @@ namespace Game.World.Ads
         }
 
         public bool IsInterstitialReady() => _interstitialAd != null && _interstitialAd.IsAdReady();
+
+        public void EnsureInterstitialLoaded()
+        {
+            if (_isInitialized && !IsInterstitialReady() && !_isInterstitialLoading)
+            {
+                LoadInterstitial();
+            }
+        }
 
         public void ShowInterstitial(Action onClosed)
         {
@@ -73,14 +106,23 @@ namespace Game.World.Ads
             {
                 _onInterstitialClosedCallback?.Invoke();
                 _onInterstitialClosedCallback = null;
-                _interstitialAd?.LoadAd();
+                EnsureInterstitialLoaded();
             }
         }
 
         public bool IsRewardedReady() => _rewardedAd != null && _rewardedAd.IsAdReady();
 
+        public void EnsureRewardedLoaded()
+        {
+            if (_isInitialized && !IsRewardedReady() && !_isRewardedLoading)
+            {
+                LoadRewarded();
+            }
+        }
+
         public void ShowRewarded(Action<bool> onResult)
         {
+            _rewardedEarned = false;
             _onRewardedResultCallback = onResult;
             if (IsRewardedReady())
             {
@@ -90,29 +132,100 @@ namespace Game.World.Ads
             {
                 _onRewardedResultCallback?.Invoke(false);
                 _onRewardedResultCallback = null;
-                _rewardedAd?.LoadAd();
+                EnsureRewardedLoaded();
             }
+        }
+
+        private void LoadInterstitial()
+        {
+            if (_interstitialAd == null || _isInterstitialLoading) return;
+            _isInterstitialLoading = true;
+            _interstitialAd.LoadAd();
+        }
+
+        private void LoadRewarded()
+        {
+            if (_rewardedAd == null || _isRewardedLoading) return;
+            _isRewardedLoading = true;
+            _rewardedAd.LoadAd();
+        }
+
+        private void OnInterstitialLoaded(LevelPlayAdInfo info)
+        {
+            _isInterstitialLoading = false;
+            _interstitialRetryAttempt = 0;
+            Debug.Log("[LevelPlayAdProvider] Interstitial ad loaded.");
+        }
+
+        private void OnInterstitialLoadFailed(LevelPlayAdError error)
+        {
+            _isInterstitialLoading = false;
+            _interstitialRetryAttempt = Math.Min(_interstitialRetryAttempt + 1, MaxRetryExponent);
+            int delaySeconds = (int)Math.Pow(2, _interstitialRetryAttempt);
+            Debug.LogWarning($"[LevelPlayAdProvider] Interstitial load failed: {error?.ErrorMessage} (Code {error?.ErrorCode}). Retrying in {delaySeconds}s.");
+            ScheduleOnMainThread(delaySeconds * 1000, LoadInterstitial);
+        }
+
+        private void OnRewardedLoaded(LevelPlayAdInfo info)
+        {
+            _isRewardedLoading = false;
+            _rewardedRetryAttempt = 0;
+            Debug.Log("[LevelPlayAdProvider] Rewarded ad loaded.");
+        }
+
+        private void OnRewardedLoadFailed(LevelPlayAdError error)
+        {
+            _isRewardedLoading = false;
+            _rewardedRetryAttempt = Math.Min(_rewardedRetryAttempt + 1, MaxRetryExponent);
+            int delaySeconds = (int)Math.Pow(2, _rewardedRetryAttempt);
+            Debug.LogWarning($"[LevelPlayAdProvider] Rewarded load failed: {error?.ErrorMessage} (Code {error?.ErrorCode}). Retrying in {delaySeconds}s.");
+            ScheduleOnMainThread(delaySeconds * 1000, LoadRewarded);
         }
 
         private void OnInterstitialClosed(LevelPlayAdInfo info)
         {
             _onInterstitialClosedCallback?.Invoke();
             _onInterstitialClosedCallback = null;
-            _interstitialAd?.LoadAd();
+            LoadInterstitial();
         }
 
         private void OnRewardedEarned(LevelPlayAdInfo info, LevelPlayReward reward)
         {
+            _rewardedEarned = true;
             _onRewardedResultCallback?.Invoke(true);
             _onRewardedResultCallback = null;
         }
 
         private void OnRewardedClosed(LevelPlayAdInfo info)
         {
-            // If callback wasn't completed via OnRewardedEarned, treat as cancelled
-            _onRewardedResultCallback?.Invoke(false);
-            _onRewardedResultCallback = null;
-            _rewardedAd?.LoadAd();
+            // Defer cancellation slightly so adapters that fire OnAdClosed before OnAdRewarded still grant the reward
+            if (_onRewardedResultCallback != null && !_rewardedEarned)
+            {
+                ScheduleOnMainThread(250, () =>
+                {
+                    if (!_rewardedEarned && _onRewardedResultCallback != null)
+                    {
+                        _onRewardedResultCallback.Invoke(false);
+                        _onRewardedResultCallback = null;
+                    }
+                });
+            }
+            LoadRewarded();
+        }
+
+        private void ScheduleOnMainThread(int delayMs, Action action)
+        {
+            Task.Delay(delayMs).ContinueWith(_ =>
+            {
+                if (_unityContext != null)
+                {
+                    _unityContext.Post(_2 => action(), null);
+                }
+                else
+                {
+                    action();
+                }
+            });
         }
 #endif
     }

@@ -37,7 +37,7 @@ namespace Game.World.Ads
             }
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void AutoRegister()
         {
             if (!ServiceProvider.TryGetService(out AdService service))
@@ -125,6 +125,7 @@ namespace Game.World.Ads
                 });
                 return;
             }
+            _levelPlayProvider.EnsureInterstitialLoaded();
 #endif
 
             AdUIOverlay.Instance.ShowInterstitialAd(placement, () =>
@@ -175,6 +176,7 @@ namespace Game.World.Ads
                 });
                 return;
             }
+            _levelPlayProvider.EnsureRewardedLoaded();
 #endif
 
             AdUIOverlay.Instance.ShowRewardedAd(placement, success =>

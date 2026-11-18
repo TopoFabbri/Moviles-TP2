@@ -1,4 +1,5 @@
 using Game.Events;
+using Game.World.Ads;
 using Game.World.GameManager;
 using Tools.EventSystem;
 using Tools.FSM;
@@ -26,15 +27,24 @@ namespace Game.World.UI
 
         private void Update()
         {
+            if (ServiceProvider.TryGetService(out IAdService adService) && adService.IsAdShowing)
+                return;
+
             if (PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad" && !UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject)
                 UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(firstSelected);
         }
 
         private void OnGameStateChanged(ChangedStateEvent<States> obj)
         {
-            gameObject.SetActive(obj.state == States.GameOver);
+            bool isGameOver = obj.state == States.GameOver;
+            gameObject.SetActive(isGameOver);
 
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+
+            if (isGameOver)
+            {
+                ServiceProvider.GetService<IAdService>().ShowInterstitial("GameOver");
+            }
         }
 
         public void OnRestart()

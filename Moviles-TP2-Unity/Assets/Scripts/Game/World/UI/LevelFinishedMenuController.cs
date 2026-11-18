@@ -1,4 +1,5 @@
 ﻿using Game.Events;
+using Game.World.Ads;
 using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
@@ -34,6 +35,9 @@ namespace Game.World.UI
 
         private void Update()
         {
+            if (ServiceProvider.TryGetService(out IAdService adService) && adService.IsAdShowing)
+                return;
+
             if (!UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject && PlayerInput.GetPlayerByIndex(0).currentControlScheme == "Gamepad")
                 UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(firstSelected);
         }
@@ -64,7 +68,13 @@ namespace Game.World.UI
 
         private void OnGameStateChanged(ChangedStateEvent<States> obj)
         {
-            gameObject.SetActive(obj.state == States.Win);
+            bool isWin = obj.state == States.Win;
+            gameObject.SetActive(isWin);
+
+            if (isWin)
+            {
+                ServiceProvider.GetService<IAdService>().ShowInterstitial("LevelWin");
+            }
         }
 
         public void OnRestart()

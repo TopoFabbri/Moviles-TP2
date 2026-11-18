@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.CloudSave;
 using Game.Events;
 using Game.World.UI;
 using GooglePlayGames;
@@ -23,6 +24,7 @@ namespace Game.World.GameManager
         private static readonly Dictionary<int, float> LevelTimesGodMode = new();
 
         private const string NoGooglePlayPlayerId = "defaultPlayer";
+        private const string CloudDecisionKey = "CloudSaveDecisionMade";
         private static string ControlSchemeKey => PlayerId + "ControlScheme";
         private static string RotationSensitivityKey => PlayerId + "RotationSensitivity";
         private static string InvertCamXKey => PlayerId + "InvertCamX";
@@ -238,6 +240,90 @@ namespace Game.World.GameManager
             return LevelTimes[level];
         }
         
+        public static bool HasCloudDecisionBeenMade
+        {
+            get => PlayerPrefs.GetInt(CloudDecisionKey, 0) == 1;
+            set
+            {
+                PlayerPrefs.SetInt(CloudDecisionKey, value ? 1 : 0);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static CloudSaveData ExportSnapshot()
+        {
+            CloudSaveData data = new()
+            {
+                controlScheme = ControlScheme,
+                rotationSensitivity = RotationSensitivity,
+                invertCamX = InvertCamX,
+                invertCamY = InvertCamY,
+                currentLevel = CurrentLevel,
+                credits = Credits,
+                addedSpeed = AddedSpeed,
+                godMode = GodMode,
+                savedAtUtcTicks = DateTime.UtcNow.Ticks
+            };
+
+            LevelList levelList = ServiceProvider.GetService<LevelList>();
+            int levelsCount = levelList != null ? levelList.GetLevels().Count : 0;
+
+            for (int i = 0; i < levelsCount; i++)
+            {
+                string normalKey = LevelTimesKey.Replace("<level>", i.ToString());
+                float normalTime = PlayerPrefs.GetFloat(normalKey, -1f);
+                if (normalTime >= 0f)
+                    data.levelTimes.Add(new LevelTimeEntry { level = i, time = normalTime });
+
+                string godKey = normalKey + "GodMode";
+                float godTime = PlayerPrefs.GetFloat(godKey, -1f);
+                if (godTime >= 0f)
+                    data.levelTimesGodMode.Add(new LevelTimeEntry { level = i, time = godTime });
+            }
+
+            return data;
+        }
+
+        public static void ImportSnapshot(CloudSaveData data)
+        {
+            if (data == null)
+                return;
+
+            ControlScheme = data.controlScheme;
+            RotationSensitivity = data.rotationSensitivity;
+            InvertCamX = data.invertCamX;
+            InvertCamY = data.invertCamY;
+            CurrentLevel = data.currentLevel;
+            Credits = data.credits;
+            AddedSpeed = data.addedSpeed;
+            GodMode = data.godMode;
+
+            LevelTimes.Clear();
+            LevelTimesGodMode.Clear();
+
+            if (data.levelTimes != null)
+            {
+                foreach (LevelTimeEntry entry in data.levelTimes)
+                {
+                    LevelTimes[entry.level] = entry.time;
+                    string key = LevelTimesKey.Replace("<level>", entry.level.ToString());
+                    PlayerPrefs.SetFloat(key, entry.time);
+                }
+            }
+
+            if (data.levelTimesGodMode != null)
+            {
+                foreach (LevelTimeEntry entry in data.levelTimesGodMode)
+                {
+                    LevelTimesGodMode[entry.level] = entry.time;
+                    string key = LevelTimesKey.Replace("<level>", entry.level.ToString()) + "GodMode";
+                    PlayerPrefs.SetFloat(key, entry.time);
+                }
+            }
+
+            PlayerPrefs.Save();
+        }
+
         public static void Reset()
         {
             _controlScheme = -1;
@@ -247,7 +333,9 @@ namespace Game.World.GameManager
             _currentLevel = -1;
             _credits = -1;
             _addedSpeed = -1f;
+            _godMode = -1;
             LevelTimes.Clear();
+            LevelTimesGodMode.Clear();
             
             PlayerPrefs.DeleteAll();
         }

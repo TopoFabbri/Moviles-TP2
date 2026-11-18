@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.CloudSave;
 using Game.Events;
 using Game.World.GameManager;
 using GooglePlayGames;
@@ -93,6 +94,20 @@ namespace Game.World.UI
             GameSave.Reset();
         }
 
+        [ContextMenu("Simulate Fresh Install (Cloud Save)")]
+        private void SimulateFreshInstallCloudSave()
+        {
+            GameSave.Reset();
+            MockCloudSaveProvider.SeedMockCloudSave(new CloudSaveData
+            {
+                currentLevel = 3,
+                credits = 500,
+                addedSpeed = 15f,
+                savedAtUtcTicks = System.DateTime.UtcNow.Ticks
+            });
+            Debug.Log("[CloudSave] Simulated fresh install with mock cloud save (Level 3, 500 Credits, +15 Speed). Enter Play Mode to test.");
+        }
+
         private static void PlayLogin()
         {
 #if UNITY_ANDROID
@@ -108,6 +123,7 @@ namespace Game.World.UI
             if (status != SignInStatus.Success) return;
 
             PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_first_flight);
+            CloudSaveService.Instance.OnPlayServicesAuthenticated();
         }
 #endif
     }

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="11" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.424816">
+  <test-suite type="TestSuite" id="1000" name="DroneRacer" fullname="DroneRacer" runstate="Runnable" testcasecount="30" result="Failed" site="Child" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.424816" total="12" passed="11" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1033" name="Assembly-CSharp-Editor.dll" fullname="D:/Files/Repos/Moviles-TP2/Moviles-TP2-Unity/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="30" result="Failed" site="Child" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.398488" total="12" passed="11" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="8208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1034" name="Editor" fullname="Editor" runstate="Runnable" testcasecount="30" result="Failed" site="Child" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.395208" total="12" passed="11" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestFixture" id="1020" name="AdServiceTests" fullname="Editor.AdServiceTests" classname="Editor.AdServiceTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.389942" total="12" passed="11" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1024" name="CanShowRewarded_RemainsTrue_WhenHasNoAdsAndAdsDisabled" fullname="Editor.AdServiceTests.CanShowRewarded_RemainsTrue_WhenHasNoAdsAndAdsDisabled" methodname="CanShowRewarded_RemainsTrue_WhenHasNoAdsAndAdsDisabled" classname="Editor.AdServiceTests" runstate="Runnable" seed="737888815" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.183502" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1030" name="RewardedAd_AllowsShowAfterCooldownExpires" fullname="Editor.AdServiceTests.RewardedAd_AllowsShowAfterCooldownExpires" methodname="RewardedAd_AllowsShowAfterCooldownExpires" classname="Editor.AdServiceTests" runstate="Runnable" seed="1902728941" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.012094" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1021" name="RewardedAd_CalculateCooldown_HandlesEdgeCases" fullname="Editor.AdServiceTests.RewardedAd_CalculateCooldown_HandlesEdgeCases" methodname="RewardedAd_CalculateCooldown_HandlesEdgeCases" classname="Editor.AdServiceTests" runstate="Runnable" seed="1421662236" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.006650" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1029" name="RewardedAd_EnforcesCooldownAfterWatch" fullname="Editor.AdServiceTests.RewardedAd_EnforcesCooldownAfterWatch" methodname="RewardedAd_EnforcesCooldownAfterWatch" classname="Editor.AdServiceTests" runstate="Runnable" seed="1623227036" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.017892" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1028" name="RewardedAd_InitiallyReadyWithoutCooldown" fullname="Editor.AdServiceTests.RewardedAd_InitiallyReadyWithoutCooldown" methodname="RewardedAd_InitiallyReadyWithoutCooldown" classname="Editor.AdServiceTests" runstate="Runnable" seed="810830988" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.005881" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1032" name="RewardedAd_RejectsWhenOnCooldown" fullname="Editor.AdServiceTests.RewardedAd_RejectsWhenOnCooldown" methodname="RewardedAd_RejectsWhenOnCooldown" classname="Editor.AdServiceTests" runstate="Runnable" seed="1941843227" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.019575" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+[AdService] Rewarded ad is on cooldown (60.0s remaining).
+]]></output>
+          </test-case>
+          <test-case id="1031" name="RewardedAd_ResetCooldownRestoresAvailability" fullname="Editor.AdServiceTests.RewardedAd_ResetCooldownRestoresAvailability" methodname="RewardedAd_ResetCooldownRestoresAvailability" classname="Editor.AdServiceTests" runstate="Runnable" seed="710795068" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.005952" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1025" name="ServiceProvider_ResolvesAdService" fullname="Editor.AdServiceTests.ServiceProvider_ResolvesAdService" methodname="ServiceProvider_ResolvesAdService" classname="Editor.AdServiceTests" runstate="Runnable" seed="2120554340" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.022090" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1026" name="ServiceProvider_ResolvesIAdServiceDirectly" fullname="Editor.AdServiceTests.ServiceProvider_ResolvesIAdServiceDirectly" methodname="ServiceProvider_ResolvesIAdServiceDirectly" classname="Editor.AdServiceTests" runstate="Runnable" seed="331206813" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.005766" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+]]></output>
+          </test-case>
+          <test-case id="1023" name="ShowInterstitial_ShowsAd_WhenHasNoAdsAndAdsEnabled" fullname="Editor.AdServiceTests.ShowInterstitial_ShowsAd_WhenHasNoAdsAndAdsEnabled" methodname="ShowInterstitial_ShowsAd_WhenHasNoAdsAndAdsEnabled" classname="Editor.AdServiceTests" runstate="Runnable" seed="1538798375" result="Failed" label="Error" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.016155" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[System.InvalidOperationException : The following game object is invoking the DontDestroyOnLoad method: AdUIOverlay. Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.]]></message>
+              <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.Object.DontDestroyOnLoad_Injected(intptr)
+  at UnityEngine.Object.DontDestroyOnLoad (UnityEngine.Object target) [0x00023] in <6a469c5cf96a43eab23a293167261e20>:0 
+  at Game.World.Ads.AdUIOverlay.EnsureInstance () [0x0002e] in D:\Files\Repos\Moviles-TP2\Moviles-TP2-Unity\Assets\Scripts\Game\World\Ads\AdUIOverlay.cs:54 
+  at Game.World.Ads.AdUIOverlay.get_Instance () [0x0000d] in D:\Files\Repos\Moviles-TP2\Moviles-TP2-Unity\Assets\Scripts\Game\World\Ads\AdUIOverlay.cs:23 
+  at Game.World.Ads.AdService.ShowInterstitial (System.String placement, System.Action onClosed) [0x000e5] in D:\Files\Repos\Moviles-TP2\Moviles-TP2-Unity\Assets\Scripts\Game\World\Ads\AdService.cs:139 
+  at Editor.AdServiceTests.ShowInterstitial_ShowsAd_WhenHasNoAdsAndAdsEnabled () [0x00011] in D:\Files\Repos\Moviles-TP2\Moviles-TP2-Unity\Assets\Scripts\Editor\AdServiceTests.cs:94 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <1eb9db207454431c84a47bcd81e79c37>:0 ]]></stack-trace>
+            </failure>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+[AdService] Showing Interstitial Ad (Placement: GameOver)
+]]></output>
+          </test-case>
+          <test-case id="1022" name="ShowInterstitial_SkipsAd_WhenHasNoAdsAndAdsDisabled" fullname="Editor.AdServiceTests.ShowInterstitial_SkipsAd_WhenHasNoAdsAndAdsDisabled" methodname="ShowInterstitial_SkipsAd_WhenHasNoAdsAndAdsDisabled" classname="Editor.AdServiceTests" runstate="Runnable" seed="1498822015" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.004534" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[LevelPlayAdProvider] LevelPlay SDK initialized successfully.
+[AdService] LevelPlay initialization exception: The following game object is invoking the DontDestroyOnLoad method: MockInterstitialEditorAd(Clone). Notice that DontDestroyOnLoad can only be used in play mode and, as such, cannot be part of an editor script.
+[AdService] Skipping Interstitial Ad (NoAds active, Placement: GameOver)
+]]></output>
+          </test-case>
+          <test-case id="1027" name="StoreMenu_DisablingPersistentListeners_BlocksExecution" fullname="Editor.AdServiceTests.StoreMenu_DisablingPersistentListeners_BlocksExecution" methodname="StoreMenu_DisablingPersistentListeners_BlocksExecution" classname="Editor.AdServiceTests" runstate="Runnable" seed="400598295" result="Passed" start-time="2026-11-19 20:35:44Z" end-time="2026-11-19 20:35:44Z" duration="0.028955" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Administrator/AppData/LocalLow/Fabbri2025/DroneRacer\TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

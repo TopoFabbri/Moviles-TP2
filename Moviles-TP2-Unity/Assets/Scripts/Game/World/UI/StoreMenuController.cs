@@ -1,5 +1,6 @@
 ﻿using Game.World.Ads;
 using Game.World.GameManager;
+using Game.World.IAP;
 using TMPro;
 using Tools.ServiceProvider;
 using UnityEngine;
@@ -26,21 +27,32 @@ namespace Game.World.UI
         [SerializeField] private string watchAdBtnString = "Free: +<credits> creds";
         [SerializeField] private string adCooldownString = "Ad: <seconds>s";
 
+        [Header("No Ads IAP Configuration")]
+        [SerializeField] private Button noAdsBtn;
+        [SerializeField] private TextMeshProUGUI noAdsBtnText;
+        [SerializeField] private Button restorePurchasesBtn;
+        [SerializeField] private TextMeshProUGUI restorePurchasesBtnText;
+
         private int buyPrice = 1;
         private IAdService adService;
+        private IIAPService iapService;
 
         private void Start()
         {
             adService = ServiceProvider.GetService<IAdService>();
+            iapService = ServiceProvider.GetService<IIAPService>();
             SetupRewardedAdUI();
+            SetupNoAdsUI();
             UpdateBar();
             UpdateBuyPrice();
             UpdateCreditsText();
+            UpdateNoAdsUI();
         }
 
         private void Update()
         {
             UpdateRewardedAdUI();
+            UpdateNoAdsUI();
         }
 
         private void SetupRewardedAdUI()
@@ -73,6 +85,108 @@ namespace Game.World.UI
                 watchAdBtn.onClick.RemoveAllListeners();
                 watchAdBtn.onClick.AddListener(OnWatchAdBtnClicked);
             }
+        }
+
+        private void SetupNoAdsUI()
+        {
+            if (buyBtnText != null)
+            {
+                Button originalBuyBtn = buyBtnText.GetComponentInParent<Button>();
+                if (originalBuyBtn != null && originalBuyBtn.transform.parent != null)
+                {
+                    Transform buyContainer = originalBuyBtn.transform.parent;
+                    Transform contentParent = buyContainer.parent;
+                    if (contentParent != null)
+                    {
+                        if (noAdsBtn == null)
+                        {
+                            GameObject noAdsContainer = Instantiate(buyContainer.gameObject, contentParent);
+                            noAdsContainer.name = "NoAdsContainer";
+                            noAdsBtn = noAdsContainer.GetComponentInChildren<Button>();
+                            noAdsBtnText = noAdsContainer.GetComponentInChildren<TextMeshProUGUI>();
+                        }
+
+                        if (restorePurchasesBtn == null)
+                        {
+                            GameObject restoreContainer = Instantiate(buyContainer.gameObject, contentParent);
+                            restoreContainer.name = "RestorePurchasesContainer";
+                            restorePurchasesBtn = restoreContainer.GetComponentInChildren<Button>();
+                            restorePurchasesBtnText = restoreContainer.GetComponentInChildren<TextMeshProUGUI>();
+                        }
+                    }
+                }
+            }
+
+            if (noAdsBtn != null)
+            {
+                for (int i = 0; i < noAdsBtn.onClick.GetPersistentEventCount(); i++)
+                {
+                    noAdsBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
+                }
+
+                noAdsBtn.onClick.RemoveAllListeners();
+                noAdsBtn.onClick.AddListener(OnNoAdsBtnClicked);
+            }
+
+            if (restorePurchasesBtn != null)
+            {
+                for (int i = 0; i < restorePurchasesBtn.onClick.GetPersistentEventCount(); i++)
+                {
+                    restorePurchasesBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
+                }
+
+                restorePurchasesBtn.onClick.RemoveAllListeners();
+                restorePurchasesBtn.onClick.AddListener(OnRestorePurchasesBtnClicked);
+            }
+        }
+
+        private void UpdateNoAdsUI()
+        {
+            if (iapService == null)
+                iapService = ServiceProvider.GetService<IIAPService>();
+
+            if (noAdsBtnText != null)
+            {
+                if (GameSave.HasNoAds)
+                {
+                    noAdsBtnText.text = GameSave.AdsEnabled ? "Ads: ON" : "Ads: OFF";
+                }
+                else
+                {
+                    string price = iapService != null ? iapService.NoAdsPriceString : "$1.99";
+                    noAdsBtnText.text = $"No Ads ({price})";
+                }
+            }
+
+            if (restorePurchasesBtn != null)
+            {
+                restorePurchasesBtn.gameObject.SetActive(!GameSave.HasNoAds);
+                if (restorePurchasesBtnText != null)
+                    restorePurchasesBtnText.text = "Restore Purchases";
+            }
+        }
+
+        public void OnNoAdsBtnClicked()
+        {
+            if (GameSave.HasNoAds)
+            {
+                GameSave.AdsEnabled = !GameSave.AdsEnabled;
+                UpdateNoAdsUI();
+                return;
+            }
+
+            if (iapService == null)
+                iapService = ServiceProvider.GetService<IIAPService>();
+
+            iapService?.BuyNoAds(_ => UpdateNoAdsUI());
+        }
+
+        public void OnRestorePurchasesBtnClicked()
+        {
+            if (iapService == null)
+                iapService = ServiceProvider.GetService<IIAPService>();
+
+            iapService?.RestorePurchases(_ => UpdateNoAdsUI());
         }
 
         private void UpdateRewardedAdUI()

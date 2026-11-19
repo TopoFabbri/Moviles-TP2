@@ -1,5 +1,6 @@
 using System;
 using Game.World.Ads;
+using Game.World.GameManager;
 using NUnit.Framework;
 using Tools.ServiceProvider;
 using UnityEditor;
@@ -23,6 +24,8 @@ namespace Editor
         {
             ServiceProvider.Clear();
             PlayerPrefs.DeleteKey("Ad_LastRewardedUtcTicks");
+            GameSave.HasNoAds = false;
+            GameSave.AdsEnabled = true;
             PlayerPrefs.Save();
         }
 
@@ -65,6 +68,45 @@ namespace Editor
             bool result6 = AdService.CalculateRewardedCooldown(now, watchedInFuture, cooldown, out float remaining6);
             Assert.IsTrue(result6, "Should gracefully allow ad if timestamp is in future due to negative elapsed");
             Assert.AreEqual(0f, remaining6);
+        }
+
+        [Test]
+        public void ShowInterstitial_SkipsAd_WhenHasNoAdsAndAdsDisabled()
+        {
+            GameSave.HasNoAds = true;
+            GameSave.AdsEnabled = false;
+            var adService = new AdService();
+
+            bool closedCalled = false;
+            adService.ShowInterstitial("GameOver", () => closedCalled = true);
+
+            Assert.IsTrue(closedCalled, "onClosed should be invoked immediately when No Ads is active.");
+            Assert.IsFalse(adService.IsAdShowing, "IsAdShowing should remain false when ad is skipped.");
+        }
+
+        [Test]
+        public void ShowInterstitial_ShowsAd_WhenHasNoAdsAndAdsEnabled()
+        {
+            GameSave.HasNoAds = true;
+            GameSave.AdsEnabled = true;
+            var adService = new AdService();
+
+            adService.ShowInterstitial("GameOver");
+
+            Assert.IsTrue(adService.IsAdShowing, "IsAdShowing should be true when AdsEnabled is true.");
+        }
+
+        [Test]
+        public void CanShowRewarded_RemainsTrue_WhenHasNoAdsAndAdsDisabled()
+        {
+            GameSave.HasNoAds = true;
+            GameSave.AdsEnabled = false;
+            var adService = new AdService();
+
+            bool canShow = adService.CanShowRewarded(out float remaining);
+
+            Assert.IsTrue(canShow, "Rewarded ads should remain available when No Ads is active.");
+            Assert.AreEqual(0f, remaining);
         }
 
         [Test]

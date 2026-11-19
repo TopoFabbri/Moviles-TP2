@@ -1,5 +1,6 @@
 using System;
 using Game.World.FabbriPlugin;
+using Game.World.GameManager;
 using Tools.ServiceProvider;
 using UnityEngine;
 
@@ -104,6 +105,13 @@ namespace Game.World.Ads
 
         public void ShowInterstitial(string placement, Action onClosed = null)
         {
+            if (GameSave.HasNoAds && !GameSave.AdsEnabled)
+            {
+                LogAdEvent($"Skipping Interstitial Ad (NoAds active, Placement: {placement})");
+                onClosed?.Invoke();
+                return;
+            }
+
             if (IsAdShowing)
             {
                 Debug.LogWarning($"[AdService] Ad already displaying. Ignoring interstitial request for '{placement}'.");

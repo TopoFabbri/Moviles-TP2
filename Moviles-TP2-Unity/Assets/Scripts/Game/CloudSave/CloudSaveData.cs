@@ -23,6 +23,8 @@ namespace Game.CloudSave
         public int credits;
         public float addedSpeed;
         public bool godMode;
+        public bool hasNoAds;
+        public bool adsEnabled = true;
         public List<LevelTimeEntry> levelTimes = new();
         public List<LevelTimeEntry> levelTimesGodMode = new();
         public long savedAtUtcTicks;

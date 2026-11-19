@@ -27,6 +27,8 @@ namespace Game.World.GameManager
         private static int _credits = -1;
         private static float _addedSpeed = -1f;
         private static int _godMode = -1;
+        private static int _hasNoAds = -1;
+        private static int _adsEnabled = -1;
         private static readonly Dictionary<int, float> LevelTimes = new();
         private static readonly Dictionary<int, float> LevelTimesGodMode = new();
 
@@ -41,6 +43,8 @@ namespace Game.World.GameManager
         private static string CreditsKey => PlayerId + "Credits";
         private static string AddedSpeedKey => PlayerId + "AddedSpeed";
         private static string GodModeKey => PlayerId + "GodMode";
+        private static string HasNoAdsKey => PlayerId + "HasNoAds";
+        private static string AdsEnabledKey => PlayerId + "AdsEnabled";
         private static string LevelTimesKey => PlayerId + "Level<level>Time";
 
         private static string _playerId;
@@ -49,7 +53,9 @@ namespace Game.World.GameManager
         {
             get
             {
-                _playerId ??= PlayGamesPlatform.Instance.IsAuthenticated() ? PlayGamesPlatform.Instance.GetUserId() : NoGooglePlayPlayerId;
+                _playerId ??= PlayGamesPlatform.Instance != null && PlayGamesPlatform.Instance.IsAuthenticated()
+                    ? PlayGamesPlatform.Instance.GetUserId()
+                    : NoGooglePlayPlayerId;
                 _playerId ??= NoGooglePlayPlayerId;
 
                 return _playerId;
@@ -161,6 +167,48 @@ namespace Game.World.GameManager
                 
                 PlayerPrefs.SetInt(InvertCamYKey, _invertCamY);
             PlayerPrefs.Save();
+            }
+        }
+
+        public static bool HasNoAds
+        {
+            get
+            {
+                if (_hasNoAds < 0)
+                    _hasNoAds = PlayerPrefs.GetInt(HasNoAdsKey, -1);
+
+                if (_hasNoAds < 0)
+                    HasNoAds = false;
+
+                return _hasNoAds > 0;
+            }
+            set
+            {
+                _hasNoAds = value ? 1 : 0;
+
+                PlayerPrefs.SetInt(HasNoAdsKey, _hasNoAds);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static bool AdsEnabled
+        {
+            get
+            {
+                if (_adsEnabled < 0)
+                    _adsEnabled = PlayerPrefs.GetInt(AdsEnabledKey, -1);
+
+                if (_adsEnabled < 0)
+                    AdsEnabled = true;
+
+                return _adsEnabled > 0;
+            }
+            set
+            {
+                _adsEnabled = value ? 1 : 0;
+
+                PlayerPrefs.SetInt(AdsEnabledKey, _adsEnabled);
+                PlayerPrefs.Save();
             }
         }
 
@@ -308,6 +356,8 @@ namespace Game.World.GameManager
                 credits = Credits,
                 addedSpeed = AddedSpeed,
                 godMode = GodMode,
+                hasNoAds = HasNoAds,
+                adsEnabled = AdsEnabled,
                 savedAtUtcTicks = DateTime.UtcNow.Ticks
             };
 
@@ -346,6 +396,8 @@ namespace Game.World.GameManager
             Credits = data.credits;
             AddedSpeed = data.addedSpeed;
             GodMode = data.godMode;
+            HasNoAds = data.hasNoAds;
+            AdsEnabled = data.adsEnabled;
 
             LevelTimes.Clear();
             LevelTimesGodMode.Clear();
@@ -385,6 +437,8 @@ namespace Game.World.GameManager
             _credits = -1;
             _addedSpeed = -1f;
             _godMode = -1;
+            _hasNoAds = -1;
+            _adsEnabled = -1;
             LevelTimes.Clear();
             LevelTimesGodMode.Clear();
             

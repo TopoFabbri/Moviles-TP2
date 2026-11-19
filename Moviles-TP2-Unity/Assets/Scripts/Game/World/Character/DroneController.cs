@@ -68,9 +68,7 @@ namespace Game.World.Character
 
         internal void OnUpdate()
         {
-            ReadAccelerometer();
-
-            rotationModule.Rotate(lookInput);
+            UpdateRotation();
             moveModule.Move(moveInput);
 
             moveModule.VelocityModule.RaiseDebugVelocity();
@@ -85,15 +83,28 @@ namespace Game.World.Character
             moveModule.Restart();
         }
         
-        private void ReadAccelerometer()
+        private void UpdateRotation()
         {
             if (GameSave.ControlScheme != 0)
+            {
+                rotationModule.Rotate(lookInput);
                 return;
+            }
 
-            Vector3 rot = ServiceProvider.GetService<AccelerometerHandler>().GetRotation();
-            
-            lookInput.y = rot.y * GameSave.RotationSensitivity / 100f;
-            lookInput.z = rot.z * GameSave.RotationSensitivity / 100f;
+            float sensitivityScale = GameSave.RotationSensitivity / 100f;
+            AccelerometerHandler handler = ServiceProvider.GetService<AccelerometerHandler>();
+
+            if (GameSave.GyroMode == GyroMode.BankToTurn)
+            {
+                Quaternion swing = handler.GetSwingRotation();
+                rotationModule.RotateBankToTurn(swing, lookInput.x, sensitivityScale);
+            }
+            else
+            {
+                Vector3 rot = handler.GetRotation();
+                Vector3 acroInput = new(lookInput.x, rot.y * sensitivityScale, rot.z * sensitivityScale);
+                rotationModule.RotateFpvAcro(acroInput);
+            }
         }
 
         private static void Calibrate(CalibrateAction _)

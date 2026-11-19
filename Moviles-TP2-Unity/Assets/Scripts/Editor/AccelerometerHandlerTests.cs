@@ -1,6 +1,13 @@
+using System.Reflection;
 using Game.World.Character;
+using Game.World.Character.DroneModules;
+using Game.World.GameManager;
+using Game.World.UI;
 using NUnit.Framework;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Editor
 {
@@ -137,6 +144,240 @@ namespace Editor
             Assert.AreEqual(0.5f, AccelerometerHandler.ApplyDeadZone(0.55f, 0.1f), 1e-5f);
             Assert.AreEqual(-1f, AccelerometerHandler.ApplyDeadZone(-1f, 0.1f), 1e-5f);
             Assert.AreEqual(1f, AccelerometerHandler.ApplyDeadZone(1f, 0.1f), 1e-5f);
+        }
+
+        [Test]
+        public void SwingTwist_PureYaw_StripsToIdentity()
+        {
+            Quaternion pureYaw = Quaternion.Euler(0f, 75f, 0f);
+            Quaternion swing = AccelerometerHandler.StripYawSwingTwist(pureYaw);
+
+            Assert.AreEqual(0f, Quaternion.Angle(Quaternion.identity, swing), 1e-3f);
+        }
+
+        [Test]
+        public void SwingTwist_YawThenPitchOrRoll_PreservesTiltAndStripsYaw()
+        {
+            Quaternion pitch = Quaternion.Euler(-30f, 0f, 0f);
+            Quaternion yawThenPitch = Quaternion.Euler(0f, 110f, 0f) * pitch;
+            Quaternion swingPitch = AccelerometerHandler.StripYawSwingTwist(yawThenPitch);
+            Assert.AreEqual(0f, Quaternion.Angle(pitch, swingPitch), 1e-2f);
+            Assert.AreEqual(0f, swingPitch.y, 1e-4f);
+
+            Quaternion roll = Quaternion.Euler(0f, 0f, -40f);
+            Quaternion yawThenRoll = Quaternion.Euler(0f, -95f, 0f) * roll;
+            Quaternion swingRoll = AccelerometerHandler.StripYawSwingTwist(yawThenRoll);
+            Assert.AreEqual(0f, Quaternion.Angle(roll, swingRoll), 1e-2f);
+            Assert.AreEqual(0f, swingRoll.y, 1e-4f);
+        }
+
+        [Test]
+        public void SwingTwist_InvalidQuaternion_ReturnsIdentity()
+        {
+            Quaternion zero = new(0f, 0f, 0f, 0f);
+            Assert.AreEqual(Quaternion.identity, AccelerometerHandler.StripYawSwingTwist(zero));
+            Assert.AreEqual(Quaternion.identity, AccelerometerHandler.ComputeSwingFromAttitude(zero, Quaternion.identity));
+            Assert.AreEqual(Quaternion.identity, AccelerometerHandler.ComputeSwingFromGravity(Vector3.zero, Vector3.down));
+        }
+
+        [Test]
+        public void ApplySwingDeadZoneAndInvert_RespectsDeadZoneAndAxes()
+        {
+            Quaternion smallTilt = Quaternion.Euler(-2f, 0f, 0f);
+            Quaternion insideDeadZone = AccelerometerHandler.ApplySwingDeadZoneAndInvert(smallTilt, 3f, false, true);
+            Assert.AreEqual(0f, Quaternion.Angle(Quaternion.identity, insideDeadZone), 1e-4f);
+
+            Quaternion rollRight = Quaternion.Euler(0f, 0f, -30f);
+            Quaternion normalRoll = AccelerometerHandler.ApplySwingDeadZoneAndInvert(rollRight, 0f, false, true);
+            Quaternion invertedRoll = AccelerometerHandler.ApplySwingDeadZoneAndInvert(rollRight, 0f, true, true);
+            Assert.Less(normalRoll.z, 0f);
+            Assert.Greater(invertedRoll.z, 0f);
+
+            Quaternion pitchFwd = Quaternion.Euler(-30f, 0f, 0f);
+            Quaternion defaultPitch = AccelerometerHandler.ApplySwingDeadZoneAndInvert(pitchFwd, 0f, false, true);
+            Quaternion nonInvertedPitch = AccelerometerHandler.ApplySwingDeadZoneAndInvert(pitchFwd, 0f, false, false);
+            Assert.Less(defaultPitch.x, 0f);
+            Assert.Greater(nonInvertedPitch.x, 0f);
+        }
+
+        [Test]
+        public void ComputeBankYawRate_CouplesRollAndPitch()
+        {
+            Assert.AreEqual(0f, AccelerometerHandler.ComputeBankYawRate(Quaternion.identity), 1e-5f);
+
+            // Banking right (negative Z rotation) -> positive yaw rate
+            Quaternion rightBank = Quaternion.Euler(0f, 0f, -30f);
+            float rightRate = AccelerometerHandler.ComputeBankYawRate(rightBank);
+            Assert.Greater(rightRate, 0.45f);
+
+            // Banking left (positive Z rotation) -> negative yaw rate
+            Quaternion leftBank = Quaternion.Euler(0f, 0f, 30f);
+            float leftRate = AccelerometerHandler.ComputeBankYawRate(leftBank);
+            Assert.Less(leftRate, -0.45f);
+
+            // Pitching while banked amplifies yaw rate
+            Quaternion bankedAndPitched = Quaternion.Euler(-30f, 0f, -30f);
+            float coupledRate = AccelerometerHandler.ComputeBankYawRate(bankedAndPitched);
+            Assert.Greater(coupledRate, rightRate);
+        }
+
+        [Test]
+        public void StepBankToTurn_AccumulatesContinuousYawAndPreservesTilt()
+        {
+            float yaw = 0f;
+            Quaternion rightBank = Quaternion.Euler(0f, 0f, -45f);
+
+            Quaternion rot = Quaternion.identity;
+            for (int i = 0; i < 10; i++)
+                rot = RotationModule.StepBankToTurn(ref yaw, rightBank, 0f, 100f, 1f, 0.1f);
+
+            Assert.Greater(yaw, 60f);
+            Quaternion expected = Quaternion.Euler(0f, yaw, 0f) * rightBank;
+            Assert.AreEqual(0f, Quaternion.Angle(expected, rot), 1e-3f);
+        }
+
+        [Test]
+        public void StepFpvAcro_RotatesAroundLocalAxesAndHoldsAttitudeAtNeutral()
+        {
+            Quaternion start = Quaternion.identity;
+
+            // Pitch 90 deg around local X
+            Quaternion pitched = RotationModule.StepFpvAcro(start, new Vector3(0f, 1f, 0f), 90f, 1f);
+            Assert.AreEqual(0f, Quaternion.Angle(Quaternion.Euler(90f, 0f, 0f), pitched), 1e-2f);
+
+            // Neutral input holds current attitude
+            Quaternion held = RotationModule.StepFpvAcro(pitched, Vector3.zero, 90f, 1f);
+            Assert.AreEqual(0f, Quaternion.Angle(pitched, held), 1e-4f);
+
+            // Full 360-degree roll loop returns to start without gimbal lock
+            Quaternion looped = start;
+            for (int i = 0; i < 36; i++)
+                looped = RotationModule.StepFpvAcro(looped, new Vector3(0f, 0f, -1f), 100f, 0.1f);
+            Assert.AreEqual(0f, Quaternion.Angle(start, looped), 1e-1f);
+        }
+
+        [Test]
+        public void RotationModule_MidFlightModeSwitch_PreservesOrientationWithoutSnapping()
+        {
+            GameObject droneGo = new("TestDronePivot");
+            GameObject camGo = new("TestCamPivot");
+            try
+            {
+                RotationModule module = new(droneGo.transform, camGo.transform, 100f, 10f);
+
+                // Start in BankToTurn, set a non-zero yaw via localRotation, then switch to FpvAcro
+                module.RotateBankToTurn(Quaternion.identity, 0f, 1f);
+                droneGo.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+
+                // Switching to FpvAcro with zero input must hold ~90 deg yaw instead of snapping to identity
+                module.RotateFpvAcro(Vector3.zero);
+                Assert.AreEqual(0f, Quaternion.Angle(Quaternion.Euler(0f, 90f, 0f), droneGo.transform.localRotation), 1e-2f);
+
+                // Rotate to 180 deg yaw in FpvAcro, then switch back to BankToTurn with neutral tilt
+                droneGo.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                module.RotateBankToTurn(Quaternion.identity, 0f, 1f);
+                Assert.AreEqual(0f, Quaternion.Angle(Quaternion.Euler(0f, 180f, 0f), droneGo.transform.localRotation), 1e-2f);
+            }
+            finally
+            {
+                Object.DestroyImmediate(droneGo);
+                Object.DestroyImmediate(camGo);
+            }
+        }
+
+        [Test]
+        public void GameplayMenuController_EnsureGyroModeControl_DoesNotDuplicateContentHierarchy()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/GameplaySubmenu.prefab");
+            Assert.IsNotNull(prefab, "GameplaySubmenu.prefab must exist");
+
+            GameObject instance = Object.Instantiate(prefab);
+            try
+            {
+                GameplayMenuController controller = instance.GetComponent<GameplayMenuController>();
+                Assert.IsNotNull(controller);
+
+                ScrollRect scrollRect = instance.GetComponentInChildren<ScrollRect>();
+                Assert.IsNotNull(scrollRect);
+                RectTransform content = scrollRect.content;
+                Assert.IsNotNull(content);
+
+                int initialChildCount = content.childCount;
+                Assert.AreEqual(9, initialChildCount);
+
+                MethodInfo startMethod = typeof(GameplayMenuController).GetMethod("Start", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.IsNotNull(startMethod);
+
+                // Invoke Start() to populate GyroMode controls
+                startMethod.Invoke(controller, null);
+
+                // Should only add GyroModeSpace, GyroModeTxt, and GyroModeBtn inside Content (not clone Content onto Viewport)
+                Assert.AreEqual(1, scrollRect.viewport.childCount, "Viewport must only contain one Content child, not a duplicated Content menu");
+                Assert.AreEqual(initialChildCount + 3, content.childCount);
+                Assert.AreEqual("ControlSchemeTxt", content.GetChild(0).name);
+                Assert.AreEqual("ControlSchemeBtn", content.GetChild(1).name);
+                Assert.AreEqual("GyroModeSpace", content.GetChild(2).name);
+                Assert.AreEqual("GyroModeTxt", content.GetChild(3).name);
+                Assert.AreEqual("GyroModeBtn", content.GetChild(4).name);
+
+                TextMeshProUGUI gyroLabel = content.GetChild(3).GetComponent<TextMeshProUGUI>();
+                Assert.IsNotNull(gyroLabel);
+                Assert.AreEqual("Gyro Mode:", gyroLabel.text);
+
+                ContentSizeFitter fitter = content.GetComponent<ContentSizeFitter>();
+                Assert.IsNull(fitter, "Content must not have ContentSizeFitter without LayoutElements, as it shrinks Content height on layout rebuilds");
+                LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+                Assert.GreaterOrEqual(content.sizeDelta.y, 1100f, "Content height must expand to fit the added GyroMode controls without clipping and survive layout rebuilds");
+
+                // Verify children do not overlap vertically after layout rebuild
+                for (int i = 1; i < content.childCount; i++)
+                {
+                    RectTransform prev = content.GetChild(i - 1) as RectTransform;
+                    RectTransform curr = content.GetChild(i) as RectTransform;
+                    Assert.IsNotNull(prev);
+                    Assert.IsNotNull(curr);
+                    float prevBottom = prev.anchoredPosition.y - (prev.sizeDelta.y * prev.pivot.y);
+                    float currTop = curr.anchoredPosition.y + (curr.sizeDelta.y * (1f - curr.pivot.y));
+                    Assert.LessOrEqual(currTop, prevBottom + 1e-2f, $"Child {curr.name} (top={currTop}) must not vertically overlap {prev.name} (bottom={prevBottom})");
+                }
+
+                // Calling Start() again (or EnsureGyroModeControl when gyroModeText is cleared) must be idempotent
+                startMethod.Invoke(controller, null);
+                Assert.AreEqual(initialChildCount + 3, content.childCount);
+
+                // Toggling GameObject active state (re-opening settings menu) refreshes UI from GameSave via OnEnable
+                MethodInfo onEnableMethod = typeof(GameplayMenuController).GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.IsNotNull(onEnableMethod);
+
+                GyroMode beforeMode = GameSave.GyroMode;
+                GameSave.GyroMode = beforeMode == GyroMode.BankToTurn ? GyroMode.FpvAcro : GyroMode.BankToTurn;
+                onEnableMethod.Invoke(controller, null);
+
+                UnityEngine.UI.Button gyroBtn = content.GetChild(4).GetComponent<UnityEngine.UI.Button>();
+                Assert.IsNotNull(gyroBtn);
+                TextMeshProUGUI gyroBtnText = gyroBtn.GetComponentInChildren<TextMeshProUGUI>();
+                Assert.IsNotNull(gyroBtnText);
+                string expectedAfterReopen = GameSave.GyroMode == GyroMode.BankToTurn ? "Bank-to-Turn" : "FPV Acro";
+                Assert.AreEqual(expectedAfterReopen, gyroBtnText.text);
+
+                // Clicking GyroModeBtn toggles GameSave.GyroMode and updates button text
+                GyroMode modeBeforeClick = GameSave.GyroMode;
+                gyroBtn.onClick.Invoke();
+                Assert.AreNotEqual(modeBeforeClick, GameSave.GyroMode);
+
+                string expectedText = GameSave.GyroMode == GyroMode.BankToTurn ? "Bank-to-Turn" : "FPV Acro";
+                Assert.AreEqual(expectedText, gyroBtnText.text);
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+                Assert.GreaterOrEqual(content.sizeDelta.y, 1100f, "Content height must remain >= 1100f after clicking GyroModeBtn and rebuilding layout");
+
+                // Restore original mode
+                GameSave.GyroMode = beforeMode;
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
         }
     }
 }

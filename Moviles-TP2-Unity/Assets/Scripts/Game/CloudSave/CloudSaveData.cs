@@ -15,6 +15,7 @@ namespace Game.CloudSave
     public class CloudSaveData
     {
         public int controlScheme;
+        public int gyroMode;
         public float rotationSensitivity;
         public bool invertCamX;
         public bool invertCamY;

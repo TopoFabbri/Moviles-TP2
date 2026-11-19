@@ -21,10 +21,12 @@ namespace Game.World.Character
         private bool calibrated;
 
         private Vector3 smoothed;
+        private Quaternion smoothedSwing = Quaternion.identity;
 
         // Full deflection reached at +/- MaxTiltAngle degrees from calibrated pose
         private const float MaxTiltAngle = 45f;
         private const float DeadZone = 0.06f;
+        private const float SwingDeadZoneDeg = MaxTiltAngle * DeadZone;
         private const float SmoothSpeed = 12f;
 
         public Vector3 GetRotation()
@@ -68,6 +70,44 @@ namespace Game.World.Character
             return smoothed;
         }
 
+        /// <summary>
+        /// Returns the smoothed pitch+roll swing quaternion (with physical phone yaw stripped via Swing-Twist)
+        /// for Bank-to-Turn gyro mode.
+        /// </summary>
+        public Quaternion GetSwingRotation()
+        {
+            SensorMode currentMode = DetectActiveSensor();
+            if (currentMode == SensorMode.None)
+                return Quaternion.identity;
+
+            if (currentMode != activeMode)
+            {
+                activeMode = currentMode;
+                calibrated = false;
+            }
+
+            if (!calibrated)
+            {
+                Calibrate();
+                if (!calibrated)
+                    return Quaternion.identity;
+            }
+
+            Quaternion rawSwing = activeMode switch
+            {
+                SensorMode.Attitude => ComputeSwingFromAttitude(originAttitude, AttitudeSensor.current.attitude.ReadValue()),
+                SensorMode.Gravity => ComputeSwingFromGravity(originGravity, GravitySensor.current.gravity.ReadValue()),
+                SensorMode.Accelerometer => ComputeSwingFromGravity(originGravity, Accelerometer.current.acceleration.ReadValue()),
+                _ => Quaternion.identity
+            };
+
+            Quaternion targetSwing = ApplySwingDeadZoneAndInvert(rawSwing, SwingDeadZoneDeg, GameSave.InvertCamX, GameSave.InvertCamY);
+
+            float t = 1f - Mathf.Exp(-SmoothSpeed * Time.deltaTime);
+            smoothedSwing = Quaternion.Slerp(smoothedSwing, targetSwing, t);
+            return smoothedSwing;
+        }
+
         internal void Calibrate()
         {
             SensorMode currentMode = DetectActiveSensor();
@@ -87,6 +127,7 @@ namespace Game.World.Character
                     originAttitude = q.normalized;
                     calibrated = true;
                     smoothed = Vector3.zero;
+                    smoothedSwing = Quaternion.identity;
                     break;
                 }
                 case SensorMode.Gravity:
@@ -101,6 +142,7 @@ namespace Game.World.Character
                     originGravity = g.normalized;
                     calibrated = true;
                     smoothed = Vector3.zero;
+                    smoothedSwing = Quaternion.identity;
                     break;
                 }
                 case SensorMode.Accelerometer:
@@ -115,6 +157,7 @@ namespace Game.World.Character
                     originGravity = a.normalized;
                     calibrated = true;
                     smoothed = Vector3.zero;
+                    smoothedSwing = Quaternion.identity;
                     break;
                 }
                 default:
@@ -201,6 +244,86 @@ namespace Game.World.Character
 
             float rescaled = (abs - deadZone) / (1f - deadZone);
             return Mathf.Clamp01(rescaled) * Mathf.Sign(value);
+        }
+
+        /// <summary>
+        /// Strips yaw (twist around Vector3.up) from a relative device rotation using Swing-Twist decomposition,
+        /// leaving only the pure pitch+roll swing quaternion (y == 0).
+        /// </summary>
+        internal static Quaternion StripYawSwingTwist(Quaternion delta)
+        {
+            if (!IsValidQuaternion(delta))
+                return Quaternion.identity;
+
+            Quaternion q = delta.normalized;
+            float twistSqrMag = q.y * q.y + q.w * q.w;
+            Quaternion twist = twistSqrMag > 1e-8f
+                ? new Quaternion(0f, q.y, 0f, q.w).normalized
+                : Quaternion.identity;
+
+            Quaternion swing = Quaternion.Inverse(twist) * q;
+            return swing.normalized;
+        }
+
+        internal static Quaternion ComputeSwingFromAttitude(Quaternion origin, Quaternion current)
+        {
+            if (!IsValidQuaternion(origin) || !IsValidQuaternion(current))
+                return Quaternion.identity;
+
+            Quaternion delta = Quaternion.Inverse(origin.normalized) * current.normalized;
+            return StripYawSwingTwist(delta);
+        }
+
+        internal static Quaternion ComputeSwingFromGravity(Vector3 originGravity, Vector3 currentGravity)
+        {
+            if (originGravity.sqrMagnitude < 1e-4f || currentGravity.sqrMagnitude < 1e-4f)
+                return Quaternion.identity;
+
+            Quaternion delta = Quaternion.FromToRotation(currentGravity.normalized, originGravity.normalized);
+            return StripYawSwingTwist(delta);
+        }
+
+        internal static Quaternion ApplySwingDeadZoneAndInvert(Quaternion swing, float deadZoneDeg, bool invertX, bool invertY)
+        {
+            if (!IsValidQuaternion(swing))
+                return Quaternion.identity;
+
+            Quaternion q = swing.normalized;
+            if (q.w < 0f)
+                q = new Quaternion(-q.x, -q.y, -q.z, -q.w);
+
+            // Apply axis inversion directly to the pure pitch (x) / roll (z) swing components
+            float sx = invertY ? q.x : -q.x;
+            float sz = invertX ? -q.z : q.z;
+            Quaternion adjusted = new Quaternion(sx, 0f, sz, q.w).normalized;
+
+            if (deadZoneDeg <= 0f)
+                return adjusted;
+
+            float angleDeg = Quaternion.Angle(Quaternion.identity, adjusted);
+            if (angleDeg <= deadZoneDeg)
+                return Quaternion.identity;
+
+            // Smoothly ramp out of the deadzone without a jump
+            float rescaledAngle = angleDeg - deadZoneDeg;
+            return Quaternion.Slerp(Quaternion.identity, adjusted, rescaledAngle / angleDeg);
+        }
+
+        /// <summary>
+        /// Computes normalized bank-to-turn yaw rate from a pitch+roll swing quaternion.
+        /// Positive when banked right (negative Z rotation), negative when banked left,
+        /// and amplified when pitching while banked.
+        /// </summary>
+        internal static float ComputeBankYawRate(Quaternion swing)
+        {
+            if (!IsValidQuaternion(swing))
+                return 0f;
+
+            Vector3 right = swing * Vector3.right;
+            Vector3 fwd = swing * Vector3.forward;
+            float bank = -right.y;
+            float pitchCoupling = 1f + 0.5f * Mathf.Abs(fwd.y);
+            return bank * pitchCoupling;
         }
     }
 }

@@ -10,9 +10,16 @@ using UnityEngine;
 
 namespace Game.World.GameManager
 {
+    public enum GyroMode
+    {
+        BankToTurn = 0,
+        FpvAcro = 1
+    }
+
     public static class GameSave
     {
         private static int _controlScheme = -1;
+        private static int _gyroMode = -1;
         private static float _rotationSensitivity = -1f;
         private static int _invertCamX = -1;
         private static int _invertCamY = -1;
@@ -26,6 +33,7 @@ namespace Game.World.GameManager
         private const string NoGooglePlayPlayerId = "defaultPlayer";
         private const string CloudDecisionKey = "CloudSaveDecisionMade";
         private static string ControlSchemeKey => PlayerId + "ControlScheme";
+        private static string GyroModeKey => PlayerId + "GyroMode";
         private static string RotationSensitivityKey => PlayerId + "RotationSensitivity";
         private static string InvertCamXKey => PlayerId + "InvertCamX";
         private static string InvertCamYKey => PlayerId + "InvertCamY";
@@ -68,6 +76,27 @@ namespace Game.World.GameManager
             PlayerPrefs.Save();
                 
                 ServiceProvider.GetService<EventSystem>().Raise<ControlSchemeChangedEvent>(_controlScheme);
+            }
+        }
+
+        public static GyroMode GyroMode
+        {
+            get
+            {
+                if (_gyroMode < 0)
+                    _gyroMode = PlayerPrefs.GetInt(GyroModeKey, (int)GyroMode.BankToTurn);
+
+                if (_gyroMode != (int)GyroMode.BankToTurn && _gyroMode != (int)GyroMode.FpvAcro)
+                    _gyroMode = (int)GyroMode.BankToTurn;
+
+                return (GyroMode)_gyroMode;
+            }
+            set
+            {
+                _gyroMode = (int)value;
+
+                PlayerPrefs.SetInt(GyroModeKey, _gyroMode);
+                PlayerPrefs.Save();
             }
         }
         
@@ -271,6 +300,7 @@ namespace Game.World.GameManager
             CloudSaveData data = new()
             {
                 controlScheme = ControlScheme,
+                gyroMode = (int)GyroMode,
                 rotationSensitivity = RotationSensitivity,
                 invertCamX = InvertCamX,
                 invertCamY = InvertCamY,
@@ -308,6 +338,7 @@ namespace Game.World.GameManager
                 return;
 
             ControlScheme = data.controlScheme;
+            GyroMode = (GyroMode)data.gyroMode;
             RotationSensitivity = data.rotationSensitivity;
             InvertCamX = data.invertCamX;
             InvertCamY = data.invertCamY;
@@ -346,6 +377,7 @@ namespace Game.World.GameManager
         public static void Reset()
         {
             _controlScheme = -1;
+            _gyroMode = -1;
             _rotationSensitivity = -1f;
             _invertCamX = -1;
             _invertCamY = -1;

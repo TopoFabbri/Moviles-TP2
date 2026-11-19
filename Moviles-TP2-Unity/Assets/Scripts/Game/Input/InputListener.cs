@@ -39,7 +39,11 @@ namespace Game.Input
         private void OnDestroy()
         {
             if (inMenu) return;
-            
+
+            SetSensorEnabled(AttitudeSensor.current, false);
+            SetSensorEnabled(GravitySensor.current, false);
+            SetSensorEnabled(Accelerometer.current, false);
+
             ServiceProvider.GetService<EventSystem>().Unsubscribe<ChangedStateEvent<States>>(OnStateChanged);
             ServiceProvider.GetService<EventSystem>().Unsubscribe<ControlSchemeChangedEvent>(OnControlSchemeChanged);
         }
@@ -62,19 +66,32 @@ namespace Game.Input
         private void Update()
         {
             if (inMenu) return;
-            
-            if (Accelerometer.current == null) return;
 
-            if (GameSave.ControlScheme == 0)
-            {
-                if (!Accelerometer.current.enabled)
-                    InputSystem.EnableDevice(Accelerometer.current);
-            }
-            else
-            {
-                if (Accelerometer.current.enabled)
-                    InputSystem.DisableDevice(Accelerometer.current);
-            }
+            bool enableSensors = GameSave.ControlScheme == 0;
+            InputDevice activeSensor = GetPreferredSensor();
+
+            SetSensorEnabled(AttitudeSensor.current, enableSensors && activeSensor == AttitudeSensor.current);
+            SetSensorEnabled(GravitySensor.current, enableSensors && activeSensor == GravitySensor.current);
+            SetSensorEnabled(Accelerometer.current, enableSensors && activeSensor == Accelerometer.current);
+        }
+
+        private static InputDevice GetPreferredSensor()
+        {
+            if (AttitudeSensor.current != null)
+                return AttitudeSensor.current;
+            if (GravitySensor.current != null)
+                return GravitySensor.current;
+            return Accelerometer.current;
+        }
+
+        private static void SetSensorEnabled(InputDevice sensor, bool shouldEnable)
+        {
+            if (sensor == null) return;
+
+            if (shouldEnable && !sensor.enabled)
+                InputSystem.EnableDevice(sensor);
+            else if (!shouldEnable && sensor.enabled)
+                InputSystem.DisableDevice(sensor);
         }
 
         public void OnMove(InputValue input)

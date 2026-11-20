@@ -17,6 +17,7 @@ namespace Game.World.IAP
         private IStoreController _storeController;
         private IExtensionProvider _extensionProvider;
         private Action<bool> _pendingPurchaseCallback;
+        private bool _isInitializing;
 
         public bool IsInitialized => _storeController != null && _extensionProvider != null;
 
@@ -55,9 +56,10 @@ namespace Game.World.IAP
 
         private void InitializePurchasing()
         {
-            if (IsInitialized)
+            if (IsInitialized || _isInitializing)
                 return;
 
+            _isInitializing = true;
             try
             {
                 ConfigurationBuilder builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
@@ -66,6 +68,7 @@ namespace Game.World.IAP
             }
             catch (Exception ex)
             {
+                _isInitializing = false;
                 Debug.LogWarning($"[IAPService] UnityPurchasing.Initialize exception: {ex.Message}");
             }
         }
@@ -127,6 +130,8 @@ namespace Game.World.IAP
             GrantNoAdsIfNew();
             onComplete?.Invoke(true);
 #else
+            if (!IsInitialized)
+                InitializePurchasing();
             Debug.LogWarning("[IAPService] Store not initialized or product unavailable.");
             onComplete?.Invoke(false);
 #endif
@@ -146,6 +151,7 @@ namespace Game.World.IAP
                 Debug.Log("[IAPService] Editor Fake Store: RestorePurchases.");
                 onComplete?.Invoke(GameSave.HasNoAds);
 #else
+                InitializePurchasing();
                 Debug.LogWarning("[IAPService] Cannot restore purchases: store not initialized.");
                 onComplete?.Invoke(GameSave.HasNoAds);
 #endif
@@ -195,6 +201,7 @@ namespace Game.World.IAP
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
+            _isInitializing = false;
             _storeController = controller;
             _extensionProvider = extensions;
 
@@ -207,11 +214,13 @@ namespace Game.World.IAP
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
+            _isInitializing = false;
             Debug.LogWarning($"[IAPService] Initialization failed: {error}");
         }
 
         public void OnInitializeFailed(InitializationFailureReason error, string message)
         {
+            _isInitializing = false;
             Debug.LogWarning($"[IAPService] Initialization failed: {error} - {message}");
         }
 

@@ -36,6 +36,10 @@ namespace Game.World.UI
         private int buyPrice = 1;
         private IAdService adService;
         private IIAPService iapService;
+        private float _noAdsFeedbackUntil;
+        private string _noAdsFeedbackText;
+        private float _restoreFeedbackUntil;
+        private string _restoreFeedbackText;
 
         private void Start()
         {
@@ -147,7 +151,11 @@ namespace Game.World.UI
 
             if (noAdsBtnText != null)
             {
-                if (GameSave.HasNoAds)
+                if (Time.unscaledTime < _noAdsFeedbackUntil)
+                {
+                    noAdsBtnText.text = _noAdsFeedbackText;
+                }
+                else if (GameSave.HasNoAds)
                 {
                     noAdsBtnText.text = GameSave.AdsEnabled ? "Ads: ON" : "Ads: OFF";
                 }
@@ -162,7 +170,9 @@ namespace Game.World.UI
             {
                 restorePurchasesBtn.gameObject.SetActive(!GameSave.HasNoAds);
                 if (restorePurchasesBtnText != null)
-                    restorePurchasesBtnText.text = "Restore Purchases";
+                    restorePurchasesBtnText.text = Time.unscaledTime < _restoreFeedbackUntil
+                        ? _restoreFeedbackText
+                        : "Restore Purchases";
             }
         }
 
@@ -178,7 +188,23 @@ namespace Game.World.UI
             if (iapService == null)
                 iapService = ServiceProvider.GetService<IIAPService>();
 
-            iapService?.BuyNoAds(_ => UpdateNoAdsUI());
+            if (iapService == null)
+            {
+                _noAdsFeedbackText = "Store Unavailable";
+                _noAdsFeedbackUntil = Time.unscaledTime + 2f;
+                UpdateNoAdsUI();
+                return;
+            }
+
+            iapService.BuyNoAds(success =>
+            {
+                if (!success)
+                {
+                    _noAdsFeedbackText = "Unavailable";
+                    _noAdsFeedbackUntil = Time.unscaledTime + 2f;
+                }
+                UpdateNoAdsUI();
+            });
         }
 
         public void OnRestorePurchasesBtnClicked()
@@ -186,7 +212,23 @@ namespace Game.World.UI
             if (iapService == null)
                 iapService = ServiceProvider.GetService<IIAPService>();
 
-            iapService?.RestorePurchases(_ => UpdateNoAdsUI());
+            if (iapService == null)
+            {
+                _restoreFeedbackText = "Store Unavailable";
+                _restoreFeedbackUntil = Time.unscaledTime + 2f;
+                UpdateNoAdsUI();
+                return;
+            }
+
+            iapService.RestorePurchases(success =>
+            {
+                if (!success)
+                {
+                    _restoreFeedbackText = "Not Found";
+                    _restoreFeedbackUntil = Time.unscaledTime + 2f;
+                }
+                UpdateNoAdsUI();
+            });
         }
 
         private void UpdateRewardedAdUI()

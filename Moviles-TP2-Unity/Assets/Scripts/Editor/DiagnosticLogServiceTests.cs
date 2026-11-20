@@ -95,6 +95,16 @@ namespace Editor.Diagnostics
             Assert.That(logs, Does.Contain("[INFO] [LOGGER] HelloFromLogger"));
         }
 
+        [Test]
+        public void ShareReport_CopiesDiagnosticReportToClipboardInEditor()
+        {
+            _service.RecordFailure("GPGS", "ShowLeaderboard", "NotAuthenticated");
+            _service.ShareReport("Test Report");
+
+            Assert.That(GUIUtility.systemCopyBuffer, Does.Contain("=== DRONERACER DIAGNOSTIC REPORT ==="));
+            Assert.That(GUIUtility.systemCopyBuffer, Does.Contain("[FAIL] [GPGS] ShowLeaderboard: NotAuthenticated"));
+        }
+
         [MenuItem("Tools/Diagnostics/Run Milestone 1 Tests")]
         public static void RunAllFromMenu()
         {

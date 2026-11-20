@@ -107,6 +107,34 @@ namespace Game.World.FabbriPlugin
             return sb.ToString();
         }
 
+        public void ShareReport(string subject = "DroneRacer Diagnostic Report")
+        {
+            string report = BuildDiagnosticReport();
+            GUIUtility.systemCopyBuffer = report;
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            try
+            {
+                using var intentClass = new AndroidJavaClass("android.content.Intent");
+                using var intent = new AndroidJavaObject("android.content.Intent", intentClass.GetStatic<string>("ACTION_SEND"));
+                intent.Call<AndroidJavaObject>("setType", "text/plain");
+                intent.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_SUBJECT"), subject);
+                intent.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), report);
+
+                using var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                using var currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+                using var chooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intent, subject);
+                currentActivity.Call("startActivity", chooser);
+            }
+            catch (Exception ex)
+            {
+                RecordFailure("DIAGNOSTICS", "ShareReport", ex.Message);
+            }
+#else
+            Debug.Log($"[DiagnosticLogService] Report copied to clipboard ({report.Length} chars).");
+#endif
+        }
+
         public void ClearLogs()
         {
             _recentKeys.Clear();

@@ -36,20 +36,19 @@ namespace Game.World.FabbriPlugin
         {
             if (!isInitialized) InitLogger();
 
-#if UNITY_ANDROID
-            loggerClass?.CallStatic("SendLog", "LogSent", (int)LogLevel.Debug);
-#endif
+            if (ServiceProvider.TryGetService<IDiagnosticLogService>(out var diagnostics))
+            {
+                diagnostics.RecordInfo("LOGGER", message);
+            }
+            else
+            {
+                ServiceProvider.GetService<FileManager>().WriteFile(message);
+            }
         }
 
         internal string GetLogs()
         {
-            string logs = "";
-
-#if UNITY_ANDROID
-            logs = loggerClass?.CallStatic<string>("GetLogs");
-#endif
-
-            return logs;
+            return ServiceProvider.GetService<FileManager>().ReadFile();
         }
     }
 
@@ -78,7 +77,7 @@ namespace Game.World.FabbriPlugin
         
         public void ShowAlert(string[] strings, Action<int> alertHandler = null)
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             if (strings.Length < 3)
             {
                 Debug.LogError("Alert requires at least 3 strings");
@@ -86,6 +85,8 @@ namespace Game.World.FabbriPlugin
             }
 
             popupClassInstance.Call("ShowAlertView", strings, new AlertViewCallback(alertHandler));
+#else
+            Debug.Log($"[AndroidAlert] {string.Join(" | ", strings)}");
 #endif
         }
 

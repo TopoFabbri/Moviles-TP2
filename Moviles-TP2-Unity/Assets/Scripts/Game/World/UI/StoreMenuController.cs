@@ -108,6 +108,7 @@ namespace Game.World.UI
                             noAdsContainer.name = "NoAdsContainer";
                             noAdsBtn = noAdsContainer.GetComponentInChildren<Button>();
                             noAdsBtnText = noAdsContainer.GetComponentInChildren<TextMeshProUGUI>();
+                            ConfigureButtonAutoSizing(noAdsBtnText);
                         }
 
                         if (restorePurchasesBtn == null)
@@ -116,6 +117,7 @@ namespace Game.World.UI
                             restoreContainer.name = "RestorePurchasesContainer";
                             restorePurchasesBtn = restoreContainer.GetComponentInChildren<Button>();
                             restorePurchasesBtnText = restoreContainer.GetComponentInChildren<TextMeshProUGUI>();
+                            ConfigureButtonAutoSizing(restorePurchasesBtnText);
                         }
                     }
                 }
@@ -123,6 +125,7 @@ namespace Game.World.UI
 
             if (noAdsBtn != null)
             {
+                ConfigureButtonAutoSizing(noAdsBtnText);
                 for (int i = 0; i < noAdsBtn.onClick.GetPersistentEventCount(); i++)
                 {
                     noAdsBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
@@ -134,6 +137,7 @@ namespace Game.World.UI
 
             if (restorePurchasesBtn != null)
             {
+                ConfigureButtonAutoSizing(restorePurchasesBtnText);
                 for (int i = 0; i < restorePurchasesBtn.onClick.GetPersistentEventCount(); i++)
                 {
                     restorePurchasesBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
@@ -142,6 +146,15 @@ namespace Game.World.UI
                 restorePurchasesBtn.onClick.RemoveAllListeners();
                 restorePurchasesBtn.onClick.AddListener(OnRestorePurchasesBtnClicked);
             }
+        }
+
+        private static void ConfigureButtonAutoSizing(TextMeshProUGUI label)
+        {
+            if (label == null) return;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 18f;
+            label.fontSizeMax = 75f;
+            label.margin = new Vector4(10f, 0f, 10f, 0f);
         }
 
         private void UpdateNoAdsUI()

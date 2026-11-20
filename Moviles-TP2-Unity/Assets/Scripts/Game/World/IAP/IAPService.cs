@@ -10,7 +10,7 @@ namespace Game.World.IAP
 {
     public class IAPService : IIAPService, IDetailedStoreListener
     {
-        public const string NoAdsProductId = "no-ads";
+        public const string NoAdsProductId = "no_ads";
         private const string TesterEmail = "matufabbri@gmail.com";
         private const string DefaultPriceString = "$1.99";
 

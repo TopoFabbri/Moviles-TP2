@@ -21,6 +21,8 @@ namespace Game.World.FabbriPlugin
         private readonly Dictionary<string, float> _recentKeys = new();
         private bool _isHooked;
 
+        public event Action<string, string, string> OnFailureRecorded;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoRegister()
         {
@@ -57,6 +59,7 @@ namespace Game.World.FabbriPlugin
                 : $"[{timestamp}] [FAIL] [{safeCategory}] {safeAction}: {safeReason} | {details}";
 
             WriteEntry(entry);
+            OnFailureRecorded?.Invoke(safeCategory, safeAction, safeReason);
         }
 
         public void RecordInfo(string category, string message)

@@ -67,6 +67,11 @@ namespace Game.World.UI
         {
             ServiceProvider.GetService<LevelList>().LoadMainMenu(false);
         }
+
+        public void OnSendDiagnosticReport()
+        {
+            ServiceProvider.GetService<FabbriPlugin.IDiagnosticLogService>().ShareReport();
+        }
         
         public void OnCancel(CancelAction obj)
         {

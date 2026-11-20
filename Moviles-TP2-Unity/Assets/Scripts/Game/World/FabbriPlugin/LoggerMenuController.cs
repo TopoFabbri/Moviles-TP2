@@ -27,8 +27,12 @@ namespace Game.World.FabbriPlugin
 
         public void OnReadLogs()
         {
-            ServiceProvider.GetService<FileManager>().WriteFile("Logs Loaded");
-            logsTxt.text = ServiceProvider.GetService<FileManager>().ReadFile();
+            logsTxt.text = ServiceProvider.GetService<IDiagnosticLogService>().BuildDiagnosticReport();
+        }
+
+        public void OnSendReport()
+        {
+            ServiceProvider.GetService<IDiagnosticLogService>().ShareReport();
         }
 
         public void OnDeleteLogs()

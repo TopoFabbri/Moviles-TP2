@@ -216,12 +216,16 @@ namespace Game.World.IAP
         {
             _isInitializing = false;
             Debug.LogWarning($"[IAPService] Initialization failed: {error}");
+            if (ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("IAP", "Initialize", error.ToString());
         }
 
         public void OnInitializeFailed(InitializationFailureReason error, string message)
         {
             _isInitializing = false;
             Debug.LogWarning($"[IAPService] Initialization failed: {error} - {message}");
+            if (ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("IAP", "Initialize", $"{error} - {message}");
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
@@ -240,6 +244,8 @@ namespace Game.World.IAP
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
             Debug.LogWarning($"[IAPService] Purchase failed for {product.definition.id}: {failureReason}");
+            if (ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("IAP", "Purchase", $"{product.definition.id}: {failureReason}");
             Action<bool> callback = _pendingPurchaseCallback;
             _pendingPurchaseCallback = null;
             callback?.Invoke(false);
@@ -248,6 +254,8 @@ namespace Game.World.IAP
         public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
         {
             Debug.LogWarning($"[IAPService] Purchase failed for {product.definition.id}: {failureDescription.reason} - {failureDescription.message}");
+            if (ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("IAP", "Purchase", $"{product.definition.id}: {failureDescription.reason} - {failureDescription.message}");
             Action<bool> callback = _pendingPurchaseCallback;
             _pendingPurchaseCallback = null;
             callback?.Invoke(false);

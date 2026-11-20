@@ -59,6 +59,8 @@ namespace Game.World.Ads
             _interstitialAd.OnAdDisplayFailed += (info, err) =>
             {
                 Debug.LogWarning($"[LevelPlayAdProvider] Interstitial display failed: {err?.ErrorMessage} (Code {err?.ErrorCode})");
+                if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                    diag.RecordFailure("ADS", "InterstitialDisplay", $"{err?.ErrorMessage} (Code {err?.ErrorCode})");
                 OnInterstitialClosed(info);
             };
             LoadInterstitial();
@@ -72,6 +74,8 @@ namespace Game.World.Ads
             _rewardedAd.OnAdDisplayFailed += (info, err) =>
             {
                 Debug.LogWarning($"[LevelPlayAdProvider] Rewarded display failed: {err?.ErrorMessage} (Code {err?.ErrorCode})");
+                if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                    diag.RecordFailure("ADS", "RewardedDisplay", $"{err?.ErrorMessage} (Code {err?.ErrorCode})");
                 _onRewardedResultCallback?.Invoke(false);
                 _onRewardedResultCallback = null;
                 LoadRewarded();
@@ -83,6 +87,8 @@ namespace Game.World.Ads
         {
             _isInitialized = false;
             Debug.LogError($"[LevelPlayAdProvider] Init failed: {error.ErrorMessage} (Code {error.ErrorCode})");
+            if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("ADS", "Init", $"{error.ErrorMessage} (Code {error.ErrorCode})");
         }
 
         public bool IsInterstitialReady() => _interstitialAd != null && _interstitialAd.IsAdReady();
@@ -163,6 +169,8 @@ namespace Game.World.Ads
             _interstitialRetryAttempt = Math.Min(_interstitialRetryAttempt + 1, MaxRetryExponent);
             int delaySeconds = (int)Math.Pow(2, _interstitialRetryAttempt);
             Debug.LogWarning($"[LevelPlayAdProvider] Interstitial load failed: {error?.ErrorMessage} (Code {error?.ErrorCode}). Retrying in {delaySeconds}s.");
+            if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("ADS", "InterstitialLoad", $"{error?.ErrorMessage} (Code {error?.ErrorCode})");
             ScheduleOnMainThread(delaySeconds * 1000, LoadInterstitial);
         }
 
@@ -179,6 +187,8 @@ namespace Game.World.Ads
             _rewardedRetryAttempt = Math.Min(_rewardedRetryAttempt + 1, MaxRetryExponent);
             int delaySeconds = (int)Math.Pow(2, _rewardedRetryAttempt);
             Debug.LogWarning($"[LevelPlayAdProvider] Rewarded load failed: {error?.ErrorMessage} (Code {error?.ErrorCode}). Retrying in {delaySeconds}s.");
+            if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                diag.RecordFailure("ADS", "RewardedLoad", $"{error?.ErrorMessage} (Code {error?.ErrorCode})");
             ScheduleOnMainThread(delaySeconds * 1000, LoadRewarded);
         }
 

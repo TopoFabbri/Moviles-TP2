@@ -45,6 +45,8 @@ namespace Game.CloudSave
                     if (status != SavedGameRequestStatus.Success || metadata == null)
                     {
                         Debug.LogWarning($"[CloudSave] Failed to open saved game for load: {status}");
+                        if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                            diag.RecordFailure("CLOUD_SAVE", "LoadOpen", status.ToString());
                         onComplete?.Invoke(false, null);
                         return;
                     }
@@ -54,6 +56,8 @@ namespace Game.CloudSave
                         if (readStatus != SavedGameRequestStatus.Success)
                         {
                             Debug.LogWarning($"[CloudSave] Failed to read binary data: {readStatus}");
+                            if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                                diag.RecordFailure("CLOUD_SAVE", "LoadRead", readStatus.ToString());
                             onComplete?.Invoke(false, null);
                             return;
                         }
@@ -93,6 +97,8 @@ namespace Game.CloudSave
                     if (status != SavedGameRequestStatus.Success || metadata == null)
                     {
                         Debug.LogWarning($"[CloudSave] Failed to open saved game for save: {status}");
+                        if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                            diag.RecordFailure("CLOUD_SAVE", "SaveOpen", status.ToString());
                         onComplete?.Invoke(false);
                         return;
                     }
@@ -106,7 +112,11 @@ namespace Game.CloudSave
                     {
                         bool success = commitStatus == SavedGameRequestStatus.Success;
                         if (!success)
+                        {
                             Debug.LogWarning($"[CloudSave] Failed to commit cloud save: {commitStatus}");
+                            if (Tools.ServiceProvider.ServiceProvider.TryGetService<Game.World.FabbriPlugin.IDiagnosticLogService>(out var diag))
+                                diag.RecordFailure("CLOUD_SAVE", "SaveCommit", commitStatus.ToString());
+                        }
                         onComplete?.Invoke(success);
                     });
                 });

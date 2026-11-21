@@ -1,12 +1,22 @@
 using System;
 using System.IO;
+using Game.World.GameManager;
 using UnityEngine;
 
 namespace Game.CloudSave
 {
     public class MockCloudSaveProvider : ICloudSaveProvider
     {
-        private static string MockFilePath => Path.Combine(Application.persistentDataPath, "mock_cloud_save.json");
+        private static string MockFilePath
+        {
+            get
+            {
+                string safeId = string.IsNullOrEmpty(GameSave.ActivePlayerId) ? "defaultPlayer" : GameSave.ActivePlayerId;
+                foreach (char c in Path.GetInvalidFileNameChars())
+                    safeId = safeId.Replace(c, '_');
+                return Path.Combine(Application.persistentDataPath, $"mock_cloud_save_{safeId}.json");
+            }
+        }
 
         public bool IsAvailable => true;
 

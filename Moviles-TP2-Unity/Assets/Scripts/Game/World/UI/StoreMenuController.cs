@@ -1,4 +1,5 @@
-﻿using Game.World.Ads;
+﻿using Game.CloudSave;
+using Game.World.Ads;
 using Game.World.GameManager;
 using Game.World.IAP;
 using TMPro;
@@ -47,6 +48,22 @@ namespace Game.World.UI
             iapService = ServiceProvider.GetService<IIAPService>();
             SetupRewardedAdUI();
             SetupNoAdsUI();
+            RefreshUI();
+        }
+
+        private void OnEnable()
+        {
+            GameSave.OnSaveDataChanged += RefreshUI;
+            RefreshUI();
+        }
+
+        private void OnDisable()
+        {
+            GameSave.OnSaveDataChanged -= RefreshUI;
+        }
+
+        public void RefreshUI()
+        {
             UpdateBar();
             UpdateBuyPrice();
             UpdateCreditsText();
@@ -278,6 +295,8 @@ namespace Game.World.UI
                 {
                     GameSave.Credits += rewardedCredits;
                     UpdateCreditsText();
+                    if (CloudSaveService.HasInstance)
+                        CloudSaveService.Instance.SaveNow();
                 }
             });
         }
@@ -294,6 +313,9 @@ namespace Game.World.UI
             UpdateBar();
             UpdateBuyPrice();
             UpdateCreditsText();
+
+            if (CloudSaveService.HasInstance)
+                CloudSaveService.Instance.SaveNow();
         }
 
         private void UpdateBar()

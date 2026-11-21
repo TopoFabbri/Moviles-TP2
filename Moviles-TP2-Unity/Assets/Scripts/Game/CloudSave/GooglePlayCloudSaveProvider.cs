@@ -39,7 +39,7 @@ namespace Game.CloudSave
             savedGameClient.OpenWithAutomaticConflictResolution(
                 SaveFileName,
                 DataSource.ReadNetworkOnly,
-                ConflictResolutionStrategy.UseLongestPlaytime,
+                ConflictResolutionStrategy.UseMostRecentlySaved,
                 (status, metadata) =>
                 {
                     if (status != SavedGameRequestStatus.Success || metadata == null)
@@ -91,7 +91,7 @@ namespace Game.CloudSave
             savedGameClient.OpenWithAutomaticConflictResolution(
                 SaveFileName,
                 DataSource.ReadNetworkOnly,
-                ConflictResolutionStrategy.UseLongestPlaytime,
+                ConflictResolutionStrategy.UseMostRecentlySaved,
                 (status, metadata) =>
                 {
                     if (status != SavedGameRequestStatus.Success || metadata == null)
@@ -106,6 +106,7 @@ namespace Game.CloudSave
                     byte[] bytes = Encoding.UTF8.GetBytes(data.ToJson());
                     SavedGameMetadataUpdate update = new SavedGameMetadataUpdate.Builder()
                         .WithUpdatedDescription($"Level {data.currentLevel} | Credits {data.credits}")
+                        .WithUpdatedPlayedTime(TimeSpan.FromSeconds(Time.realtimeSinceStartup))
                         .Build();
 
                     savedGameClient.CommitUpdate(metadata, update, bytes, (commitStatus, _) =>

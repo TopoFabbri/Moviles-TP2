@@ -30,6 +30,7 @@ namespace Game.World.UI
         {
             CloudSaveService service = CloudSaveService.Instance;
             service.OnCloudConflictDetected += ShowPopup;
+            service.OnCloudConflictCleared += ClosePopup;
 
             if (service.PendingCloudData != null)
                 ShowPopup(service.PendingCloudData);
@@ -38,7 +39,10 @@ namespace Game.World.UI
         private void OnDisable()
         {
             if (CloudSaveService.HasInstance)
+            {
                 CloudSaveService.Instance.OnCloudConflictDetected -= ShowPopup;
+                CloudSaveService.Instance.OnCloudConflictCleared -= ClosePopup;
+            }
         }
 
         private void OnDestroy()

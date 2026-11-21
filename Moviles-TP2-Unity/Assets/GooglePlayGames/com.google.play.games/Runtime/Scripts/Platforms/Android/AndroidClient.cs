@@ -83,17 +83,6 @@ namespace GooglePlayGames.Android
         private void Authenticate(bool isAutoSignIn, Action<SignInStatus> callback)
         {
             callback = AsOnGameThreadCallback(callback);
-            lock (AuthStateLock)
-            {
-                // If the user is already authenticated, just fire the callback, we don't need
-                // any additional work.
-                if (mAuthState == AuthState.Authenticated)
-                {
-                    OurUtils.Logger.d("Already authenticated.");
-                    InvokeCallbackOnGameThread(callback, SignInStatus.Success);
-                    return;
-                }
-            }
 
             string methodName = isAutoSignIn ? "isAuthenticated" : "signIn";
 
@@ -175,6 +164,8 @@ namespace GooglePlayGames.Android
             {
                 lock (AuthStateLock)
                 {
+                    mAuthState = AuthState.Unauthenticated;
+                    mUser = null;
                     OurUtils.Logger.e("Returning an error code.");
                     InvokeCallbackOnGameThread(callback, SignInStatus.Canceled);
                 }

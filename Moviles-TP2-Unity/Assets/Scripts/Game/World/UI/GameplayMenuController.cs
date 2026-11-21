@@ -28,13 +28,19 @@ namespace Game.World.UI
 
         private void OnEnable()
         {
+            GameSave.OnSaveDataChanged += RefreshUI;
             RefreshUI();
+        }
+
+        private void OnDisable()
+        {
+            GameSave.OnSaveDataChanged -= RefreshUI;
         }
 
         public void RefreshUI()
         {
             if (rotationSensitivitySlider != null)
-                rotationSensitivitySlider.value = GameSave.RotationSensitivity;
+                rotationSensitivitySlider.SetValueWithoutNotify(GameSave.RotationSensitivity);
             if (controlSchemeText != null && InputListener.ActionMaps != null && InputListener.ActionMaps.Count > 0)
             {
                 if (GameSave.ControlScheme < 0 || GameSave.ControlScheme >= InputListener.ActionMaps.Count)
@@ -45,11 +51,11 @@ namespace Game.World.UI
             UpdateGyroModeText();
 
             if (invertCamXToggle != null)
-                invertCamXToggle.isOn = GameSave.InvertCamX;
+                invertCamXToggle.SetIsOnWithoutNotify(GameSave.InvertCamX);
             if (invertCamYToggle != null)
-                invertCamYToggle.isOn = GameSave.InvertCamY;
+                invertCamYToggle.SetIsOnWithoutNotify(GameSave.InvertCamY);
             if (godModeToggle != null)
-                godModeToggle.isOn = GameSave.GodMode;
+                godModeToggle.SetIsOnWithoutNotify(GameSave.GodMode);
         }
 
         public void OnControllerSchemeChanged()

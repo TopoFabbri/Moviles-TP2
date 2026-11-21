@@ -1,4 +1,5 @@
-﻿using Game.Events;
+﻿using Game.CloudSave;
+using Game.Events;
 using Game.World.Ads;
 using Game.World.GameManager;
 using TMPro;
@@ -59,6 +60,9 @@ namespace Game.World.UI
             aceTime.text = aceTimeText + $"{minutes:00}:{seconds:00}.{centiseconds:00}";
             
             ServiceProvider.GetService<LeaderboardManager>().UpdateLeaderboard();
+
+            if (CloudSaveService.HasInstance)
+                CloudSaveService.Instance.SaveNow();
         }
 
         private void OnDisable()

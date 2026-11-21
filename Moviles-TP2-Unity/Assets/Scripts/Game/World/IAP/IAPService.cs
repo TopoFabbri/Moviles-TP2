@@ -1,4 +1,5 @@
 using System;
+using Game.CloudSave;
 using Game.World.GameManager;
 using GooglePlayGames;
 using Tools.ServiceProvider;
@@ -73,6 +74,11 @@ namespace Game.World.IAP
             }
         }
 
+        public void OnAccountChanged()
+        {
+            CheckTesterAccount();
+        }
+
         private static bool CheckTesterAccount()
         {
             try
@@ -103,6 +109,8 @@ namespace Game.World.IAP
             {
                 GameSave.HasNoAds = true;
                 GameSave.AdsEnabled = false;
+                if (CloudSaveService.HasInstance)
+                    CloudSaveService.Instance.SaveNow();
             }
         }
 

@@ -120,10 +120,15 @@ namespace Game.World.UI
 #if UNITY_ANDROID
         private static void ProcessAuthentication(SignInStatus status)
         {
-            if (status != SignInStatus.Success) return;
+            if (status != SignInStatus.Success)
+            {
+                CloudSaveService.Instance.OnAccountUpdated(null, false);
+                return;
+            }
 
+            string userId = PlayGamesPlatform.Instance.GetUserId();
+            CloudSaveService.Instance.OnAccountUpdated(userId, true);
             PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_first_flight);
-            CloudSaveService.Instance.OnPlayServicesAuthenticated();
         }
 #endif
     }

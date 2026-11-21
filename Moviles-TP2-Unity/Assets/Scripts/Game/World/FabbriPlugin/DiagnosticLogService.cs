@@ -81,7 +81,7 @@ namespace Game.World.FabbriPlugin
             sb.AppendLine($"RAM: {SystemInfo.systemMemorySize} MB | GPU: {SystemInfo.graphicsDeviceName}");
             sb.AppendLine($"Active Scene: {SceneManager.GetActiveScene().name}");
             sb.AppendLine("--- SERVICES & SAVE STATE ---");
-            sb.AppendLine($"GPGS Authenticated: {GetGpgsStatus()}");
+            sb.AppendLine($"GPGS Authenticated: {GetGpgsStatus()} | ActivePlayerId: {GameSave.ActivePlayerId}");
             sb.AppendLine($"CloudSave Instance: {CloudSaveService.HasInstance} | PendingCloudData: {(CloudSaveService.HasInstance && CloudSaveService.Instance.PendingCloudData != null)} | CloudDecisionMade: {GameSave.HasCloudDecisionBeenMade}");
 
             if (ServiceProvider.TryGetService<IAdService>(out var adService))

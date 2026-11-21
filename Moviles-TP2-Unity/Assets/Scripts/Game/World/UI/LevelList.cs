@@ -42,7 +42,7 @@ namespace Game.World.UI
             
             if (GameSave.CurrentLevel >= levels.Count - 1)
             {
-                GameSave.CurrentLevel = -1;
+                GameSave.CurrentLevel = 0;
                 SceneTransitionService.LoadSceneAsync(MainMenu);
                 return;
             }
@@ -56,7 +56,7 @@ namespace Game.World.UI
             if (levelFinished)
             {
                 if (GameSave.CurrentLevel >= levels.Count - 1)
-                    GameSave.CurrentLevel = -1;
+                    GameSave.CurrentLevel = 0;
                 else
                     GameSave.CurrentLevel++;
             }

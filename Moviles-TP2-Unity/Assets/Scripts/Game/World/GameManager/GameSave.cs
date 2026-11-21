@@ -33,7 +33,10 @@ namespace Game.World.GameManager
         private static readonly Dictionary<int, float> LevelTimesGodMode = new();
 
         private const string NoGooglePlayPlayerId = "defaultPlayer";
-        private const string CloudDecisionKey = "CloudSaveDecisionMade";
+        public const float DefaultRotationSensitivity = 100f;
+
+        private static string CloudDecisionKey => PlayerId + "CloudSaveDecisionMade";
+        private static string LastSavedUtcTicksKey => PlayerId + "LastSavedUtcTicks";
         private static string ControlSchemeKey => PlayerId + "ControlScheme";
         private static string GyroModeKey => PlayerId + "GyroMode";
         private static string RotationSensitivityKey => PlayerId + "RotationSensitivity";
@@ -47,18 +50,54 @@ namespace Game.World.GameManager
         private static string AdsEnabledKey => PlayerId + "AdsEnabled";
         private static string LevelTimesKey => PlayerId + "Level<level>Time";
 
-        private static string _playerId;
+        private static string _activePlayerId = NoGooglePlayPlayerId;
 
-        private static string PlayerId
+        public static string ActivePlayerId => _activePlayerId;
+
+        private static string PlayerId => _activePlayerId;
+
+        public static event Action OnSaveDataChanged;
+
+        public static bool SetActiveAccount(string playerId)
         {
-            get
-            {
-                _playerId ??= PlayGamesPlatform.Instance != null && PlayGamesPlatform.Instance.IsAuthenticated()
-                    ? PlayGamesPlatform.Instance.GetUserId()
-                    : NoGooglePlayPlayerId;
-                _playerId ??= NoGooglePlayPlayerId;
+            string normalized = string.IsNullOrEmpty(playerId) || playerId == "0"
+                ? NoGooglePlayPlayerId
+                : playerId;
 
-                return _playerId;
+            if (string.Equals(_activePlayerId, normalized, StringComparison.Ordinal))
+                return false;
+
+            _activePlayerId = normalized;
+            InvalidateCache();
+            NotifySaveDataChanged();
+            return true;
+        }
+
+        private static void InvalidateCache()
+        {
+            _controlScheme = -1;
+            _gyroMode = -1;
+            _rotationSensitivity = -1f;
+            _invertCamX = -1;
+            _invertCamY = -1;
+            _currentLevel = -1;
+            _credits = -1;
+            _addedSpeed = -1f;
+            _godMode = -1;
+            _hasNoAds = -1;
+            _adsEnabled = -1;
+            LevelTimes.Clear();
+            LevelTimesGodMode.Clear();
+        }
+
+        private static void NotifySaveDataChanged()
+        {
+            OnSaveDataChanged?.Invoke();
+
+            if (ServiceProvider.TryGetService<EventSystem>(out var eventSystem))
+            {
+                eventSystem.Raise<SaveDataChangedEvent>();
+                eventSystem.Raise<ControlSchemeChangedEvent>(ControlScheme);
             }
         }
         
@@ -111,11 +150,11 @@ namespace Game.World.GameManager
             get
             {
                 if (_rotationSensitivity <= 0f)
-                    _rotationSensitivity = PlayerPrefs.GetFloat(RotationSensitivityKey, 0f);
-                
+                    _rotationSensitivity = PlayerPrefs.GetFloat(RotationSensitivityKey, DefaultRotationSensitivity);
+
                 if (_rotationSensitivity <= 0f)
-                    return 0f;
-                
+                    _rotationSensitivity = DefaultRotationSensitivity;
+
                 return _rotationSensitivity;
             }
             
@@ -298,26 +337,25 @@ namespace Game.World.GameManager
 
         public static void SetLevelTime(int level, float time)
         {
-            LevelTimes.TryAdd(level, time);
-            LevelTimes[level] = time;
-            
+            Dictionary<int, float> cache = GodMode ? LevelTimesGodMode : LevelTimes;
+            cache[level] = time;
+
             string key = LevelTimesKey.Replace("<level>", level.ToString()) + (GodMode ? "GodMode" : "");
             PlayerPrefs.SetFloat(key, time);
             PlayerPrefs.Save();
         }
-        
+
         public static float GetLevelTime(int level)
         {
-            if (!LevelTimes.ContainsKey(level))
-                LevelTimes.TryAdd(level, -1f);
-            
+            Dictionary<int, float> cache = GodMode ? LevelTimesGodMode : LevelTimes;
+            if (cache.TryGetValue(level, out float cachedTime))
+                return cachedTime;
+
             string key = LevelTimesKey.Replace("<level>", level.ToString()) + (GodMode ? "GodMode" : "");
-            LevelTimes[level] = PlayerPrefs.GetFloat(key, -1f);
-            
-            return LevelTimes[level];
+            float time = PlayerPrefs.GetFloat(key, -1f);
+            cache[level] = time;
+            return time;
         }
-        
-        private const string LastSavedUtcTicksKey = "LastSavedUtcTicks";
 
         public static long LastSavedUtcTicks
         {
@@ -424,79 +462,40 @@ namespace Game.World.GameManager
 
             LastSavedUtcTicks = data.savedAtUtcTicks > 0 ? data.savedAtUtcTicks : DateTime.UtcNow.Ticks;
             PlayerPrefs.Save();
+            NotifySaveDataChanged();
         }
 
         public static void Reset()
         {
-            _controlScheme = -1;
-            _gyroMode = -1;
-            _rotationSensitivity = -1f;
-            _invertCamX = -1;
-            _invertCamY = -1;
-            _currentLevel = -1;
-            _credits = -1;
-            _addedSpeed = -1f;
-            _godMode = -1;
-            _hasNoAds = -1;
-            _adsEnabled = -1;
-            LevelTimes.Clear();
-            LevelTimesGodMode.Clear();
-            
-            PlayerPrefs.DeleteAll();
-        }
+            PlayerPrefs.DeleteKey(ControlSchemeKey);
+            PlayerPrefs.DeleteKey(GyroModeKey);
+            PlayerPrefs.DeleteKey(RotationSensitivityKey);
+            PlayerPrefs.DeleteKey(InvertCamXKey);
+            PlayerPrefs.DeleteKey(InvertCamYKey);
+            PlayerPrefs.DeleteKey(CurrentLevelKey);
+            PlayerPrefs.DeleteKey(CreditsKey);
+            PlayerPrefs.DeleteKey(AddedSpeedKey);
+            PlayerPrefs.DeleteKey(GodModeKey);
+            PlayerPrefs.DeleteKey(HasNoAdsKey);
+            PlayerPrefs.DeleteKey(AdsEnabledKey);
+            PlayerPrefs.DeleteKey(CloudDecisionKey);
+            PlayerPrefs.DeleteKey(LastSavedUtcTicksKey);
 
-        private static List<byte> Serialize()
-        {
-            List<byte> bytes = new();
-            
-            bytes.AddRange(BitConverter.GetBytes(ControlScheme));
-            bytes.AddRange(BitConverter.GetBytes(RotationSensitivity));
-            bytes.AddRange(BitConverter.GetBytes(InvertCamX));
-            bytes.AddRange(BitConverter.GetBytes(InvertCamY));
-            bytes.AddRange(BitConverter.GetBytes(CurrentLevel));
-            bytes.AddRange(BitConverter.GetBytes(Credits));
-            bytes.AddRange(BitConverter.GetBytes(AddedSpeed));
-            
-            bytes.AddRange(BitConverter.GetBytes(ServiceProvider.GetService<LevelList>().GetLevels().Count));
-            
-            for (int i = 0; i < ServiceProvider.GetService<LevelList>().GetLevels().Count; i++)
-                bytes.AddRange(BitConverter.GetBytes(GetLevelTime(i)));
-            
-            return bytes;
-        }
-        
-        private static void Deserialize(byte[] bytes)
-        {
-            int index = 0;
-            
-            ControlScheme = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            RotationSensitivity = BitConverter.ToSingle(bytes, index);
-            index += sizeof(float);
-            
-            _invertCamX = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            _invertCamY = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            CurrentLevel = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            Credits = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            AddedSpeed = BitConverter.ToSingle(bytes, index);
-            index += sizeof(float);
-            
-            int levelsCount = BitConverter.ToInt32(bytes, index);
-            index += sizeof(int);
-            
-            for (int i = 0; i < levelsCount; i++)
-                SetLevelTime(i, BitConverter.ToSingle(bytes, index));
-            
-            index += sizeof(float) * levelsCount;
+            int levelsCount = 0;
+            if (ServiceProvider.TryGetService<LevelList>(out var levelList))
+                levelsCount = levelList.GetLevels().Count;
+
+            int maxLevelKeys = Math.Max(levelsCount, 32);
+            for (int i = 0; i < maxLevelKeys; i++)
+            {
+                string normalKey = LevelTimesKey.Replace("<level>", i.ToString());
+                PlayerPrefs.DeleteKey(normalKey);
+                PlayerPrefs.DeleteKey(normalKey + "GodMode");
+            }
+
+            InvalidateCache();
+            PlayerPrefs.Save();
+            NotifySaveDataChanged();
         }
     }
 }

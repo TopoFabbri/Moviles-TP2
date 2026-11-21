@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 using Game.World.GameManager;
+using Game.World.IAP;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.CloudSave
@@ -30,13 +34,17 @@ namespace Game.CloudSave
         }
 
         public event Action<CloudSaveData> OnCloudConflictDetected;
+        public event Action OnCloudConflictCleared;
 
         public CloudSaveData PendingCloudData { get; private set; }
 
         private ICloudSaveProvider _provider;
         private Coroutine _periodicSaveCoroutine;
+        private GameObject _fallbackPopupCanvas;
         private bool _hasCheckedInitialSave;
         private bool _isCheckingInitialSave;
+        private int _authGeneration;
+        private string _syncedPlayerId;
 
         private void Awake()
         {
@@ -63,6 +71,41 @@ namespace Game.CloudSave
 #endif
         }
 
+        public void OnAccountUpdated(string playerId, bool isAuthenticated)
+        {
+            string targetId = isAuthenticated ? playerId : null;
+            bool accountChanged = GameSave.SetActiveAccount(targetId);
+
+            if (ServiceProvider.TryGetService<IAPService>(out var iapService))
+                iapService.OnAccountChanged();
+
+            if (accountChanged || !string.Equals(_syncedPlayerId, GameSave.ActivePlayerId, StringComparison.Ordinal))
+            {
+                _authGeneration++;
+                _syncedPlayerId = GameSave.ActivePlayerId;
+                _hasCheckedInitialSave = false;
+                _isCheckingInitialSave = false;
+                PendingCloudData = null;
+
+                if (_periodicSaveCoroutine != null)
+                {
+                    StopCoroutine(_periodicSaveCoroutine);
+                    _periodicSaveCoroutine = null;
+                }
+
+                if (_fallbackPopupCanvas != null)
+                {
+                    Destroy(_fallbackPopupCanvas);
+                    _fallbackPopupCanvas = null;
+                }
+
+                OnCloudConflictCleared?.Invoke();
+            }
+
+            if (isAuthenticated)
+                OnPlayServicesAuthenticated();
+        }
+
         public void OnPlayServicesAuthenticated()
         {
             if (_hasCheckedInitialSave || _isCheckingInitialSave)
@@ -72,9 +115,18 @@ namespace Game.CloudSave
                 return;
 
             _isCheckingInitialSave = true;
+            int expectedGeneration = _authGeneration;
+            string expectedPlayerId = GameSave.ActivePlayerId;
+            _syncedPlayerId = expectedPlayerId;
 
             _provider.LoadCloudSave((success, cloudData) =>
             {
+                if (expectedGeneration != _authGeneration ||
+                    !string.Equals(expectedPlayerId, GameSave.ActivePlayerId, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
                 _isCheckingInitialSave = false;
 
                 if (!success)
@@ -137,9 +189,16 @@ namespace Game.CloudSave
             if (!GameSave.HasCloudDecisionBeenMade || !_hasCheckedInitialSave || PendingCloudData != null)
                 return;
 
+            if (!string.Equals(_syncedPlayerId, GameSave.ActivePlayerId, StringComparison.Ordinal))
+                return;
+
+            int expectedGeneration = _authGeneration;
             CloudSaveData snapshot = GameSave.ExportSnapshot();
             _provider.SaveToCloud(snapshot, success =>
             {
+                if (expectedGeneration != _authGeneration)
+                    return;
+
                 if (!success)
                     Debug.LogWarning("[CloudSave] Failed to save snapshot to cloud.");
             });
@@ -165,8 +224,31 @@ namespace Game.CloudSave
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (pauseStatus && GameSave.HasCloudDecisionBeenMade)
-                SaveNow();
+            if (pauseStatus)
+            {
+                if (GameSave.HasCloudDecisionBeenMade)
+                    SaveNow();
+            }
+            else
+            {
+                RefreshAuthenticationFromPlatform();
+            }
+        }
+
+        private void RefreshAuthenticationFromPlatform()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (PlayGamesPlatform.Instance == null)
+                return;
+
+            PlayGamesPlatform.Instance.Authenticate(status =>
+            {
+                if (status == SignInStatus.Success && PlayGamesPlatform.Instance.IsAuthenticated())
+                    OnAccountUpdated(PlayGamesPlatform.Instance.GetUserId(), true);
+                else
+                    OnAccountUpdated(null, false);
+            });
+#endif
         }
 
         private void OnApplicationQuit()
@@ -177,7 +259,11 @@ namespace Game.CloudSave
 
         private void ShowFallbackPopup(CloudSaveData cloudData)
         {
+            if (_fallbackPopupCanvas != null)
+                Destroy(_fallbackPopupCanvas);
+
             GameObject canvasGo = new("CloudSaveFallbackCanvas");
+            _fallbackPopupCanvas = canvasGo;
             Canvas canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 1000;

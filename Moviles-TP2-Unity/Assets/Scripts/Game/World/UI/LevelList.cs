@@ -32,7 +32,7 @@ namespace Game.World.UI
             if (levels.Count == 0)
                 GetLevels();
 
-            SceneManager.LoadScene(levels[GameSave.CurrentLevel]);
+            SceneTransitionService.LoadSceneAsync(levels[GameSave.CurrentLevel]);
         }
         
         internal void LoadNextLevel()
@@ -43,7 +43,7 @@ namespace Game.World.UI
             if (GameSave.CurrentLevel >= levels.Count - 1)
             {
                 GameSave.CurrentLevel = -1;
-                SceneManager.LoadScene(MainMenu);
+                SceneTransitionService.LoadSceneAsync(MainMenu);
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace Game.World.UI
                     GameSave.CurrentLevel++;
             }
             
-            SceneManager.LoadScene(MainMenu);
+            SceneTransitionService.LoadSceneAsync(MainMenu);
         }
     }
 }

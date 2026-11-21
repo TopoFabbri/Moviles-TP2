@@ -1,4 +1,5 @@
 using Game.Events;
+using Game.World.FabbriPlugin;
 using Game.World.GameManager;
 using TMPro;
 using Tools.EventSystem;
@@ -21,6 +22,12 @@ namespace Game.World.UI
             ServiceProvider.GetService<EventSystem>().Subscribe<VelocityDebugEvent>(OnVelocityDebugEvent);
             
             androidControls.SetActive(Application.platform == RuntimePlatform.Android || Application.isEditor);
+        }
+
+        private void Start()
+        {
+            if (speedBar != null && speedBar.sprite != null && ServiceProvider.TryGetService(out IDiagnosticLogService logService))
+                logService.RecordInfo("Optimization", $"SpriteAtlas status: HUD.{speedBar.sprite.name} packed={speedBar.sprite.packed}");
         }
 
         private void OnDestroy()

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Diagnostics;
 using Game.World.FabbriPlugin;
+using Game.World.Visuals;
 using TMPro;
 using Tools.ServiceProvider;
+using Tools.Tween;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,9 +22,20 @@ namespace Game.World.UI
         private Canvas _canvas;
         private Image _progressBarFill;
         private TextMeshProUGUI _percentText;
+        private Image _stateFadeImage;
+        private Coroutine _stateFadeCoroutine;
         private bool _isLoading;
 
         public static bool IsLoading => _instance != null && _instance._isLoading;
+
+        public static void PlayStateTransitionFade(float duration = 0.3f)
+        {
+            EnsureInstance();
+            if (_instance._stateFadeCoroutine != null)
+                _instance.StopCoroutine(_instance._stateFadeCoroutine);
+
+            _instance._stateFadeCoroutine = _instance.StartCoroutine(_instance.StateTransitionFadeRoutine(duration));
+        }
 
         public static void LoadSceneAsync(string scenePath)
         {
@@ -71,7 +84,7 @@ namespace Game.World.UI
             bgRect.offsetMin = Vector2.zero;
             bgRect.offsetMax = Vector2.zero;
             var bgImg = bgGo.AddComponent<Image>();
-            bgImg.color = new Color(0.05f, 0.06f, 0.09f, 1f);
+            bgImg.color = Palette.Shadow;
 
             var titleGo = new GameObject("LoadingLabel");
             titleGo.transform.SetParent(bgGo.transform, false);
@@ -83,7 +96,7 @@ namespace Game.World.UI
             titleTmp.text = "LOADING...";
             titleTmp.fontSize = 56f;
             titleTmp.alignment = TextAlignmentOptions.Center;
-            titleTmp.color = Color.white;
+            titleTmp.color = Palette.CharacterSecondary;
 
             var barBgGo = new GameObject("ProgressBarBG");
             barBgGo.transform.SetParent(bgGo.transform, false);
@@ -92,7 +105,7 @@ namespace Game.World.UI
             barBgRect.anchorMax = new Vector2(0.5f, 0.45f);
             barBgRect.sizeDelta = new Vector2(800f, 44f);
             var barBgImg = barBgGo.AddComponent<Image>();
-            barBgImg.color = new Color(0.18f, 0.2f, 0.25f, 1f);
+            barBgImg.color = Palette.Bounds;
 
             var barFillGo = new GameObject("ProgressBarFill");
             barFillGo.transform.SetParent(barBgGo.transform, false);
@@ -107,7 +120,7 @@ namespace Game.World.UI
                 Texture2D.whiteTexture,
                 new Rect(0f, 0f, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height),
                 new Vector2(0.5f, 0.5f));
-            _progressBarFill.color = new Color(0.15f, 0.78f, 0.95f, 1f);
+            _progressBarFill.color = Palette.CharacterPrimary;
             _progressBarFill.type = Image.Type.Filled;
             _progressBarFill.fillMethod = Image.FillMethod.Horizontal;
             _progressBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
@@ -123,9 +136,54 @@ namespace Game.World.UI
             _percentText.text = "0%";
             _percentText.fontSize = 36f;
             _percentText.alignment = TextAlignmentOptions.Center;
-            _percentText.color = new Color(0.8f, 0.9f, 1f, 1f);
+            _percentText.color = Palette.CharacterSecondary;
+
+            var fadeGo = new GameObject("StateFadeOverlay");
+            fadeGo.transform.SetParent(transform, false);
+            var fadeRect = fadeGo.AddComponent<RectTransform>();
+            fadeRect.anchorMin = Vector2.zero;
+            fadeRect.anchorMax = Vector2.one;
+            fadeRect.offsetMin = Vector2.zero;
+            fadeRect.offsetMax = Vector2.zero;
+            _stateFadeImage = fadeGo.AddComponent<Image>();
+            Color fadeColor = Palette.Shadow;
+            fadeColor.a = 0f;
+            _stateFadeImage.color = fadeColor;
+            _stateFadeImage.raycastTarget = false;
+            _stateFadeImage.enabled = false;
 
             _canvas.enabled = false;
+        }
+
+        private IEnumerator StateTransitionFadeRoutine(float duration)
+        {
+            if (_stateFadeImage == null)
+                yield break;
+
+            bool prevCanvasEnabled = _canvas.enabled;
+            if (!_isLoading)
+                _canvas.enabled = true;
+
+            _stateFadeImage.enabled = true;
+            Color baseColor = Palette.Shadow;
+
+            yield return Ease.Tween(duration * 0.5f, t =>
+            {
+                baseColor.a = Mathf.Lerp(0f, 0.65f, t);
+                _stateFadeImage.color = baseColor;
+            }, Ease.OutCubic, unscaled: true);
+
+            yield return Ease.Tween(duration * 0.5f, t =>
+            {
+                baseColor.a = Mathf.Lerp(0.65f, 0f, t);
+                _stateFadeImage.color = baseColor;
+            }, Ease.OutCubic, unscaled: true);
+
+            _stateFadeImage.enabled = false;
+            if (!_isLoading)
+                _canvas.enabled = prevCanvasEnabled;
+
+            _stateFadeCoroutine = null;
         }
 
         private IEnumerator LoadSceneRoutine(string scenePath)

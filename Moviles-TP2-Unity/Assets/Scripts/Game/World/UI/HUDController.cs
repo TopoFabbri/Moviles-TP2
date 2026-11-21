@@ -26,6 +26,14 @@ namespace Game.World.UI
 
         private void Start()
         {
+            if (speedBar != null && speedBar.sprite == null)
+            {
+                speedBar.sprite = Sprite.Create(
+                    Texture2D.whiteTexture,
+                    new Rect(0f, 0f, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height),
+                    new Vector2(0.5f, 0.5f));
+            }
+
             if (speedBar != null && speedBar.sprite != null && ServiceProvider.TryGetService(out IDiagnosticLogService logService))
                 logService.RecordInfo("Optimization", $"SpriteAtlas status: HUD.{speedBar.sprite.name} packed={speedBar.sprite.packed}");
         }
@@ -49,7 +57,7 @@ namespace Game.World.UI
         {
             float fillAmount = obj.speed / obj.maxSpeed;
             fillAmount = Mathf.Round(fillAmount * speedBarSegments) / speedBarSegments;
-            speedBar.fillAmount = fillAmount;
+            speedBar.fillAmount = Mathf.Lerp(speedBar.fillAmount, fillAmount, Time.deltaTime * 12f);
             velocityText.text = obj.speed.ToString("00");
         }
     }

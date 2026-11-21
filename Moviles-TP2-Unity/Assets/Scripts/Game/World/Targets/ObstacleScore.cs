@@ -17,7 +17,10 @@ namespace Game.World.Targets
         internal void MarkDone()
         {
             if (Current == this)
+            {
                 Scores.Remove(this);
+                ServiceProvider.GetService<EventSystem>().Raise<RingPassedEvent>(transform.position, Scores.Count);
+            }
             
             if (Scores.Count <= 0)
                 ServiceProvider.GetService<EventSystem>().Raise<GameOverEvent>();

@@ -2,10 +2,12 @@
 using Game.Events;
 using Game.World.Ads;
 using Game.World.GameManager;
+using Game.World.Visuals;
 using TMPro;
 using Tools.EventSystem;
 using Tools.FSM;
 using Tools.ServiceProvider;
+using Tools.Tween;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Time = Tools.Time.Time;
@@ -45,6 +47,8 @@ namespace Game.World.UI
 
         private void OnEnable()
         {
+            SceneTransitionService.PlayStateTransitionFade(0.3f);
+            GameFeelDirector.Instance.PlayWinMilestoneSequence(transform);
             float time = ServiceProvider.GetService<GameTime>().Timer.TimeElapsed;
             
             if (GameSave.GetLevelTime(GameSave.CurrentLevel) > time || GameSave.GetLevelTime(GameSave.CurrentLevel) <= 0f)

@@ -42,6 +42,8 @@ namespace Game.World.GameManager
         private static string RotationSensitivityKey => PlayerId + "RotationSensitivity";
         private static string InvertCamXKey => PlayerId + "InvertCamX";
         private static string InvertCamYKey => PlayerId + "InvertCamY";
+        private static string MusicVolumeKey => PlayerId + "MusicVolume";
+        private static string SfxVolumeKey => PlayerId + "SfxVolume";
         private static string CurrentLevelKey => PlayerId + "CurrentLevel";
         private static string CreditsKey => PlayerId + "Credits";
         private static string AddedSpeedKey => PlayerId + "AddedSpeed";
@@ -57,6 +59,26 @@ namespace Game.World.GameManager
         private static string PlayerId => _activePlayerId;
 
         public static event Action OnSaveDataChanged;
+
+        public static float MusicVolume
+        {
+            get => PlayerPrefs.GetFloat(MusicVolumeKey, 0.8f);
+            set
+            {
+                PlayerPrefs.SetFloat(MusicVolumeKey, Mathf.Clamp01(value));
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static float SfxVolume
+        {
+            get => PlayerPrefs.GetFloat(SfxVolumeKey, 1.0f);
+            set
+            {
+                PlayerPrefs.SetFloat(SfxVolumeKey, Mathf.Clamp01(value));
+                PlayerPrefs.Save();
+            }
+        }
 
         public static bool SetActiveAccount(string playerId)
         {

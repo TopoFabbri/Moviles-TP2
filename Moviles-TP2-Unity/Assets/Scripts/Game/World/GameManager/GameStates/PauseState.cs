@@ -1,4 +1,5 @@
-﻿using Game.Events;
+﻿using Game.Audio;
+using Game.Events;
 using Game.World.UI;
 using Tools.EventSystem;
 using Tools.FSM;
@@ -15,6 +16,11 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
+            actions.AddMainThreadBehaviour(0, () =>
+            {
+                UnityEngine.Time.timeScale = 0f;
+                GameAudioService.SetPausedDucking(true);
+            });
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<CancelAction>(OnCancelAction));
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<PauseAction>(OnPauseAction));
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Subscribe<RestartLevelEvent>(OnRestart));
@@ -43,6 +49,11 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
+            actions.AddMainThreadBehaviour(0, () =>
+            {
+                UnityEngine.Time.timeScale = 1f;
+                GameAudioService.SetPausedDucking(false);
+            });
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<CancelAction>(OnCancelAction));
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPauseAction));
             actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<RestartLevelEvent>(OnRestart));

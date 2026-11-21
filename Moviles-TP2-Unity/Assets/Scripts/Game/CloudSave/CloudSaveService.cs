@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Game.World.GameManager;
 using Game.World.IAP;
+using Game.World.Visuals;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using Tools.ServiceProvider;
@@ -275,7 +276,9 @@ namespace Game.CloudSave
             GameObject backdrop = new("Backdrop");
             backdrop.transform.SetParent(canvasGo.transform, false);
             UnityEngine.UI.Image backdropImg = backdrop.AddComponent<UnityEngine.UI.Image>();
-            backdropImg.color = new Color(0f, 0f, 0f, 0.75f);
+            Color backdropColor = Palette.Shadow;
+            backdropColor.a = 0.75f;
+            backdropImg.color = backdropColor;
             RectTransform backdropRt = backdrop.GetComponent<RectTransform>();
             backdropRt.anchorMin = Vector2.zero;
             backdropRt.anchorMax = Vector2.one;
@@ -285,7 +288,7 @@ namespace Game.CloudSave
             GameObject panel = new("Panel");
             panel.transform.SetParent(backdrop.transform, false);
             UnityEngine.UI.Image panelImg = panel.AddComponent<UnityEngine.UI.Image>();
-            panelImg.color = new Color(0.12f, 0.14f, 0.18f, 1f);
+            panelImg.color = Palette.Floor;
             RectTransform panelRt = panel.GetComponent<RectTransform>();
             panelRt.sizeDelta = new Vector2(900f, 520f);
 
@@ -302,14 +305,14 @@ namespace Game.CloudSave
             CreateFallbackText(panel.transform, font, cloudText, 28, FontStyle.Normal,
                 new Vector2(210f, 20f), new Vector2(380f, 220f));
 
-            CreateFallbackButton(panel.transform, font, "Use Cloud", new Color(0.18f, 0.55f, 0.9f, 1f),
+            CreateFallbackButton(panel.transform, font, "Use Cloud", Palette.CharacterPrimary,
                 new Vector2(-180f, -170f), () =>
                 {
                     ResolveUseCloud();
                     Destroy(canvasGo);
                 });
 
-            CreateFallbackButton(panel.transform, font, "Keep Local", new Color(0.35f, 0.38f, 0.44f, 1f),
+            CreateFallbackButton(panel.transform, font, "Keep Local", Palette.Bounds,
                 new Vector2(180f, -170f), () =>
                 {
                     ResolveKeepLocal();
@@ -327,7 +330,7 @@ namespace Game.CloudSave
             text.fontSize = fontSize;
             text.fontStyle = style;
             text.alignment = TextAnchor.MiddleCenter;
-            text.color = Color.white;
+            text.color = Palette.CharacterSecondary;
             RectTransform rt = go.GetComponent<RectTransform>();
             rt.anchoredPosition = anchoredPos;
             rt.sizeDelta = size;

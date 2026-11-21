@@ -1,4 +1,5 @@
 using Game.Input;
+using Game.Audio;
 using Game.World.GameManager;
 using TMPro;
 using UnityEngine;
@@ -15,14 +16,19 @@ namespace Game.World.UI
         [SerializeField] private Toggle invertCamYToggle;
         [SerializeField] private Toggle godModeToggle;
         
+        private Slider _musicVolSlider;
+        private Slider _sfxVolSlider;
+
         private void Awake()
         {
             EnsureGyroModeControl();
+            EnsureVolumeControls();
         }
 
         private void Start()
         {
             EnsureGyroModeControl();
+            EnsureVolumeControls();
             RefreshUI();
         }
 
@@ -77,6 +83,51 @@ namespace Game.World.UI
                 : GyroMode.BankToTurn;
 
             UpdateGyroModeText();
+        }
+
+        private void EnsureVolumeControls()
+        {
+            if (_musicVolSlider != null && _sfxVolSlider != null)
+                return;
+
+            Slider template = GetComponentInChildren<Slider>(true);
+            if (template == null)
+                return;
+
+            GameAudioService.SetMusicVolume(GameSave.MusicVolume);
+            GameAudioService.SetSfxVolume(GameSave.SfxVolume);
+
+            if (_musicVolSlider == null)
+            {
+                _musicVolSlider = CreateVolumeSlider(template, "MusicVol", GameSave.MusicVolume, val =>
+                {
+                    GameSave.MusicVolume = val;
+                    GameAudioService.SetMusicVolume(val);
+                });
+            }
+
+            if (_sfxVolSlider == null)
+            {
+                _sfxVolSlider = CreateVolumeSlider(template, "SFXVol", GameSave.SfxVolume, val =>
+                {
+                    GameSave.SfxVolume = val;
+                    GameAudioService.SetSfxVolume(val);
+                });
+            }
+        }
+
+        private static Slider CreateVolumeSlider(Slider template, string sliderName, float initialValue, UnityEngine.Events.UnityAction<float> onChanged)
+        {
+            Transform existing = template.transform.parent != null ? template.transform.parent.Find(sliderName) : null;
+            Slider slider = existing != null ? existing.GetComponent<Slider>() : Instantiate(template, template.transform.parent);
+            slider.gameObject.name = sliderName;
+            slider.minValue = 0f;
+            slider.maxValue = 1f;
+            slider.wholeNumbers = false;
+            slider.SetValueWithoutNotify(initialValue);
+            slider.onValueChanged.RemoveAllListeners();
+            slider.onValueChanged.AddListener(onChanged);
+            return slider;
         }
 
         private void EnsureGyroModeControl()

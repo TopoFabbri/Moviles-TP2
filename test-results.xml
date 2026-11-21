@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.1691237">
+  <test-suite type="TestSuite" id="1000" name="DroneRacer" fullname="DroneRacer" runstate="Runnable" testcasecount="50" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.169124" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1058" name="Assembly-CSharp-Editor.dll" fullname="D:/Files/Repos/Moviles-TP2/Moviles-TP2-Unity/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="50" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.150454" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="13444" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1059" name="Editor" fullname="Editor" runstate="Runnable" testcasecount="50" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.148679" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestFixture" id="1033" name="CraftFloorsTests" fullname="Editor.CraftFloorsTests" classname="Editor.CraftFloorsTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.144898" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1034" name="Ease_Curves_ReturnExpectedEndpoints" fullname="Editor.CraftFloorsTests.Ease_Curves_ReturnExpectedEndpoints" methodname="Ease_Curves_ReturnExpectedEndpoints" classname="Editor.CraftFloorsTests" runstate="Runnable" seed="718364583" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.035478" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1036" name="GameAudioService_GainLayersAndPauseDucking" fullname="Editor.CraftFloorsTests.GameAudioService_GainLayersAndPauseDucking" methodname="GameAudioService_GainLayersAndPauseDucking" classname="Editor.CraftFloorsTests" runstate="Runnable" seed="1002844431" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.001405" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1035" name="GameAudioService_SynthesizesNonEmptyPcmClips" fullname="Editor.CraftFloorsTests.GameAudioService_SynthesizesNonEmptyPcmClips" methodname="GameAudioService_SynthesizesNonEmptyPcmClips" classname="Editor.CraftFloorsTests" runstate="Runnable" seed="144923589" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.065844" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1037" name="Palette_And_CyberToonMaterials_AreConfigured" fullname="Editor.CraftFloorsTests.Palette_And_CyberToonMaterials_AreConfigured" methodname="Palette_And_CyberToonMaterials_AreConfigured" classname="Editor.CraftFloorsTests" runstate="Runnable" seed="851549883" result="Passed" start-time="2026-11-21 21:25:52Z" end-time="2026-11-21 21:25:52Z" duration="0.009728" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Administrator/AppData/LocalLow/Fabbri2025/DroneRacer\TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

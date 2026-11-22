@@ -15,11 +15,15 @@ namespace Game.World.Targets
 
         private readonly GoPool<Target> pool = new();
         private readonly List<Target> targets = new();
+        private TargetCullingController cullingController;
 
         private void Awake()
         {
             spawnPoints.Clear();
             GetComponentsInChildren(spawnPoints);
+            cullingController = GetComponent<TargetCullingController>();
+            if (cullingController == null)
+                cullingController = gameObject.AddComponent<TargetCullingController>();
         }
 
         internal void Spawn()
@@ -41,10 +45,13 @@ namespace Game.World.Targets
                 targets.Add(pool.Get(spawnPoints[i].prefab, transform, spawnPoints[i].transform.position, rot, spawnPoints[i].prefab.transform.localScale, i, spawnPoints[i].prefab));
                 spawnPoints[i].gameObject.SetActive(false);
             }
+
+            cullingController?.Initialize(targets);
         }
         
         private void OnDestroy()
         {
+            cullingController?.Clear();
             foreach (Target target in targets)
             {
                 pool.Release(target);
@@ -57,6 +64,7 @@ namespace Game.World.Targets
 
         internal void Restart()
         {
+            cullingController?.Clear();
             foreach (Target target in targets)
                 pool.Release(target);
             

@@ -107,6 +107,8 @@ namespace Game.World.Visuals
             {
                 Camera cam = cameras[i];
                 if (cam == null) continue;
+                if (!cam.orthographic)
+                    cam.useOcclusionCulling = true;
                 var uac = cam.GetUniversalAdditionalCameraData();
                 if (uac != null)
                     uac.renderPostProcessing = true;

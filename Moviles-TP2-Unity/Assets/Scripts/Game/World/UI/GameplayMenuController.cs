@@ -121,11 +121,11 @@ namespace Game.World.UI
             Transform existing = template.transform.parent != null ? template.transform.parent.Find(sliderName) : null;
             Slider slider = existing != null ? existing.GetComponent<Slider>() : Instantiate(template, template.transform.parent);
             slider.gameObject.name = sliderName;
+            slider.onValueChanged = new Slider.SliderEvent();
             slider.minValue = 0f;
             slider.maxValue = 1f;
             slider.wholeNumbers = false;
             slider.SetValueWithoutNotify(initialValue);
-            slider.onValueChanged.RemoveAllListeners();
             slider.onValueChanged.AddListener(onChanged);
             return slider;
         }
@@ -235,6 +235,8 @@ namespace Game.World.UI
 
         public void OnRotationSensitivityChanged(float value)
         {
+            if (!gameObject.activeInHierarchy)
+                return;
             GameSave.RotationSensitivity = value;
         }
         

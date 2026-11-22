@@ -185,7 +185,7 @@ namespace Game.World.GameManager
                 _rotationSensitivity = value;
                 
                 PlayerPrefs.SetFloat(RotationSensitivityKey, _rotationSensitivity);
-            PlayerPrefs.Save();
+                PlayerPrefs.Save();
             }
         }
         

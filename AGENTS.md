@@ -44,3 +44,7 @@ via the MCP tools and the summary will follow.
 Do not re-scan source files when MCP tools can give you the same
 answer for a fraction of the tokens a re-scan costs. This is not optional.
 <!-- <<< projectmem bridge <<< -->
+
+## Unity MCP
+
+When a task requires Unity MCP (`unity-mcp`) and the Unity Editor is not already running, launch Unity headless as a background daemon (`Unity.exe -batchmode -nographics -projectPath "D:\Files\Repos\Moviles-TP2"`) without `-quit`, and stop it when done if you started it.

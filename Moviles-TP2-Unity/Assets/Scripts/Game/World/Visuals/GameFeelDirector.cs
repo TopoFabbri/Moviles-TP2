@@ -82,7 +82,8 @@ namespace Game.World.Visuals
             }
 
             VfxPoolService.Instance.PlayRingPassBurst(evt.Position);
-            VfxPoolService.Instance.SpawnFloatingText(evt.Position, "+RING");
+            Transform followTarget = DroneProceduralMotion.Instance != null ? DroneProceduralMotion.Instance.transform : null;
+            VfxPoolService.Instance.SpawnFloatingText(evt.Position, "+RING", followTarget);
             GameAudioService.PlayPickupBlip();
         }
 

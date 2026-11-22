@@ -84,9 +84,10 @@ namespace Editor
                     "YMat" => Palette.RingSecondary,
                     "ZMat" => Palette.CharacterPrimary,
                     "Center" => Palette.Accent,
-                    _ => Palette.Bounds
+                    _ => Palette.Accent
                 };
-                ApplyToonMat(assetPath, toonShader, baseCol, Palette.Shadow, Color.black, 0.002f);
+                Color emission = name is "XMat" or "YMat" or "ZMat" ? Color.black : Palette.Accent * 0.8f;
+                ApplyToonMat(assetPath, toonShader, baseCol, Palette.Shadow, emission, 0.002f);
             }
         }
 

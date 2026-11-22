@@ -256,14 +256,14 @@ namespace Game.World.Visuals
             StartCoroutine(ReleaseAfter(ps, _confettiPool, 1.35f));
         }
 
-        public void SpawnFloatingText(Vector3 pos, string text = "+RING")
+        public void SpawnFloatingText(Vector3 pos, string text = "+RING", Transform followTarget = null)
         {
             TextMeshPro tmp = _floatingTextPool.Get();
             tmp.text = text;
-            tmp.transform.position = pos + Vector3.up * 0.5f;
+            tmp.transform.position = (followTarget != null ? followTarget.position : pos) + Vector3.up * 0.8f;
             if (Camera.main != null)
                 tmp.transform.rotation = Camera.main.transform.rotation;
-            StartCoroutine(AnimateFloatingText(tmp));
+            StartCoroutine(AnimateFloatingText(tmp, followTarget));
         }
 
         private IEnumerator ReleaseAfter(ParticleSystem ps, ObjectPool<ParticleSystem> pool, float delay)
@@ -276,7 +276,7 @@ namespace Game.World.Visuals
             }
         }
 
-        private IEnumerator AnimateFloatingText(TextMeshPro tmp)
+        private IEnumerator AnimateFloatingText(TextMeshPro tmp, Transform followTarget)
         {
             Vector3 startPos = tmp.transform.position;
             Vector3 endPos = startPos + Vector3.up * 1.2f;
@@ -285,7 +285,16 @@ namespace Game.World.Visuals
             yield return Ease.Tween(0.6f, t =>
             {
                 if (tmp == null) return;
-                tmp.transform.position = Vector3.Lerp(startPos, endPos, t);
+                if (followTarget != null)
+                {
+                    tmp.transform.position = followTarget.position + Vector3.up * Mathf.Lerp(0.8f, 2.0f, t);
+                    if (Camera.main != null)
+                        tmp.transform.rotation = Camera.main.transform.rotation;
+                }
+                else
+                {
+                    tmp.transform.position = Vector3.Lerp(startPos, endPos, t);
+                }
                 c.a = 1f - t;
                 tmp.color = c;
             }, Ease.OutCubic, unscaled: false);

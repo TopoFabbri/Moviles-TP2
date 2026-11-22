@@ -20,6 +20,7 @@ namespace Game.World.UI
         private static SceneTransitionService _instance;
 
         private Canvas _canvas;
+        private GameObject _loadingRoot;
         private Image _progressBarFill;
         private TextMeshProUGUI _percentText;
         private Image _stateFadeImage;
@@ -77,6 +78,7 @@ namespace Game.World.UI
             gameObject.AddComponent<GraphicRaycaster>();
 
             var bgGo = new GameObject("LoadingBG");
+            _loadingRoot = bgGo;
             bgGo.transform.SetParent(transform, false);
             var bgRect = bgGo.AddComponent<RectTransform>();
             bgRect.anchorMin = Vector2.zero;
@@ -152,6 +154,7 @@ namespace Game.World.UI
             _stateFadeImage.raycastTarget = false;
             _stateFadeImage.enabled = false;
 
+            _loadingRoot.SetActive(false);
             _canvas.enabled = false;
         }
 
@@ -189,6 +192,7 @@ namespace Game.World.UI
         private IEnumerator LoadSceneRoutine(string scenePath)
         {
             _isLoading = true;
+            _loadingRoot.SetActive(true);
             _canvas.enabled = true;
             UpdateProgress(0f);
 
@@ -197,6 +201,7 @@ namespace Game.World.UI
             if (op == null)
             {
                 Debug.LogError($"[SceneTransition] Failed to start async load for: {scenePath}");
+                _loadingRoot.SetActive(false);
                 _canvas.enabled = false;
                 _isLoading = false;
                 yield break;
@@ -223,7 +228,9 @@ namespace Game.World.UI
             sw.Stop();
             LogTransition(scenePath, sw.ElapsedMilliseconds);
 
-            _canvas.enabled = false;
+            _loadingRoot.SetActive(false);
+            if (_stateFadeCoroutine == null)
+                _canvas.enabled = false;
             _isLoading = false;
         }
 

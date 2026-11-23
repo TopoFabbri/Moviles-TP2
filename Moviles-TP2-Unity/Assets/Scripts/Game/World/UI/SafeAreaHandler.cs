@@ -39,13 +39,11 @@ namespace Game.World.UI
             lastSafeArea = safeArea;
             lastScreenSize = new Vector2Int(Screen.width, Screen.height);
 
-            Vector2 anchorMin = safeArea.position;
-            Vector2 anchorMax = safeArea.position + safeArea.size;
+            float horizontalMargin = Mathf.Max(safeArea.xMin, Screen.width - safeArea.xMax);
+            float verticalMargin = Mathf.Max(safeArea.yMin, Screen.height - safeArea.yMax);
 
-            anchorMin.x /= Screen.width;
-            anchorMin.y /= Screen.height;
-            anchorMax.x /= Screen.width;
-            anchorMax.y /= Screen.height;
+            Vector2 anchorMin = new Vector2(horizontalMargin / Screen.width, verticalMargin / Screen.height);
+            Vector2 anchorMax = new Vector2((Screen.width - horizontalMargin) / Screen.width, (Screen.height - verticalMargin) / Screen.height);
 
             rectTransform.anchorMin = anchorMin;
             rectTransform.anchorMax = anchorMax;

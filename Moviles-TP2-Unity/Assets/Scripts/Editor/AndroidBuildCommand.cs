@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Unity.Pipeline.Commands;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 
@@ -22,10 +23,42 @@ namespace Editor
                 else if (args[i] == "-androidKeyaliasPass" && string.IsNullOrEmpty(kaPass)) kaPass = args[i + 1];
             }
 
+            BuildAabCore(outputPath, ksPass, kaPass);
+        }
+
+        [CliCommand("build_aab", "Build signed Android App Bundle (.aab)")]
+        public static string BuildAabCli(
+            [CliArg("output", "Output .aab path")] string output = "Builds/DroneRacer.aab",
+            [CliArg("keystore-pass", "Android keystore password")] string keystorePass = "",
+            [CliArg("keyalias-pass", "Android keyalias password")] string keyaliasPass = "")
+        {
+            if (EditorApplication.isPlaying)
+            {
+                throw new InvalidOperationException("Cannot build AAB while Editor is in Play Mode. Exit Play Mode first.");
+            }
+
+            if (EditorApplication.isCompiling)
+            {
+                throw new InvalidOperationException("Cannot build AAB while scripts are compiling. Wait for compilation to finish.");
+            }
+
+            string ksPass = !string.IsNullOrEmpty(keystorePass)
+                ? keystorePass
+                : Environment.GetEnvironmentVariable("UNITY_KEYSTORE_PASSWORD");
+            string kaPass = !string.IsNullOrEmpty(keyaliasPass)
+                ? keyaliasPass
+                : Environment.GetEnvironmentVariable("UNITY_KEYALIAS_PASSWORD");
+
+            BuildAabCore(output, ksPass, kaPass);
+            return $"Built {output} (version {PlayerSettings.bundleVersion}, versionCode {PlayerSettings.Android.bundleVersionCode})";
+        }
+
+        private static void BuildAabCore(string outputPath, string ksPass, string kaPass)
+        {
             if (string.IsNullOrEmpty(kaPass)) kaPass = ksPass;
             if (string.IsNullOrEmpty(ksPass))
             {
-                throw new Exception("Keystore password missing. Set UNITY_KEYSTORE_PASSWORD.");
+                throw new Exception("Keystore password missing. Pass --keystore-pass or set UNITY_KEYSTORE_PASSWORD.");
             }
 
             PlayerSettings.Android.useCustomKeystore = true;

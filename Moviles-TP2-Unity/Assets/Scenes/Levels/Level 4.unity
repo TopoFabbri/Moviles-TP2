@@ -1727,6 +1727,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5299059308607486505, guid: 6a9badb358e0ecb45bd6c12014fe6237, type: 3}
   m_PrefabInstance: {fileID: 1617200496}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1665403798 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5622861426461347578, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+  m_PrefabInstance: {fileID: 5757873718859839959}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1737304494
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3071,6 +3076,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6284327742458630519, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
+      propertyPath: targetRect
+      value: 
+      objectReference: {fileID: 1665403798}
     - target: {fileID: 6587932921151512173, guid: d4eb8ec08c478a14ca12ebde8b54f552, type: 3}
       propertyPath: m_Name
       value: SceneDefaults

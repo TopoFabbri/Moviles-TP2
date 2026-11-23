@@ -36,7 +36,7 @@ namespace Game.World.IAP
             }
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void AutoRegister()
         {
             if (!ServiceProvider.TryGetService(out IAPService service))

@@ -52,13 +52,16 @@ SpriteAtlas:
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
     - f34f1bc5ea34ee9468b603ab883b8297: 21300000
+    - 496d597954511144caf070bcd3befb83: 21300000
     - ad3d45fc9eab1824188751b4b591460d: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: f34f1bc5ea34ee9468b603ab883b8297, type: 3}
+  - {fileID: 21300000, guid: 496d597954511144caf070bcd3befb83, type: 3}
   - {fileID: 21300000, guid: ad3d45fc9eab1824188751b4b591460d, type: 3}
   m_PackedSpriteNamesToIndex:
   - Progress bar
+  - LogoDroneRacer
   - Button
   m_RenderDataMap: {}
   m_Tag: Menus

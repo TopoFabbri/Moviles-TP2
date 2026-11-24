@@ -40,24 +40,31 @@ namespace Game.World.Visuals
 
         private static void ApplySkyboxAndAmbient()
         {
-            if (_runtimeSkybox == null)
-            {
-                Shader skyShader = Shader.Find("Custom/PaletteGradientSkybox");
-                if (skyShader != null)
-                {
-                    _runtimeSkybox = new Material(skyShader)
-                    {
-                        name = "CyberSkybox_Runtime"
-                    };
-                    _runtimeSkybox.SetColor("_ZenithColor", Palette.Bounds);
-                    _runtimeSkybox.SetColor("_HorizonColor", Palette.Floor);
-                    _runtimeSkybox.SetColor("_NadirColor", Palette.Shadow);
-                    _runtimeSkybox.SetFloat("_HorizonSharpness", 2.2f);
-                }
-            }
+            Material currentSky = RenderSettings.skybox;
+            bool hasCustomPaletteSky = currentSky != null && currentSky.shader != null &&
+                                       currentSky.shader.name == "Custom/PaletteGradientSkybox";
 
-            if (_runtimeSkybox != null)
-                RenderSettings.skybox = _runtimeSkybox;
+            if (!hasCustomPaletteSky)
+            {
+                if (_runtimeSkybox == null)
+                {
+                    Shader skyShader = Shader.Find("Custom/PaletteGradientSkybox");
+                    if (skyShader != null)
+                    {
+                        _runtimeSkybox = new Material(skyShader)
+                        {
+                            name = "CyberSkybox_Runtime"
+                        };
+                        _runtimeSkybox.SetColor("_ZenithColor", Palette.Bounds);
+                        _runtimeSkybox.SetColor("_HorizonColor", Palette.Floor);
+                        _runtimeSkybox.SetColor("_NadirColor", Palette.Shadow);
+                        _runtimeSkybox.SetFloat("_HorizonSharpness", 2.2f);
+                    }
+                }
+
+                if (_runtimeSkybox != null)
+                    RenderSettings.skybox = _runtimeSkybox;
+            }
 
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = Palette.Bounds;
@@ -190,11 +197,11 @@ namespace Game.World.Visuals
                 _gridTexture.Apply();
             }
 
-            Material mat = rend.material;
-            if (mat.HasProperty("_BaseMap"))
+            Material mat = rend.sharedMaterial;
+            if (mat.HasProperty("_BaseMap") && mat.GetTexture("_BaseMap") == null)
             {
-                mat.SetTexture("_BaseMap", _gridTexture);
-                mat.SetTextureScale("_BaseMap", new Vector2(40f, 40f));
+                rend.material.SetTexture("_BaseMap", _gridTexture);
+                rend.material.SetTextureScale("_BaseMap", new Vector2(40f, 40f));
             }
         }
     }

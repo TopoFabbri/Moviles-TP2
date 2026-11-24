@@ -109,7 +109,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4795141727559224377}
-  m_Mesh: {fileID: -1817864183728977867, guid: ff1b5d5795b42ad41b6d43fc7b9c74e1, type: 3}
+  m_Mesh: {fileID: -8396755789325888587, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!23 &2967427700096893137
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -135,7 +135,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 88e2787e925e24e4aafce28b2dbe606a, type: 2}
+  - {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
   - {fileID: 2100000, guid: 34583cdae4479a94bb28159babc50a28, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -200,7 +200,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7846954204293775068}
-  m_Mesh: {fileID: -4829446462128859524, guid: ff1b5d5795b42ad41b6d43fc7b9c74e1, type: 3}
+  m_Mesh: {fileID: 5318634661373429174, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!23 &7382847024266288284
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -226,7 +226,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 88e2787e925e24e4aafce28b2dbe606a, type: 2}
+  - {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
   - {fileID: 2100000, guid: 34583cdae4479a94bb28159babc50a28, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -398,6 +398,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5394356810743820037, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -70861659864428038, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
+    - target: {fileID: 8521902485874960664, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3735102090226358198, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
@@ -494,7 +502,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -5287425419667122880, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
+  m_Mesh: {fileID: 5318634661373429174, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!114 &450256249474991843
 MonoBehaviour:
   m_ObjectHideFlags: 0

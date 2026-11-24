@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885137307703414747}
-  m_Mesh: {fileID: -4107475220763333602, guid: ff1b5d5795b42ad41b6d43fc7b9c74e1, type: 3}
+  m_Mesh: {fileID: 7961114594466231959, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!23 &1503545146019450297
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 88e2787e925e24e4aafce28b2dbe606a, type: 2}
+  - {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
   - {fileID: 2100000, guid: 34583cdae4479a94bb28159babc50a28, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -131,7 +131,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4470095375658563692}
-  m_Mesh: {fileID: -525245583746459372, guid: ff1b5d5795b42ad41b6d43fc7b9c74e1, type: 3}
+  m_Mesh: {fileID: -19394288495862364, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!23 &6115853888571349480
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 88e2787e925e24e4aafce28b2dbe606a, type: 2}
+  - {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
   - {fileID: 2100000, guid: 34583cdae4479a94bb28159babc50a28, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -326,6 +326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9127561607767440349, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 694aa2f7e943d2c4d9f01e3782e88d0f, type: 2}
     - target: {fileID: -8679921383154817045, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
       propertyPath: m_LocalScale.x
       value: 4
@@ -406,6 +410,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7478165948288559376, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4463339051727911502, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1365132098506396400, guid: 4d18205cf98819b40ae2657b43dfa6c1, type: 3}
@@ -497,7 +505,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 105780596318261638, guid: 5da8426a906a4da449cb350848ad173d, type: 3}
+  m_Mesh: {fileID: 7961114594466231959, guid: ca3636847bd6ee448911c9f290d492cd, type: 3}
 --- !u!114 &8205071501582501422
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -74,10 +74,20 @@ namespace Game.World.Character
             moveModule.VelocityModule.RaiseDebugVelocity();
         }
 
+        internal void StopMovement()
+        {
+            moveModule.Stop();
+        }
+
         internal void Restart()
         {
             dronePivot.position = initPos;
             dronePivot.rotation = initRot;
+            if (dronePivot.TryGetComponent(out Rigidbody rb) && !rb.isKinematic)
+            {
+                rb.position = initPos;
+                rb.rotation = initRot;
+            }
 
             rotationModule.Restart();
             moveModule.Restart();

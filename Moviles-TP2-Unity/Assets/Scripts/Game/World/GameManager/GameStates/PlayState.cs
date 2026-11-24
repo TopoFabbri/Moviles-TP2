@@ -14,6 +14,7 @@ namespace Game.World.GameManager.GameStates
         private bool won;
         private bool paused;
         private bool popup;
+        private DroneController drone;
         
         public override Type[] OnTickParamTypes => new[] { typeof(DroneController) };
 
@@ -39,7 +40,7 @@ namespace Game.World.GameManager.GameStates
 
         public override BehaviourActions GetOnTickBehaviours(params object[] parameters)
         {
-            DroneController drone = (DroneController) parameters[0];
+            drone = (DroneController) parameters[0];
             
             BehaviourActions actions = Pool.Get<BehaviourActions>();
 
@@ -67,6 +68,7 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
+            actions.AddMainThreadBehaviour(0, () => drone?.StopMovement());
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<GameOverEvent>(OnWon));
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPause));

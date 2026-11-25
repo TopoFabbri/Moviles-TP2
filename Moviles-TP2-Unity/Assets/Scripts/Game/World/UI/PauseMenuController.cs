@@ -73,6 +73,7 @@ namespace Game.World.UI
         
         public void OnReturnToMenu()
         {
+            FindFirstObjectByType<Analytics.LevelAnalyticsTracker>()?.NotifyLevelAbandoned("Pause");
             ServiceProvider.GetService<LevelList>().LoadMainMenu(false);
         }
 

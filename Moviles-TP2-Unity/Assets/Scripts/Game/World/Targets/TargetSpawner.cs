@@ -7,6 +7,7 @@ namespace Game.World.Targets
     internal sealed class TargetSpawner : MonoBehaviour
     {
         [SerializeField] private List<SpawnPoint> spawnPoints = new();
+        internal int TotalRingCount => spawnPoints.Count;
 
         [Header("Debug")]
         [SerializeField] private float maxDistance = 50f;

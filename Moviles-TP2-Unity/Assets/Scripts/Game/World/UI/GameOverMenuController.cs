@@ -62,6 +62,7 @@ namespace Game.World.UI
         
         public void OnMainMenu()
         {
+            FindFirstObjectByType<Analytics.LevelAnalyticsTracker>()?.NotifyLevelAbandoned("GameOver");
             ServiceProvider.GetService<LevelList>().LoadMainMenu(false);
         }
     }

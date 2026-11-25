@@ -36,8 +36,11 @@ namespace Game.World.GameManager
         {
             float time = ServiceProvider.GetService<GameTime>().Timer.TimeElapsed;
             float bestTime = GameSave.GetLevelTime(GameSave.CurrentLevel);
+            bool isNewBest = bestTime < 0f || time < bestTime;
+            bool aceAchieved = time < aceTime;
+            int creditsEarned;
 
-            if (time < aceTime)
+            if (aceAchieved)
             {
 #if UNITY_ANDROID
                 PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_great_time);
@@ -45,15 +48,25 @@ namespace Game.World.GameManager
                 if (time < aceTime && bestTime > aceTime && bestTime > 0f)
                     PlayGamesPlatform.Instance.IncrementAchievement(GPGSIds.achievement_ace, 1, _ => { });
 #endif
-                GameSave.Credits += 10;
+                creditsEarned = 10;
+                GameSave.Credits += creditsEarned;
             }
             else if (time < niceTime)
             {
-                GameSave.Credits += 5;
+                creditsEarned = 5;
+                GameSave.Credits += creditsEarned;
             }
             else
             {
-                GameSave.Credits += 2;
+                creditsEarned = 2;
+                GameSave.Credits += creditsEarned;
+            }
+
+            if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+            {
+                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                analytics.TrackLevelCompleted(GameSave.CurrentLevel, sceneName, time, isNewBest, aceAchieved, creditsEarned, GameSave.GodMode);
+                analytics.TrackCurrencyEarned("level_win", creditsEarned, GameSave.CurrentLevel, GameSave.Credits);
             }
         }
 

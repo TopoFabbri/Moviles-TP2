@@ -29,6 +29,7 @@ namespace Game.World.GameManager
         private static int _godMode = -1;
         private static int _hasNoAds = -1;
         private static int _adsEnabled = -1;
+        private static int _analyticsEnabled = -1;
         private static readonly Dictionary<int, float> LevelTimes = new();
         private static readonly Dictionary<int, float> LevelTimesGodMode = new();
 
@@ -50,6 +51,7 @@ namespace Game.World.GameManager
         private static string GodModeKey => PlayerId + "GodMode";
         private static string HasNoAdsKey => PlayerId + "HasNoAds";
         private static string AdsEnabledKey => PlayerId + "AdsEnabled";
+        private static string AnalyticsEnabledKey => PlayerId + "AnalyticsEnabled";
         private static string LevelTimesKey => PlayerId + "Level<level>Time";
 
         private static string _activePlayerId = NoGooglePlayPlayerId;
@@ -269,6 +271,27 @@ namespace Game.World.GameManager
                 _adsEnabled = value ? 1 : 0;
 
                 PlayerPrefs.SetInt(AdsEnabledKey, _adsEnabled);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static bool AnalyticsEnabled
+        {
+            get
+            {
+                if (_analyticsEnabled < 0)
+                    _analyticsEnabled = PlayerPrefs.GetInt(AnalyticsEnabledKey, -1);
+
+                if (_analyticsEnabled < 0)
+                    AnalyticsEnabled = true;
+
+                return _analyticsEnabled > 0;
+            }
+            set
+            {
+                _analyticsEnabled = value ? 1 : 0;
+
+                PlayerPrefs.SetInt(AnalyticsEnabledKey, _analyticsEnabled);
                 PlayerPrefs.Save();
             }
         }

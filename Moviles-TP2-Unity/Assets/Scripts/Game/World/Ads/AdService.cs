@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Game.World.Analytics;
 using Game.World.FabbriPlugin;
 using Game.World.GameManager;
 using Tools.ServiceProvider;
@@ -129,6 +131,7 @@ namespace Game.World.Ads
                 {
                     IsAdShowing = false;
                     LogAdEvent($"LevelPlay Interstitial Ad Closed (Placement: {placement})");
+                    RecordInterstitialAnalytics(placement);
                     onClosed?.Invoke();
                 });
                 return;
@@ -140,8 +143,22 @@ namespace Game.World.Ads
             {
                 IsAdShowing = false;
                 LogAdEvent($"Interstitial Ad Closed (Placement: {placement})");
+                RecordInterstitialAnalytics(placement);
                 onClosed?.Invoke();
             });
+        }
+
+        private static void RecordInterstitialAnalytics(string placement)
+        {
+            if (ServiceProvider.TryGetService<IAnalyticsService>(out var analytics))
+            {
+                analytics.RecordEvent("ad_interaction", new Dictionary<string, object>
+                {
+                    { "ad_type", "interstitial" },
+                    { "placement", placement ?? string.Empty },
+                    { "completed", true }
+                });
+            }
         }
 
         public void ShowRewarded(string placement, Action<bool> onRewardResult)

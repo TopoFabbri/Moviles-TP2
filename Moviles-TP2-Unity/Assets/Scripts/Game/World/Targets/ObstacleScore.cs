@@ -10,6 +10,8 @@ namespace Game.World.Targets
     {
         private static readonly List<ObstacleScore> Scores = new();
         internal static ObstacleScore Current => Scores.Count > 0 ? Scores[0] : null;
+        internal static int RemainingCount => Scores.Count;
+        internal static int CurrentOrder => Current != null ? Current.order : -1;
 
         [SerializeField] private int order;
         [SerializeField] private GameObject marker;

@@ -241,6 +241,17 @@ namespace Game.World.IAP
             if (string.Equals(purchaseEvent.purchasedProduct.definition.id, NoAdsProductId, StringComparison.Ordinal))
             {
                 GrantNoAdsIfNew();
+                if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+                {
+                    var meta = purchaseEvent.purchasedProduct.metadata;
+                    analytics.TrackInGamePurchase(
+                        NoAdsProductId,
+                        "real_currency",
+                        (float)meta.localizedPrice,
+                        meta.isoCurrencyCode,
+                        1,
+                        GameSave.Credits);
+                }
                 Action<bool> callback = _pendingPurchaseCallback;
                 _pendingPurchaseCallback = null;
                 callback?.Invoke(true);

@@ -102,6 +102,15 @@ namespace Game.World.FabbriPlugin
                 sb.AppendLine("IAP: ServiceNotRegistered");
             }
 
+            if (ServiceProvider.TryGetService<Game.World.Analytics.IAnalyticsService>(out var analyticsService))
+            {
+                sb.AppendLine($"Analytics: Initialized={analyticsService.IsInitialized}, Enabled={analyticsService.IsDataCollectionEnabled}");
+            }
+            else
+            {
+                sb.AppendLine($"Analytics: ServiceNotRegistered | Enabled={GameSave.AnalyticsEnabled}");
+            }
+
             sb.AppendLine($"Save: Level={GameSave.CurrentLevel}, Credits={GameSave.Credits}, AddedSpeed={GameSave.AddedSpeed}, GodMode={GameSave.GodMode}, Control={GameSave.ControlScheme}, Gyro={GameSave.GyroMode}");
             sb.AppendLine("=== LOGS ===");
 

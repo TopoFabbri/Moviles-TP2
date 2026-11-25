@@ -295,8 +295,17 @@ namespace Game.World.UI
                 {
                     GameSave.Credits += rewardedCredits;
                     UpdateCreditsText();
+                    if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+                    {
+                        analytics.TrackCurrencyEarned("rewarded_ad", rewardedCredits, GameSave.CurrentLevel, GameSave.Credits);
+                        analytics.TrackAdInteraction("rewarded", "Store", true);
+                    }
                     if (CloudSaveService.HasInstance)
                         CloudSaveService.Instance.SaveNow();
+                }
+                else if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+                {
+                    analytics.TrackAdInteraction("rewarded", "Store", false);
                 }
             });
         }
@@ -306,13 +315,20 @@ namespace Game.World.UI
             if (bar.fillAmount >= 1f) return;
             if (GameSave.Credits < buyPrice) return;
             
-            GameSave.Credits -= buyPrice;
+            int spent = buyPrice;
+            GameSave.Credits -= spent;
             GameSave.AddedSpeed += addedSpeedMultiplier;
             GameSave.AddedSpeed = Mathf.Min(GameSave.AddedSpeed, barSegments * addedSpeedMultiplier);
             
             UpdateBar();
             UpdateBuyPrice();
             UpdateCreditsText();
+
+            if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+            {
+                int upgradeLevel = Mathf.RoundToInt(GameSave.AddedSpeed / addedSpeedMultiplier);
+                analytics.TrackInGamePurchase("speed_upgrade", "credits", spent, "CREDITS", upgradeLevel, GameSave.Credits);
+            }
 
             if (CloudSaveService.HasInstance)
                 CloudSaveService.Instance.SaveNow();

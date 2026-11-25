@@ -1,4 +1,4 @@
-using Game.World.FabbriPlugin;
+using Tools.ServiceProvider;
 using UnityEngine;
 
 namespace Game.World.Analytics

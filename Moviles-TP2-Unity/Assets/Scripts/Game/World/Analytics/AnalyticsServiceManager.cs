@@ -2,8 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Game.World.FabbriPlugin;
 using Game.World.GameManager;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -108,7 +108,7 @@ namespace Game.World.Analytics
                 { "ram_mb", SystemInfo.systemMemorySize },
                 { "screen_resolution", $"{Screen.width}x{Screen.height}" },
                 { "app_version", Application.version ?? "0.0.0" },
-                { "control_scheme", GameSave.ControlType.ToString() },
+                { "control_scheme", GameSave.ControlScheme.ToString() },
                 { "previous_session_unclean", previousUnclean }
             };
 

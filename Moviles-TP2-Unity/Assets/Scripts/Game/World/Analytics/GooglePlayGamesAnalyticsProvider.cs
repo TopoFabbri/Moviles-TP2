@@ -83,7 +83,7 @@ namespace Game.World.Analytics
             var gameEvent = builder.Build();
             if (immediate)
             {
-                platform.RecordEventImmediate(gameEvent);
+                platform.RecordEventImmediate(gameEvent, null);
             }
             else
             {

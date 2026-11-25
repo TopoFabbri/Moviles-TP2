@@ -152,12 +152,7 @@ namespace Game.World.Ads
         {
             if (ServiceProvider.TryGetService<IAnalyticsService>(out var analytics))
             {
-                analytics.RecordEvent("ad_interaction", new Dictionary<string, object>
-                {
-                    { "ad_type", "interstitial" },
-                    { "placement", placement ?? string.Empty },
-                    { "completed", true }
-                });
+                analytics.TrackAdInteraction("interstitial", placement ?? string.Empty, true);
             }
         }
 

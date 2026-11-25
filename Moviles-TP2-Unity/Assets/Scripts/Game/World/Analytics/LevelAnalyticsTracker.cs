@@ -2,6 +2,7 @@ using Game.Events;
 using Game.World.GameManager;
 using Game.World.Targets;
 using Tools.EventSystem;
+using Tools.FSM;
 using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace Game.World.Analytics
     {
         private bool levelStartedThisAttempt;
         private bool isRetryAttempt;
+        private States previousState = States.Restart;
         private string lastCrashObstacle = "unknown";
         private Vector3 lastCrashPosition = Vector3.zero;
         private float levelStartTime;
@@ -42,7 +44,7 @@ namespace Game.World.Analytics
 
         private void OnStateChanged(ChangedStateEvent<States> evt)
         {
-            if (evt.PrevState == States.Restart && evt.NewState == States.Play)
+            if (previousState == States.Restart && evt.state == States.Play)
             {
                 levelStartedThisAttempt = true;
                 levelStartTime = Time.time;
@@ -63,7 +65,7 @@ namespace Game.World.Analytics
 
                 isRetryAttempt = true;
             }
-            else if (evt.NewState == States.GameOver && levelStartedThisAttempt)
+            else if (evt.state == States.GameOver && levelStartedThisAttempt)
             {
                 levelStartedThisAttempt = false;
                 if (ServiceProvider.TryGetService<IAnalyticsService>(out var analytics))
@@ -84,6 +86,8 @@ namespace Game.World.Analytics
                         lastCrashPosition);
                 }
             }
+
+            previousState = evt.state;
         }
 
         public void NotifyLevelAbandoned(string fromState)

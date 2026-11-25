@@ -119,6 +119,117 @@ namespace Game.World.FabbriPlugin
             return sb.ToString();
         }
 
+        public static string FormatRichText(string plainReport)
+        {
+            if (string.IsNullOrEmpty(plainReport))
+                return string.Empty;
+
+            var lines = plainReport.Replace("\r\n", "\n").Split('\n');
+            var sb = new StringBuilder(plainReport.Length * 2);
+            bool inLogsSection = false;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                if (i > 0) sb.Append('\n');
+
+                if (string.IsNullOrEmpty(line))
+                    continue;
+
+                if (line.StartsWith("==="))
+                {
+                    inLogsSection = line.Contains("LOGS");
+                    sb.Append($"<b><color=#4FC3F7>{line}</color></b>");
+                    continue;
+                }
+
+                if (line.StartsWith("---"))
+                {
+                    sb.Append($"<b><color=#FFD54F>{line}</color></b>");
+                    continue;
+                }
+
+                if (!inLogsSection)
+                {
+                    int colonIndex = line.IndexOf(':');
+                    if (colonIndex > 0)
+                    {
+                        string label = line.Substring(0, colonIndex + 1);
+                        string value = line.Substring(colonIndex + 1);
+                        sb.Append($"<indent=16><color=#90CAF9><b>{label}</b></color>{value}</indent>");
+                    }
+                    else
+                    {
+                        sb.Append($"<indent=16>{line}</indent>");
+                    }
+                    continue;
+                }
+
+                if (line == "(no log entries recorded)")
+                {
+                    sb.Append("<indent=16><color=#9E9E9E><i>(no log entries recorded)</i></color></indent>");
+                    continue;
+                }
+
+                if (TryFormatLogLine(line, out string formattedLog))
+                {
+                    sb.Append($"<indent=12>{formattedLog}</indent>");
+                }
+                else
+                {
+                    sb.Append($"<indent=24><color=#B0BEC5>{line}</color></indent>");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static bool TryFormatLogLine(string line, out string formatted)
+        {
+            formatted = null;
+            if (!line.StartsWith("[")) return false;
+
+            int tsEnd = line.IndexOf(']');
+            if (tsEnd <= 1) return false;
+
+            string timestamp = line.Substring(0, tsEnd + 1);
+            string rest = line.Substring(tsEnd + 1).TrimStart();
+
+            string levelTag;
+            string levelColor;
+            if (rest.StartsWith("[FAIL]"))
+            {
+                levelTag = "[FAIL]";
+                levelColor = "#FF5252";
+            }
+            else if (rest.StartsWith("[INFO]"))
+            {
+                levelTag = "[INFO]";
+                levelColor = "#69F0AE";
+            }
+            else
+            {
+                return false;
+            }
+
+            rest = rest.Substring(levelTag.Length).TrimStart();
+
+            string categoryPart = string.Empty;
+            if (rest.StartsWith("["))
+            {
+                int catEnd = rest.IndexOf(']');
+                if (catEnd > 1)
+                {
+                    string cat = rest.Substring(0, catEnd + 1);
+                    categoryPart = $"<color=#FFB74D>{cat}</color> ";
+                    rest = rest.Substring(catEnd + 1).TrimStart();
+                }
+            }
+
+            formatted = $"<color=#9E9E9E>{timestamp}</color>\t<b><color={levelColor}>{levelTag}</color></b>\t{categoryPart}{rest}";
+            return true;
+        }
+
         public void ShareReport(string subject = "DroneRacer Diagnostic Report")
         {
             string report = BuildDiagnosticReport();

@@ -27,7 +27,8 @@ namespace Game.World.FabbriPlugin
 
         public void OnReadLogs()
         {
-            logsTxt.text = ServiceProvider.GetService<IDiagnosticLogService>().BuildDiagnosticReport();
+            string report = ServiceProvider.GetService<IDiagnosticLogService>().BuildDiagnosticReport();
+            logsTxt.text = DiagnosticLogService.FormatRichText(report);
         }
 
         public void OnSendReport()

@@ -103,6 +103,30 @@ namespace Editor.Diagnostics
 
             Assert.That(GUIUtility.systemCopyBuffer, Does.Contain("=== DRONERACER DIAGNOSTIC REPORT ==="));
             Assert.That(GUIUtility.systemCopyBuffer, Does.Contain("[FAIL] [GPGS] ShowLeaderboard: NotAuthenticated"));
+            Assert.That(GUIUtility.systemCopyBuffer, Does.Not.Contain("<color="));
+        }
+
+        [Test]
+        public void FormatRichText_ReturnsEmpty_WhenInputIsNullOrEmpty()
+        {
+            Assert.AreEqual(string.Empty, DiagnosticLogService.FormatRichText(null));
+            Assert.AreEqual(string.Empty, DiagnosticLogService.FormatRichText(string.Empty));
+        }
+
+        [Test]
+        public void FormatRichText_AddsColorsAndIndentation_ToReportAndLogs()
+        {
+            _service.RecordFailure("ADS", "ShowRewarded", "NotReady");
+            _service.RecordInfo("IAP", "Initialized");
+
+            string plain = _service.BuildDiagnosticReport();
+            string rich = DiagnosticLogService.FormatRichText(plain);
+
+            Assert.That(rich, Does.Contain("<b><color=#4FC3F7>=== DRONERACER DIAGNOSTIC REPORT ===</color></b>"));
+            Assert.That(rich, Does.Contain("<b><color=#FFD54F>--- SERVICES & SAVE STATE ---</color></b>"));
+            Assert.That(rich, Does.Contain("<indent=16><color=#90CAF9><b>App Version:</b></color>"));
+            Assert.That(rich, Does.Contain("<b><color=#FF5252>[FAIL]</color></b>\t<color=#FFB74D>[ADS]</color> ShowRewarded: NotReady"));
+            Assert.That(rich, Does.Contain("<b><color=#69F0AE>[INFO]</color></b>\t<color=#FFB74D>[IAP]</color> Initialized"));
         }
 
         [MenuItem("Tools/Diagnostics/Run Milestone 1 Tests")]

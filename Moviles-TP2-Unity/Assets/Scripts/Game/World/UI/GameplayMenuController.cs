@@ -16,8 +16,8 @@ namespace Game.World.UI
         [SerializeField] private Toggle invertCamYToggle;
         [SerializeField] private Toggle godModeToggle;
         
-        private Slider _musicVolSlider;
-        private Slider _sfxVolSlider;
+        [SerializeField] private Slider _musicVolSlider;
+        [SerializeField] private Slider _sfxVolSlider;
 
         private void Awake()
         {

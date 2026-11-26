@@ -95,11 +95,7 @@ namespace Game.World.Visuals
             }
 
             if (dirLight == null)
-            {
-                var go = new GameObject("Directional Light");
-                dirLight = go.AddComponent<Light>();
-                dirLight.type = LightType.Directional;
-            }
+                return;
 
             dirLight.color = Palette.KeyLight;
             dirLight.intensity = 1.15f;
@@ -133,12 +129,7 @@ namespace Game.World.Visuals
             }
 
             if (globalVolume == null)
-            {
-                var volGo = new GameObject("GlobalPostProcessVolume");
-                globalVolume = volGo.AddComponent<Volume>();
-                globalVolume.isGlobal = true;
-                globalVolume.priority = 10f;
-            }
+                return;
 
             if (globalVolume.profile == null)
                 globalVolume.profile = ScriptableObject.CreateInstance<VolumeProfile>();

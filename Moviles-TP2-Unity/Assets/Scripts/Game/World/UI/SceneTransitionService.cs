@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
+using Game.Audio;
+using Game.World.Ads;
 using Game.World.FabbriPlugin;
 using Game.World.Visuals;
 using TMPro;
@@ -224,6 +226,10 @@ namespace Game.World.UI
 
             while (!op.isDone)
                 yield return null;
+
+            if (!ServiceProvider.TryGetService(out IAdService adService) || !adService.IsAdShowing)
+                Time.timeScale = 1f;
+            GameAudioService.SetPausedDucking(false);
 
             sw.Stop();
             LogTransition(scenePath, sw.ElapsedMilliseconds);

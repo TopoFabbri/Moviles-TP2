@@ -55,6 +55,9 @@ namespace Game.World.UI
         {
             if (levelFinished)
             {
+                if (levels.Count == 0)
+                    GetLevels();
+
                 if (GameSave.CurrentLevel >= levels.Count - 1)
                     GameSave.CurrentLevel = 0;
                 else

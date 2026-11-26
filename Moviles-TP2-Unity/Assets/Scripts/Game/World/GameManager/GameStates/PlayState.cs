@@ -68,10 +68,15 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => drone?.StopMovement());
+            actions.AddMainThreadBehaviour(0, () =>
+            {
+                if (drone != null)
+                    drone.StopMovement();
+            });
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<DroneCollisionEvent>(OnCrashed));
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<GameOverEvent>(OnWon));
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPause));
+            actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<TriggerPopupEvent>(OnPopup));
             actions.AddMultiThreadableBehaviour(0, () => ServiceProvider.GetService<GameTime>().Timer.Pause());
             
             return actions;

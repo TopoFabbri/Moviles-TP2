@@ -131,6 +131,17 @@ namespace Tools.FSM
         }
 
         /// <summary>
+        /// Exits the active state and prevents further ticks.
+        /// </summary>
+        public void Shutdown()
+        {
+            if (states.ContainsKey(CurrentState))
+                ExecuteBehaviour(GetCurrentOnExitBehaviour);
+
+            CurrentState = UnassignedTransition;
+        }
+
+        /// <summary>
         /// Executes a set of behaviour actions, handling both main-thread and multi-threaded actions.
         /// </summary>
         /// <param name="behaviourActions">The behaviour actions to execute.</param>

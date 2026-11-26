@@ -99,12 +99,12 @@ namespace Game.World.Visuals
 
         private IEnumerator HitStopRoutine()
         {
+            if (Time.timeScale <= 0.1f) yield break;
             float prevScale = Time.timeScale;
-            if (prevScale <= 0f) yield break;
 
             Time.timeScale = 0.05f;
             yield return new WaitForSecondsRealtime(0.06f);
-            if (Time.timeScale < 0.1f)
+            if (Mathf.Approximately(Time.timeScale, 0.05f))
                 Time.timeScale = prevScale;
         }
 

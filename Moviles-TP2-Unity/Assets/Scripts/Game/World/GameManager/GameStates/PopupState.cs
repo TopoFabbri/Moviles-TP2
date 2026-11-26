@@ -53,7 +53,13 @@ namespace Game.World.GameManager.GameStates
         {
             BehaviourActions actions = Pool.Get<BehaviourActions>();
             
-            actions.AddMainThreadBehaviour(0, () => popup.SetActive(false));
+            actions.AddMainThreadBehaviour(0, () =>
+            {
+                if (popup != null)
+                    popup.SetActive(false);
+            });
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<CancelAction>(OnCancelAction));
+            actions.AddMainThreadBehaviour(0, () => ServiceProvider.GetService<EventSystem>().Unsubscribe<PauseAction>(OnPauseAction));
             
             return actions;
         }

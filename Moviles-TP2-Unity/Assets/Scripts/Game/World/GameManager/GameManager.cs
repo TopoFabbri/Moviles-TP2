@@ -1,3 +1,5 @@
+using Game.Audio;
+using Game.World.Ads;
 using Game.World.Character;
 using Game.World.GameManager.GameStates;
 using Game.World.Targets;
@@ -28,9 +30,24 @@ namespace Game.World.GameManager
         private void Awake()
         {
             Application.targetFrameRate = 60;
+            ResetTimeScaleIfNoAd();
+            GameAudioService.SetPausedDucking(false);
             ServiceProvider.GetService<Time>().Start();
 
             InitializeFiniteStateMachine();
+        }
+
+        private void OnDestroy()
+        {
+            fsm?.Shutdown();
+            ResetTimeScaleIfNoAd();
+            GameAudioService.SetPausedDucking(false);
+        }
+
+        private static void ResetTimeScaleIfNoAd()
+        {
+            if (!ServiceProvider.TryGetService(out IAdService adService) || !adService.IsAdShowing)
+                UnityEngine.Time.timeScale = 1f;
         }
 
         private void Update()

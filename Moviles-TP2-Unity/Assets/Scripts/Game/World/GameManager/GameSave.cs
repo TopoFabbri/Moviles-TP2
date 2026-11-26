@@ -26,6 +26,7 @@ namespace Game.World.GameManager
         private static int _currentLevel = -1;
         private static int _credits = -1;
         private static float _addedSpeed = -1f;
+        private static float _addedControl = -1f;
         private static int _godMode = -1;
         private static int _hasNoAds = -1;
         private static int _adsEnabled = -1;
@@ -48,6 +49,7 @@ namespace Game.World.GameManager
         private static string CurrentLevelKey => PlayerId + "CurrentLevel";
         private static string CreditsKey => PlayerId + "Credits";
         private static string AddedSpeedKey => PlayerId + "AddedSpeed";
+        private static string AddedControlKey => PlayerId + "AddedControl";
         private static string GodModeKey => PlayerId + "GodMode";
         private static string HasNoAdsKey => PlayerId + "HasNoAds";
         private static string AdsEnabledKey => PlayerId + "AdsEnabled";
@@ -107,6 +109,7 @@ namespace Game.World.GameManager
             _currentLevel = -1;
             _credits = -1;
             _addedSpeed = -1f;
+            _addedControl = -1f;
             _godMode = -1;
             _hasNoAds = -1;
             _adsEnabled = -1;
@@ -358,6 +361,24 @@ namespace Game.World.GameManager
             PlayerPrefs.Save();
             }
         }
+
+        public static float AddedControl
+        {
+            get
+            {
+                if (_addedControl < 0f)
+                    _addedControl = Mathf.Clamp01(PlayerPrefs.GetFloat(AddedControlKey, 0f));
+
+                return _addedControl;
+            }
+            set
+            {
+                _addedControl = Mathf.Clamp01(value);
+
+                PlayerPrefs.SetFloat(AddedControlKey, _addedControl);
+                PlayerPrefs.Save();
+            }
+        }
         
         public static bool GodMode
         {
@@ -438,6 +459,7 @@ namespace Game.World.GameManager
                 currentLevel = CurrentLevel,
                 credits = Credits,
                 addedSpeed = AddedSpeed,
+                addedControl = AddedControl,
                 godMode = GodMode,
                 hasNoAds = HasNoAds,
                 adsEnabled = AdsEnabled,
@@ -478,6 +500,7 @@ namespace Game.World.GameManager
             CurrentLevel = data.currentLevel;
             Credits = data.credits;
             AddedSpeed = data.addedSpeed;
+            AddedControl = data.addedControl;
             GodMode = data.godMode;
             HasNoAds = data.hasNoAds;
             AdsEnabled = data.adsEnabled;
@@ -520,6 +543,7 @@ namespace Game.World.GameManager
             PlayerPrefs.DeleteKey(CurrentLevelKey);
             PlayerPrefs.DeleteKey(CreditsKey);
             PlayerPrefs.DeleteKey(AddedSpeedKey);
+            PlayerPrefs.DeleteKey(AddedControlKey);
             PlayerPrefs.DeleteKey(GodModeKey);
             PlayerPrefs.DeleteKey(HasNoAdsKey);
             PlayerPrefs.DeleteKey(AdsEnabledKey);

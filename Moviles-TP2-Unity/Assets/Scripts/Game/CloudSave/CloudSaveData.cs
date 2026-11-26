@@ -22,6 +22,7 @@ namespace Game.CloudSave
         public int currentLevel;
         public int credits;
         public float addedSpeed;
+        public float addedControl;
         public bool godMode;
         public bool hasNoAds;
         public bool adsEnabled = true;

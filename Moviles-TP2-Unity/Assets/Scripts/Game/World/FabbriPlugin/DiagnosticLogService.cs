@@ -111,7 +111,7 @@ namespace Game.World.FabbriPlugin
                 sb.AppendLine($"Analytics: ServiceNotRegistered | Enabled={GameSave.AnalyticsEnabled}");
             }
 
-            sb.AppendLine($"Save: Level={GameSave.CurrentLevel}, Credits={GameSave.Credits}, AddedSpeed={GameSave.AddedSpeed}, GodMode={GameSave.GodMode}, Control={GameSave.ControlScheme}, Gyro={GameSave.GyroMode}");
+            sb.AppendLine($"Save: Level={GameSave.CurrentLevel}, Credits={GameSave.Credits}, AddedSpeed={GameSave.AddedSpeed}, AddedControl={GameSave.AddedControl:0.00}, GodMode={GameSave.GodMode}, Control={GameSave.ControlScheme}, Gyro={GameSave.GyroMode}");
             sb.AppendLine("=== LOGS ===");
 
             string logs = ServiceProvider.GetService<FileManager>().ReadFile();

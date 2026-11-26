@@ -34,7 +34,15 @@ namespace Game.World.UI
         [SerializeField] private Button restorePurchasesBtn;
         [SerializeField] private TextMeshProUGUI restorePurchasesBtnText;
 
+        [Header("Control Upgrade Configuration")]
+        [SerializeField] private Image controlBar;
+        [SerializeField] private Button controlBuyBtn;
+        [SerializeField] private TextMeshProUGUI controlBuyBtnText;
+        [SerializeField] private int controlBarSegments = 20;
+        [SerializeField] private string controlLabelString = "Control:";
+
         private int buyPrice = 1;
+        private int controlBuyPrice = 1;
         private IAdService adService;
         private IIAPService iapService;
         private float _noAdsFeedbackUntil;
@@ -46,6 +54,7 @@ namespace Game.World.UI
         {
             adService = ServiceProvider.GetService<IAdService>();
             iapService = ServiceProvider.GetService<IIAPService>();
+            SetupControlUI();
             SetupRewardedAdUI();
             SetupNoAdsUI();
             RefreshUI();
@@ -66,6 +75,8 @@ namespace Game.World.UI
         {
             UpdateBar();
             UpdateBuyPrice();
+            UpdateControlBar();
+            UpdateControlBuyPrice();
             UpdateCreditsText();
             UpdateNoAdsUI();
         }
@@ -74,6 +85,68 @@ namespace Game.World.UI
         {
             UpdateRewardedAdUI();
             UpdateNoAdsUI();
+        }
+
+        private void SetupControlUI()
+        {
+            if (buyBtnText == null || bar == null) return;
+
+            Button originalBuyBtn = buyBtnText.GetComponentInParent<Button>();
+            if (originalBuyBtn == null || originalBuyBtn.transform.parent == null) return;
+
+            Transform buyContainer = originalBuyBtn.transform.parent;
+            Transform contentParent = buyContainer.parent;
+            if (contentParent == null) return;
+
+            ContentSizeFitter fitter = contentParent.GetComponent<ContentSizeFitter>();
+            if (fitter == null)
+                fitter = contentParent.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            if (controlBar == null && bar.transform.parent != null)
+            {
+                Transform barContainer = bar.transform.parent;
+                int barIndex = barContainer.GetSiblingIndex();
+                if (barIndex > 0)
+                {
+                    GameObject labelObj = Instantiate(contentParent.GetChild(barIndex - 1).gameObject, contentParent);
+                    labelObj.name = "Control";
+                    TextMeshProUGUI labelText = labelObj.GetComponent<TextMeshProUGUI>();
+                    if (labelText != null)
+                        labelText.text = controlLabelString;
+                }
+
+                GameObject controlBarContainer = Instantiate(barContainer.gameObject, contentParent);
+                controlBarContainer.name = "ControlBar";
+                Image[] images = controlBarContainer.GetComponentsInChildren<Image>(true);
+                foreach (Image img in images)
+                {
+                    if (img.type == Image.Type.Filled)
+                    {
+                        controlBar = img;
+                        break;
+                    }
+                }
+            }
+
+            if (controlBuyBtn == null)
+            {
+                GameObject controlBuyContainer = Instantiate(buyContainer.gameObject, contentParent);
+                controlBuyContainer.name = "ControlBuy";
+                controlBuyBtn = controlBuyContainer.GetComponentInChildren<Button>();
+                controlBuyBtnText = controlBuyContainer.GetComponentInChildren<TextMeshProUGUI>();
+            }
+
+            if (controlBuyBtn != null)
+            {
+                for (int i = 0; i < controlBuyBtn.onClick.GetPersistentEventCount(); i++)
+                {
+                    controlBuyBtn.onClick.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
+                }
+
+                controlBuyBtn.onClick.RemoveAllListeners();
+                controlBuyBtn.onClick.AddListener(OnBuyControlBtnClicked);
+            }
         }
 
         private void SetupRewardedAdUI()
@@ -334,15 +407,52 @@ namespace Game.World.UI
                 CloudSaveService.Instance.SaveNow();
         }
 
+        public void OnBuyControlBtnClicked()
+        {
+            if (controlBar == null || controlBar.fillAmount >= 1f) return;
+            if (GameSave.Credits < controlBuyPrice) return;
+
+            int spent = controlBuyPrice;
+            GameSave.Credits -= spent;
+            int nextLevel = Mathf.Min(Mathf.RoundToInt(GameSave.AddedControl * controlBarSegments) + 1, controlBarSegments);
+            GameSave.AddedControl = nextLevel >= controlBarSegments ? 1f : (float)nextLevel / controlBarSegments;
+
+            UpdateControlBar();
+            UpdateControlBuyPrice();
+            UpdateCreditsText();
+
+            if (ServiceProvider.TryGetService<Analytics.IAnalyticsService>(out var analytics))
+            {
+                analytics.TrackInGamePurchase("control_upgrade", "credits", spent, "CREDITS", nextLevel, GameSave.Credits);
+            }
+
+            if (CloudSaveService.HasInstance)
+                CloudSaveService.Instance.SaveNow();
+        }
+
         private void UpdateBar()
         {
             bar.fillAmount = GameSave.AddedSpeed / addedSpeedMultiplier / barSegments;
+        }
+
+        private void UpdateControlBar()
+        {
+            if (controlBar == null) return;
+            controlBar.fillAmount = Mathf.Clamp01(GameSave.AddedControl);
         }
 
         private void UpdateBuyPrice()
         {
             buyPrice = Mathf.Max(3 * (int)(GameSave.AddedSpeed / addedSpeedMultiplier), 1);
             buyBtnText.text = buyBtnString.Replace("<price>", buyPrice.ToString());
+        }
+
+        private void UpdateControlBuyPrice()
+        {
+            if (controlBuyBtnText == null) return;
+            int currentLevel = Mathf.RoundToInt(GameSave.AddedControl * controlBarSegments);
+            controlBuyPrice = Mathf.Max(3 * currentLevel, 1);
+            controlBuyBtnText.text = buyBtnString.Replace("<price>", controlBuyPrice.ToString());
         }
         
         private void UpdateCreditsText()

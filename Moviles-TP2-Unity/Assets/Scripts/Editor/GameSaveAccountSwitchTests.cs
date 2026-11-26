@@ -67,6 +67,7 @@ namespace Editor
             GameSave.ControlScheme = 1;
             GameSave.Credits = 500;
             GameSave.AddedSpeed = 12f;
+            GameSave.AddedControl = 0.25f;
             GameSave.CurrentLevel = 3;
             GameSave.HasNoAds = true;
             GameSave.AdsEnabled = false;
@@ -81,6 +82,7 @@ namespace Editor
             Assert.AreEqual(-1, GameSave.ControlScheme);
             Assert.AreEqual(0, GameSave.Credits);
             Assert.AreEqual(0f, GameSave.AddedSpeed);
+            Assert.AreEqual(0f, GameSave.AddedControl);
             Assert.AreEqual(0, GameSave.CurrentLevel);
             Assert.IsFalse(GameSave.HasNoAds);
             Assert.IsTrue(GameSave.AdsEnabled);
@@ -95,6 +97,7 @@ namespace Editor
             Assert.AreEqual(1, GameSave.ControlScheme);
             Assert.AreEqual(500, GameSave.Credits);
             Assert.AreEqual(12f, GameSave.AddedSpeed);
+            Assert.AreEqual(0.25f, GameSave.AddedControl);
             Assert.AreEqual(3, GameSave.CurrentLevel);
             Assert.IsTrue(GameSave.HasNoAds);
             Assert.IsFalse(GameSave.AdsEnabled);

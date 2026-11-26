@@ -28,12 +28,22 @@ namespace Game.World.Character.DroneModules
 
         internal void Accelerate(Vector3 throttle, float dt)
         {
-            Vector3 targetVel = throttle * (maxSpeed + GameSave.AddedSpeed);
-            targetVel = Vector3.ClampMagnitude(targetVel, maxSpeed + GameSave.AddedSpeed);
-            
-            velocity.x = Mathf.MoveTowards(velocity.x, targetVel.x, acceleration * dt);
-            velocity.y = Mathf.MoveTowards(velocity.y, targetVel.y, acceleration * dt);
-            velocity.z = Mathf.MoveTowards(velocity.z, targetVel.z, acceleration * dt);
+            float effectiveMaxSpeed = maxSpeed + GameSave.AddedSpeed;
+            Vector3 targetVel = throttle * effectiveMaxSpeed;
+            targetVel = Vector3.ClampMagnitude(targetVel, effectiveMaxSpeed);
+
+            float control = Mathf.Clamp01(GameSave.AddedControl);
+            if (control >= 1f)
+            {
+                velocity = targetVel;
+                return;
+            }
+
+            float effectiveAcceleration = acceleration / (1f - control);
+            float maxDelta = effectiveAcceleration * dt;
+            velocity.x = Mathf.MoveTowards(velocity.x, targetVel.x, maxDelta);
+            velocity.y = Mathf.MoveTowards(velocity.y, targetVel.y, maxDelta);
+            velocity.z = Mathf.MoveTowards(velocity.z, targetVel.z, maxDelta);
         }
 
         internal void Restart()

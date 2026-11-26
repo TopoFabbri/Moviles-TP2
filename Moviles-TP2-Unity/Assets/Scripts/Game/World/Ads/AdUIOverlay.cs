@@ -51,8 +51,11 @@ namespace Game.World.Ads
             }
 
             GameObject go = new GameObject("AdUIOverlay");
-            DontDestroyOnLoad(go);
+            if (Application.isPlaying)
+                DontDestroyOnLoad(go);
             _instance = go.AddComponent<AdUIOverlay>();
+            if (!Application.isPlaying)
+                _instance.BuildUIHierarchy();
         }
 
         private void Awake()
@@ -64,7 +67,8 @@ namespace Game.World.Ads
             }
 
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying)
+                DontDestroyOnLoad(gameObject);
             BuildUIHierarchy();
         }
 

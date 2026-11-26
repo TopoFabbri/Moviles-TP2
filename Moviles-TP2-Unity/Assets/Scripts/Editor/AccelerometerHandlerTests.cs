@@ -311,9 +311,9 @@ namespace Editor
                 // Invoke Start() to populate GyroMode controls
                 startMethod.Invoke(controller, null);
 
-                // Should only add GyroModeSpace, GyroModeTxt, and GyroModeBtn inside Content (not clone Content onto Viewport)
+                // Should add GyroModeSpace, GyroModeTxt, GyroModeBtn (3) + Music/SFX volume controls (2) inside Content
                 Assert.AreEqual(1, scrollRect.viewport.childCount, "Viewport must only contain one Content child, not a duplicated Content menu");
-                Assert.AreEqual(initialChildCount + 3, content.childCount);
+                Assert.AreEqual(initialChildCount + 5, content.childCount);
                 Assert.AreEqual("ControlSchemeTxt", content.GetChild(0).name);
                 Assert.AreEqual("ControlSchemeBtn", content.GetChild(1).name);
                 Assert.AreEqual("GyroModeSpace", content.GetChild(2).name);
@@ -343,7 +343,7 @@ namespace Editor
 
                 // Calling Start() again (or EnsureGyroModeControl when gyroModeText is cleared) must be idempotent
                 startMethod.Invoke(controller, null);
-                Assert.AreEqual(initialChildCount + 3, content.childCount);
+                Assert.AreEqual(initialChildCount + 5, content.childCount);
 
                 // Toggling GameObject active state (re-opening settings menu) refreshes UI from GameSave via OnEnable
                 MethodInfo onEnableMethod = typeof(GameplayMenuController).GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.NonPublic);

@@ -439,7 +439,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Rotation Sensitivity:'
+  m_text: 'Music Volume:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4bcf62cbf18b7b148ad62d48a0b58c0a, type: 2}
   m_sharedMaterial: {fileID: -8091862356303404729, guid: 4bcf62cbf18b7b148ad62d48a0b58c0a, type: 2}
@@ -2557,7 +2557,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Rotation Sensitivity:'
+  m_text: 'SFX Volume:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4bcf62cbf18b7b148ad62d48a0b58c0a, type: 2}
   m_sharedMaterial: {fileID: -8091862356303404729, guid: 4bcf62cbf18b7b148ad62d48a0b58c0a, type: 2}
@@ -4112,6 +4112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5979406627627592734}
   - component: {fileID: 2527019742388847377}
+  - component: {fileID: 2527019742388847378}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -4178,6 +4179,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2527019742388847378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8750883549321965955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &8843087965757800591
 GameObject:
   m_ObjectHideFlags: 0

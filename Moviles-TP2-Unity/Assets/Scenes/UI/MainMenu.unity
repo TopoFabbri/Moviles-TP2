@@ -3552,17 +3552,17 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3744165056933174234}
-        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Assembly-CSharp
-        m_MethodName: OnBuyBtnClicked
-        m_Mode: 1
+        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Game
+        m_MethodName: OnRestorePurchasesBtnClicked
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
 --- !u!114 &754268750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3813,17 +3813,17 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3744165056933174234}
-        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Assembly-CSharp
-        m_MethodName: OnBuyBtnClicked
-        m_Mode: 1
+        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Game
+        m_MethodName: OnWatchAdBtnClicked
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
 --- !u!1 &813001607
 GameObject:
   m_ObjectHideFlags: 0
@@ -5901,26 +5901,6 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 431677958116337521, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 546956665665943844, guid: 34cb0d274917af0498210cafe32fdc2b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7040,17 +7020,17 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3744165056933174234}
-        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Assembly-CSharp
-        m_MethodName: OnBuyBtnClicked
-        m_Mode: 1
+        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Game
+        m_MethodName: OnNoAdsBtnClicked
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
 --- !u!1 &1448745871
 GameObject:
   m_ObjectHideFlags: 0
@@ -7548,17 +7528,17 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3744165056933174234}
-        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Assembly-CSharp
-        m_MethodName: OnBuyBtnClicked
-        m_Mode: 1
+        m_TargetAssemblyTypeName: Game.World.UI.StoreMenuController, Game
+        m_MethodName: OnBuyControlBtnClicked
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
 --- !u!1 &1522158228
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,44 +29,20 @@ namespace Game.World.UI
         {
             EnsureGyroModeControl();
             EnsureVolumeControls();
-            WireBakedControlListeners();
+            if (_musicVolSlider != null)
+                _musicVolSlider.SetValueWithoutNotify(GameSave.MusicVolume);
+            if (_sfxVolSlider != null)
+                _sfxVolSlider.SetValueWithoutNotify(GameSave.SfxVolume);
             RefreshUI();
         }
 
-        private void WireBakedControlListeners()
-        {
-            if (gyroModeText != null)
-            {
-                Button gyroBtn = gyroModeText.GetComponentInParent<Button>(true);
-                if (gyroBtn != null)
-                {
-                    gyroBtn.onClick.RemoveListener(OnGyroModeChanged);
-                    gyroBtn.onClick.AddListener(OnGyroModeChanged);
-                }
-            }
-
-            if (_musicVolSlider != null)
-            {
-                _musicVolSlider.SetValueWithoutNotify(GameSave.MusicVolume);
-                _musicVolSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
-                _musicVolSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-            }
-
-            if (_sfxVolSlider != null)
-            {
-                _sfxVolSlider.SetValueWithoutNotify(GameSave.SfxVolume);
-                _sfxVolSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
-                _sfxVolSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
-            }
-        }
-
-        private static void OnMusicVolumeChanged(float v)
+        public void OnMusicVolumeChanged(float v)
         {
             GameSave.MusicVolume = v;
             GameAudioService.SetMusicVolume(v);
         }
 
-        private static void OnSfxVolumeChanged(float v)
+        public void OnSfxVolumeChanged(float v)
         {
             GameSave.SfxVolume = v;
             GameAudioService.SetSfxVolume(v);

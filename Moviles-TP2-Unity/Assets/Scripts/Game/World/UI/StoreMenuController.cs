@@ -65,26 +65,26 @@ namespace Game.World.UI
         {
             if (controlBuyBtn != null)
             {
-                controlBuyBtn.onClick.RemoveListener(BuyControlUpgrade);
-                controlBuyBtn.onClick.AddListener(BuyControlUpgrade);
+                controlBuyBtn.onClick.RemoveListener(OnBuyControlBtnClicked);
+                controlBuyBtn.onClick.AddListener(OnBuyControlBtnClicked);
             }
 
             if (watchAdBtn != null)
             {
-                watchAdBtn.onClick.RemoveListener(OnWatchAdClicked);
-                watchAdBtn.onClick.AddListener(OnWatchAdClicked);
+                watchAdBtn.onClick.RemoveListener(OnWatchAdBtnClicked);
+                watchAdBtn.onClick.AddListener(OnWatchAdBtnClicked);
             }
 
             if (noAdsBtn != null)
             {
-                noAdsBtn.onClick.RemoveListener(OnNoAdsClicked);
-                noAdsBtn.onClick.AddListener(OnNoAdsClicked);
+                noAdsBtn.onClick.RemoveListener(OnNoAdsBtnClicked);
+                noAdsBtn.onClick.AddListener(OnNoAdsBtnClicked);
             }
 
             if (restorePurchasesBtn != null)
             {
-                restorePurchasesBtn.onClick.RemoveListener(OnRestorePurchasesClicked);
-                restorePurchasesBtn.onClick.AddListener(OnRestorePurchasesClicked);
+                restorePurchasesBtn.onClick.RemoveListener(OnRestorePurchasesBtnClicked);
+                restorePurchasesBtn.onClick.AddListener(OnRestorePurchasesBtnClicked);
             }
         }
 

@@ -57,7 +57,35 @@ namespace Game.World.UI
             SetupControlUI();
             SetupRewardedAdUI();
             SetupNoAdsUI();
+            WireBakedButtonListeners();
             RefreshUI();
+        }
+
+        private void WireBakedButtonListeners()
+        {
+            if (controlBuyBtn != null)
+            {
+                controlBuyBtn.onClick.RemoveListener(BuyControlUpgrade);
+                controlBuyBtn.onClick.AddListener(BuyControlUpgrade);
+            }
+
+            if (watchAdBtn != null)
+            {
+                watchAdBtn.onClick.RemoveListener(OnWatchAdClicked);
+                watchAdBtn.onClick.AddListener(OnWatchAdClicked);
+            }
+
+            if (noAdsBtn != null)
+            {
+                noAdsBtn.onClick.RemoveListener(OnNoAdsClicked);
+                noAdsBtn.onClick.AddListener(OnNoAdsClicked);
+            }
+
+            if (restorePurchasesBtn != null)
+            {
+                restorePurchasesBtn.onClick.RemoveListener(OnRestorePurchasesClicked);
+                restorePurchasesBtn.onClick.AddListener(OnRestorePurchasesClicked);
+            }
         }
 
         private void OnEnable()

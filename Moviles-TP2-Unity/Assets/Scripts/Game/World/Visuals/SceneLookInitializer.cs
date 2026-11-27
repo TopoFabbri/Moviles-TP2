@@ -1,4 +1,6 @@
+using Game.World.Graphics;
 using Game.World.Visuals;
+using Tools.ServiceProvider;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -36,6 +38,9 @@ namespace Game.World.Visuals
             ApplyDirectionalLight();
             ApplyCameraAndPostProcessing();
             ApplyFloorGrid();
+
+            if (ServiceProvider.TryGetService<IGraphicsSettingsService>(out var graphicsSettings))
+                graphicsSettings.ApplyToActiveScene();
         }
 
         private static void ApplySkyboxAndAmbient()
@@ -99,12 +104,22 @@ namespace Game.World.Visuals
 
             dirLight.color = Palette.KeyLight;
             dirLight.intensity = 1.15f;
-            dirLight.shadows = LightShadows.Soft;
+            dirLight.shadows = ServiceProvider.TryGetService<IGraphicsSettingsService>(out var gfx)
+                ? gfx.CurrentSettings.Shadows switch
+                {
+                    ShadowQualityMode.Off => LightShadows.None,
+                    ShadowQualityMode.Hard => LightShadows.Hard,
+                    _ => LightShadows.Soft
+                }
+                : LightShadows.Soft;
             dirLight.transform.rotation = Quaternion.Euler(42f, -35f, 0f);
         }
 
         private static void ApplyCameraAndPostProcessing()
         {
+            bool enablePostFx = !ServiceProvider.TryGetService<IGraphicsSettingsService>(out var gfx)
+                             || gfx.CurrentSettings.PostProcessingEnabled;
+
             Camera[] cameras = Object.FindObjectsByType<Camera>(FindObjectsSortMode.None);
             for (int i = 0; i < cameras.Length; i++)
             {
@@ -114,7 +129,7 @@ namespace Game.World.Visuals
                     cam.useOcclusionCulling = true;
                 var uac = cam.GetUniversalAdditionalCameraData();
                 if (uac != null)
-                    uac.renderPostProcessing = true;
+                    uac.renderPostProcessing = enablePostFx;
             }
 
             Volume globalVolume = null;
@@ -144,6 +159,8 @@ namespace Game.World.Visuals
                 bloom = profile.Add<Bloom>(true);
             bloom.intensity.Override(0.35f);
             bloom.threshold.Override(1.05f);
+            bloom.highQualityFiltering.Override(false);
+            bloom.maxIterations.Override(4);
 
             if (!profile.TryGet(out Vignette vignette))
                 vignette = profile.Add<Vignette>(true);

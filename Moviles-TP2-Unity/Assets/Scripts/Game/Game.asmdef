@@ -12,7 +12,8 @@
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.Services.Core",
-        "Unity.Services.Analytics"
+        "Unity.Services.Analytics",
+        "Unity.AdaptivePerformance"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

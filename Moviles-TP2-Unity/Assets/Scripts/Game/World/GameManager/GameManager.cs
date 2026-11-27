@@ -2,6 +2,7 @@ using Game.Audio;
 using Game.World.Ads;
 using Game.World.Character;
 using Game.World.GameManager.GameStates;
+using Game.World.Graphics;
 using Game.World.Targets;
 using Tools.FSM;
 using Tools.ServiceProvider;
@@ -29,7 +30,11 @@ namespace Game.World.GameManager
 
         private void Awake()
         {
-            Application.targetFrameRate = 60;
+            if (ServiceProvider.TryGetService<IGraphicsSettingsService>(out var graphicsSettings))
+                graphicsSettings.ApplyCurrentSettings();
+            else
+                Application.targetFrameRate = 60;
+
             ResetTimeScaleIfNoAd();
             GameAudioService.SetPausedDucking(false);
             ServiceProvider.GetService<Time>().Start();

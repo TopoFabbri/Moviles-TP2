@@ -23,6 +23,8 @@ namespace Game.World.UI
         {
             EnsureGyroModeControl();
             EnsureVolumeControls();
+            if (!TryGetComponent<GraphicsMenuController>(out _))
+                gameObject.AddComponent<GraphicsMenuController>();
         }
 
         private void Start()

@@ -61,11 +61,6 @@ namespace Game.World.Analytics
                 }
             }
 
-            if (duration.HasValue && duration.Value > TimeSpan.Zero)
-            {
-                customEvent["duration_ms"] = (long)duration.Value.TotalMilliseconds;
-            }
-
             AnalyticsService.Instance.RecordEvent(customEvent);
 
             if (immediate)

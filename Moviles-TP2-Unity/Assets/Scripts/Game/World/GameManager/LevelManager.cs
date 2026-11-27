@@ -17,6 +17,11 @@ namespace Game.World.GameManager
         {
             ServiceProvider.GetService<EventSystem>().Subscribe<ChangedStateEvent<States>>(OnChangedState);
             AceTime = aceTime;
+
+            if (FindFirstObjectByType<Analytics.LevelAnalyticsTracker>() == null)
+            {
+                gameObject.AddComponent<Analytics.LevelAnalyticsTracker>();
+            }
         }
 
         private void OnDestroy()

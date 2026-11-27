@@ -164,5 +164,18 @@ namespace Editor
             Assert.AreEqual(50f, AnalyticsServiceManager.CalculateProgressPercent(5, 10), 0.01f);
             Assert.AreEqual(0f, AnalyticsServiceManager.CalculateProgressPercent(5, 0), 0.01f);
         }
+
+        [Test]
+        public void SessionStarted_SendsControlSchemeAsInteger()
+        {
+            var mock = new MockAnalyticsProvider();
+            var manager = new AnalyticsServiceManager(mock);
+            manager.Initialize();
+
+            Assert.AreEqual(1, mock.RecordedEvents.Count);
+            var evt = mock.RecordedEvents[0];
+            Assert.AreEqual("session_started", evt.name);
+            Assert.IsInstanceOf<int>(evt.parameters["control_scheme"]);
+        }
     }
 }

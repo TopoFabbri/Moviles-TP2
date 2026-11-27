@@ -86,6 +86,8 @@ namespace Game.World.Analytics
 
         private void CreateLifecycleRunner()
         {
+            if (!Application.isPlaying) return;
+
             var go = new GameObject("AnalyticsLifecycleRunner");
             UnityEngine.Object.DontDestroyOnLoad(go);
             var runner = go.AddComponent<AnalyticsLifecycleRunner>();
@@ -108,7 +110,7 @@ namespace Game.World.Analytics
                 { "ram_mb", SystemInfo.systemMemorySize },
                 { "screen_resolution", $"{Screen.width}x{Screen.height}" },
                 { "app_version", Application.version ?? "0.0.0" },
-                { "control_scheme", GameSave.ControlScheme.ToString() },
+                { "control_scheme", GameSave.ControlScheme },
                 { "previous_session_unclean", previousUnclean }
             };
 

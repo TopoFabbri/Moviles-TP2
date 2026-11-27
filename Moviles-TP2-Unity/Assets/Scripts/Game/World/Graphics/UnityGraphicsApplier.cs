@@ -142,8 +142,23 @@ namespace Game.World.Graphics
             for (int i = 0; i < scalers.Count; i++)
             {
                 AdaptivePerformanceScaler scaler = scalers[i];
-                if (scaler is AdaptiveFramerate || scaler is AdaptiveResolution)
+                if (scaler is AdaptiveFramerate)
+                {
                     scaler.Enabled = enabled;
+                }
+                else if (scaler is AdaptiveResolution)
+                {
+                    // AdaptiveResolution resizes ScalableBufferManager / renderScale dynamically,
+                    // which conflicts with URP renderScale and cameras with allowDynamicResolution=false
+                    // on Mali GPUs (causing frozen/black/corrupted 3D camera output).
+                    scaler.Enabled = false;
+                }
+            }
+
+            if (!Mathf.Approximately(ScalableBufferManager.widthScaleFactor, 1f)
+                || !Mathf.Approximately(ScalableBufferManager.heightScaleFactor, 1f))
+            {
+                ScalableBufferManager.ResizeBuffers(1f, 1f);
             }
         }
     }

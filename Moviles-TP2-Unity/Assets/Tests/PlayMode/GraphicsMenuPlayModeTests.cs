@@ -52,6 +52,47 @@ namespace Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator ToggleTemplateWithLabelAsTargetGraphic_PreservesLabelAndCheckboxSizes()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/GameplaySubmenu.prefab");
+            Assert.IsNotNull(prefab);
+
+            var canvasGo = new GameObject("TestCanvas", typeof(Canvas), typeof(CanvasScaler));
+            var canvas = canvasGo.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var canvasRect = canvasGo.GetComponent<RectTransform>();
+            canvasRect.sizeDelta = new Vector2(1920f, 1080f);
+
+            GameObject instance = Object.Instantiate(prefab, canvasGo.transform);
+            try
+            {
+                Toggle templateToggle = instance.transform.Find("Scroll View/Viewport/Content/GodMode/GodModeToggle")?.GetComponent<Toggle>();
+                Assert.IsNotNull(templateToggle);
+                TextMeshProUGUI templateLabel = templateToggle.GetComponentInChildren<TextMeshProUGUI>(true);
+                Assert.IsNotNull(templateLabel);
+                templateToggle.targetGraphic = templateLabel;
+
+                yield return null;
+
+                Transform entryBtnTransform = instance.transform.Find("Scroll View/Viewport/Content/GraphicsSettingsBtn");
+                Transform gfxScroll = instance.transform.Find("GraphicsScrollView");
+                Assert.IsNotNull(entryBtnTransform);
+                Assert.IsNotNull(gfxScroll);
+
+                entryBtnTransform.GetComponent<Button>().onClick.Invoke();
+                yield return null;
+                Canvas.ForceUpdateCanvases();
+
+                AssertToggleDoesNotOverlap(gfxScroll, "Viewport/Content/PostFxToggleRow");
+                AssertToggleDoesNotOverlap(gfxScroll, "Viewport/Content/AdaptiveThermalToggleRow");
+            }
+            finally
+            {
+                Object.Destroy(canvasGo);
+            }
+        }
+
         private static void AssertToggleDoesNotOverlap(Transform gfxScroll, string relativePath)
         {
             Transform row = gfxScroll.Find(relativePath);
@@ -65,12 +106,19 @@ namespace Tests.PlayMode
             Assert.IsNotNull(label);
             Assert.IsTrue(label.enableAutoSizing);
 
+            Transform background = toggle.transform.Find("Background");
+            RectTransform boxRect = background != null ? background as RectTransform : toggle.targetGraphic.rectTransform;
+            Assert.IsNotNull(boxRect);
+
             var labelCorners = new Vector3[4];
             var boxCorners = new Vector3[4];
             label.rectTransform.GetWorldCorners(labelCorners);
-            toggle.targetGraphic.rectTransform.GetWorldCorners(boxCorners);
+            boxRect.GetWorldCorners(boxCorners);
 
-            Assert.Greater(label.rectTransform.rect.width, 100f, $"{relativePath} label width collapsed");
+            Assert.Greater(label.rectTransform.rect.width, 300f, $"{relativePath} label width collapsed");
+            Assert.GreaterOrEqual(boxRect.rect.width, 40f, $"{relativePath} checkbox width collapsed");
+            Assert.GreaterOrEqual(boxRect.rect.height, 40f, $"{relativePath} checkbox height collapsed");
+            Assert.IsFalse(label.isTextTruncated, $"{relativePath} label text is truncated");
             Assert.LessOrEqual(labelCorners[2].x, boxCorners[0].x + 0.5f, $"{relativePath} label overlaps checkbox");
         }
     }

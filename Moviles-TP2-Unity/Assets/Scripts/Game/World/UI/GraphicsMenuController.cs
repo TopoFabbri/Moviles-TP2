@@ -228,12 +228,20 @@ namespace Game.World.UI
                     labelLe.flexibleWidth = 1f;
                 }
 
-                if (toggle.targetGraphic != null)
+                Graphic boxGraphic = toggle.transform.Find("Background")?.GetComponent<Graphic>();
+                if (boxGraphic == null && toggle.graphic != null && toggle.graphic.transform.parent != toggle.transform)
+                    boxGraphic = toggle.graphic.transform.parent.GetComponent<Graphic>();
+                if (boxGraphic == null && toggle.targetGraphic != null && (label == null || toggle.targetGraphic.gameObject != label.gameObject))
+                    boxGraphic = toggle.targetGraphic;
+
+                if (boxGraphic != null)
                 {
-                    RectTransform boxRect = toggle.targetGraphic.rectTransform;
+                    RectTransform boxRect = boxGraphic.rectTransform;
                     boxRect.localScale = Vector3.one;
-                    float boxSize = boxRect.sizeDelta.x > 10f ? boxRect.sizeDelta.x : 64f;
-                    LayoutElement boxLe = toggle.targetGraphic.GetComponent<LayoutElement>() ?? toggle.targetGraphic.gameObject.AddComponent<LayoutElement>();
+                    float boxSize = boxRect.sizeDelta.y > 10f
+                        ? boxRect.sizeDelta.y
+                        : (boxRect.sizeDelta.x > 10f ? boxRect.sizeDelta.x : 64f);
+                    LayoutElement boxLe = boxGraphic.GetComponent<LayoutElement>() ?? boxGraphic.gameObject.AddComponent<LayoutElement>();
                     boxLe.minWidth = boxSize;
                     boxLe.preferredWidth = boxSize;
                     boxLe.minHeight = boxSize;

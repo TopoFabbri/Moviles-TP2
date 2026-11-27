@@ -198,8 +198,50 @@ namespace Game.World.UI
             Toggle toggle = rowObj.GetComponentInChildren<Toggle>(true);
             if (toggle != null)
             {
+                HorizontalLayoutGroup toggleLayout = toggle.GetComponent<HorizontalLayoutGroup>();
+                if (toggleLayout != null)
+                {
+                    toggleLayout.childAlignment = TextAnchor.MiddleLeft;
+                    toggleLayout.spacing = 16f;
+                    toggleLayout.childControlWidth = true;
+                    toggleLayout.childControlHeight = true;
+                    toggleLayout.childForceExpandWidth = false;
+                    toggleLayout.childForceExpandHeight = false;
+                    toggleLayout.childScaleWidth = false;
+                    toggleLayout.childScaleHeight = false;
+                }
+
                 TextMeshProUGUI label = toggle.GetComponentInChildren<TextMeshProUGUI>(true);
-                if (label != null) label.text = labelText;
+                if (label != null)
+                {
+                    label.rectTransform.localScale = Vector3.one;
+                    label.text = labelText;
+                    label.alignment = TextAlignmentOptions.MidlineLeft;
+                    label.enableAutoSizing = true;
+                    label.fontSizeMin = 24f;
+                    label.fontSizeMax = Mathf.Max(24f, label.fontSize);
+                    label.textWrappingMode = TextWrappingModes.NoWrap;
+                    label.overflowMode = TextOverflowModes.Ellipsis;
+
+                    LayoutElement labelLe = label.GetComponent<LayoutElement>() ?? label.gameObject.AddComponent<LayoutElement>();
+                    labelLe.minWidth = 0f;
+                    labelLe.flexibleWidth = 1f;
+                }
+
+                if (toggle.targetGraphic != null)
+                {
+                    RectTransform boxRect = toggle.targetGraphic.rectTransform;
+                    boxRect.localScale = Vector3.one;
+                    float boxSize = boxRect.sizeDelta.x > 10f ? boxRect.sizeDelta.x : 64f;
+                    LayoutElement boxLe = toggle.targetGraphic.GetComponent<LayoutElement>() ?? toggle.targetGraphic.gameObject.AddComponent<LayoutElement>();
+                    boxLe.minWidth = boxSize;
+                    boxLe.preferredWidth = boxSize;
+                    boxLe.minHeight = boxSize;
+                    boxLe.preferredHeight = boxSize;
+                    boxLe.flexibleWidth = 0f;
+                    boxLe.flexibleHeight = 0f;
+                }
+
                 toggle.onValueChanged = new Toggle.ToggleEvent();
                 toggle.onValueChanged.AddListener(onChanged);
             }

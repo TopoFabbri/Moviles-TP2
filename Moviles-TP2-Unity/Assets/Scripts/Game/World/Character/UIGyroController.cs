@@ -14,7 +14,7 @@ namespace Game.World.Character
 
         private Canvas _targetCanvas;
 
-        private void Update()
+        private void LateUpdate()
         {
             gyro.rotation = Quaternion.identity;
 
@@ -36,9 +36,13 @@ namespace Game.World.Character
                 float posY = overlayCam.rect.y + overlayCam.rect.height * relativePos.y;
                 gyro.position = overlayCam.ViewportToWorldPoint(new Vector3(posX, posY, 10f));
             }
-            
+
             if (ObstacleScore.Current)
-                pointer.rotation = Quaternion.LookRotation(ObstacleScore.Current.transform.position - droneTransform.position, droneTransform.up);
+            {
+                Vector3 toTarget = ObstacleScore.Current.transform.position - droneTransform.position;
+                if (toTarget.sqrMagnitude > 1e-6f)
+                    pointer.rotation = Quaternion.LookRotation(toTarget, droneTransform.up);
+            }
         }
     }
 }
